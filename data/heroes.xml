@@ -1,0 +1,36 @@
+<heroes>
+    <hero>
+        <id>1</id>
+        <name>Superman</name>
+        <health>100</health>
+        <attack>10</attack>
+        <defense>10</defense>
+        <speed>10</speed>
+        <crit_rate>0.01</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.01</effect_hit>
+        <effect_resistance>0.01</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+    </hero>
+    <hero>
+        <id>1</id>
+        <name>Superman</name>
+        <health>100</health>
+        <attack>10</attack>
+        <defense>10</defense>
+        <speed>10</speed>
+        <crit_rate>0.01</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.01</effect_hit>
+        <effect_resistance>0.01</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+    </hero>
+</heroes>
