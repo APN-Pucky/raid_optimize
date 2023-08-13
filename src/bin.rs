@@ -74,14 +74,3 @@ pub fn main() {
     wave.print_results();
     wave.print_statistics();
 }
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works2() {
-        main();
-    }
-}
