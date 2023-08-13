@@ -49,6 +49,7 @@ jobs:
 
   publish:
     needs: [test,release]
+    if: contains(github.ref, 'tags/v')
     name:  ${{ matrix.triple.target }}
     runs-on: ${{ matrix.triple.os }}
     strategy:
