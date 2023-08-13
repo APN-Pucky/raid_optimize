@@ -73,7 +73,7 @@ jobs:
           args: --release --all-features --target=${{ matrix.triple.target }}
           use-cross: ${{ matrix.triple.cross }}
       - name: zip it
-        run: zip ${{ matrix.triple.target }}.zip -r target/${{ matrix.triple.target }}
+        run: zip ${{ matrix.triple.target }}.zip target/${{ matrix.triple.target }}/release/raid_optimize* README.md -r data
       
       - name: Load Release URL File from release job
         uses: actions/download-artifact@v1
@@ -95,5 +95,5 @@ jobs:
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
           asset_path: ./${{ matrix.triple.target }}.zip
-          asset_name: ${{ matrix.triple.target }}-${{github.ref}}.zip
+          asset_name: raid_optimize-${{ github.ref }}-${{ matrix.triple.target }}.zip
           asset_content_type: application/zip
