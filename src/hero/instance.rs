@@ -16,7 +16,7 @@ pub struct Instance {
     health: u32,
     shield: u32,
     initiative: u32,
-    statistics: Statistics,
+    pub statistics: Statistics,
 }
 
 impl fmt::Display for Instance {
@@ -41,6 +41,10 @@ impl Instance {
             initiative: 0,
             statistics: Statistics::new(),
         }
+    }
+
+    pub fn get_statistics(&self) -> &Statistics {
+        &self.statistics
     }
 
     pub fn get_defense(&self) -> u32 {
@@ -87,13 +91,20 @@ impl Instance {
 
     pub fn take_damage(&mut self, damage: u32) {
         debug!("{} takes {} damage", self, damage);
+        self.statistics.damage_taken += damage;
         let dmg = self.loose_shield(damage);
         self.loose_health(dmg);
     }
 
-    pub fn attack(&self, target: &mut Instance) {
+    pub fn deal_damage(&mut self, target: &mut Instance, damage: u32) {
+        debug!("{} takes {} damage from {}", target , damage , self);
+        self.statistics.damage_done += damage;
+        target.take_damage(damage);
+    }
+
+    pub fn attack(&mut self, target: &mut Instance) {
         log::debug!("{} attacks {} with {} attack", self, target, self.get_attack());
-        target.take_damage(self.get_attack() - target.get_defense());
+        self.deal_damage(target, self.get_attack() - target.get_defense());
     }
 
     pub fn reset_initiative(&mut self) {

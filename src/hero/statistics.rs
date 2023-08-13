@@ -1,12 +1,12 @@
 
 #[derive(Debug)]
 pub struct Statistics {
-    damage_done: u32,
-    damage_taken: u32,
-    healing_done: u32,
-    healing_taken: u32,
-    shielding_done: u32,
-    shielding_taken: u32,
+    pub damage_done: u32,
+    pub damage_taken: u32,
+    pub healing_done: u32,
+    pub healing_taken: u32,
+    pub shielding_done: u32,
+    pub shielding_taken: u32,
 }
 
 impl Statistics {

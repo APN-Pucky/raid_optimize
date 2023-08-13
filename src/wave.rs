@@ -2,6 +2,7 @@ use rand::Rng;
 
 use crate::hero::Hero;
 use crate::hero::instance::Instance;
+use crate::hero::statistics::Statistics;
 
 pub struct InstanceRef {
     team: bool,
@@ -14,6 +15,12 @@ pub struct Wave {
     turns: u32,
     turn_limit: u32,
     initiative_threshold: u32,
+}
+
+pub struct Result {
+    pub win: bool,
+    pub loss: bool,
+    pub stall : bool,
 }
 
 impl Wave {
@@ -34,6 +41,10 @@ impl Wave {
             turn_limit: 300,
             initiative_threshold: 1000,
         }
+    }
+
+    pub fn get_statistics(&self) -> Vec<&Statistics> {
+        self.allies.iter().chain(self.enemies.iter()).map(|i| i.get_statistics()).collect()
     }
 
     pub fn get_instance(&self, actor : InstanceRef) -> &Instance {
@@ -141,33 +152,8 @@ impl Wave {
         }
     }
 
-    pub fn game_over(&self) -> bool {
-        let mut allies_alive = false;
-        let mut enemies_alive = false;
-        for ally in self.allies.iter() {
-            if ally.is_alive() {
-                allies_alive = true;
-            }
-        }
-        for enemy in self.enemies.iter() {
-            if enemy.is_alive() {
-                enemies_alive = true;
-            }
-        }
-        if !allies_alive {
-            log::debug!("Allies dead");
-        }
-        if !enemies_alive {
-            log::debug!("Enemies dead");
-        }
-        if self.turns >= self.turn_limit {
-            log::debug!("Turn limit reached");
-        }
-        !allies_alive || !enemies_alive || (self.turns >= self.turn_limit)
-    }
-
-    pub fn simulate(& mut self) {
-        while !self.game_over() {
+    pub fn run(& mut self) -> Result {
+        loop {
             self.increase_initiatives();
             match self.find_actor_index() {
                 Some(ir) => {
@@ -176,7 +162,31 @@ impl Wave {
                 },
                 None => {},
             }
-            
+
+            // game over
+            let win = self.enemies.iter().all(|e| !e.is_alive());
+            let loss = self.allies.iter().all(|a| !a.is_alive());
+            let stall = self.turns >= self.turn_limit;
+            if win || loss || stall {
+                if win {
+                    log::debug!("Win");
+                }
+                if loss {
+                    log::debug!("Loss");
+                }
+                if stall {
+                    log::debug!("Stall");
+                }
+                if win && loss || win && stall || loss && stall {
+                    panic!("Inconsistent result");
+                }
+                return Result {
+                    win: self.enemies.iter().all(|e| !e.is_alive()),
+                    loss: self.allies.iter().all(|a| !a.is_alive()),
+                    stall: self.turns >= self.turn_limit,
+                }
+            }
         }
+        
     }
 }
