@@ -18,6 +18,7 @@ pub fn main() {
     let mut str_ally = String::new();
     let mut str_enemy = String::new();
     let mut iterations = 10000;
+    let mut threads = 1;
 
     {
         let mut ap = ArgumentParser::new();
@@ -28,6 +29,8 @@ pub fn main() {
             .add_option(&["-e", "--enemy"], Store, "Enemy team").required();
         ap.refer(&mut iterations)
             .add_option(&["-i", "--iterations"], Store, "Number of iterations").required();
+        ap.refer(&mut threads)
+            .add_option(&["-t", "--threads"], Store, "Number of threads");
         ap.parse_args_or_exit();
     }
     // parse heros from xml
@@ -67,7 +70,7 @@ pub fn main() {
         &enemy,
         iterations
     );
-    wave.run();
+    wave.run(threads);
     wave.print_results();
     wave.print_statistics();
 }

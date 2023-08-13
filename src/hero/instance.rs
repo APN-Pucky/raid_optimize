@@ -16,7 +16,7 @@ pub struct Instance {
     health: u32,
     shield: u32,
     initiative: u32,
-    statistics: HashMap<String, u32>,    
+    pub statistics: HashMap<String, u32>,    
 }
 
 impl fmt::Display for Instance {
@@ -43,8 +43,19 @@ impl Instance {
         }
     }
 
+    pub fn heal(&mut self, health: u32) {
+        let mut heal = (health as f32 * self.hero.healing_effect) as u32; // TODO handle rounding
+        log::debug!("{} heals {} health", self, heal);
+        self.add_stat("health healed", heal);
+        self.health += heal;
+    }
+
     pub fn add_stat(&mut self, key: &str, statistics: u32 ) {
         *self.statistics.entry(key.to_string()).or_insert(0) += statistics;
+    }
+
+    pub fn copy_statistics(&self) -> HashMap<String, u32> {
+        self.statistics.clone()
     }
 
     pub fn get_statistics(&self) -> &HashMap<String, u32>{
@@ -108,6 +119,9 @@ impl Instance {
         debug!("{} takes {} damage from {}", target , damage , self);
         self.add_stat("damage done", damage);
         target.take_damage(damage);
+        let leech = (damage as f32 * self.hero.leech) as u32; // TODO handle rounding
+        self.add_stat("leeched", leech);
+        self.heal(leech);
     }
 
     pub fn attack(&mut self, target: &mut Instance) {
@@ -117,12 +131,28 @@ impl Instance {
         let crit = rng.gen::<f32>() < self.hero.crit_rate;
         let mut attack  = self.get_attack();
         if crit {
-            log::debug!("{} critical strike", self);
             self.add_stat("critical strikes", 1);
-            attack = (attack as f32 * self.hero.crit_damage) as u32; // TODO handle rounding
+            let mut crit = self.hero.crit_damage;
+            let mut tenacity = target.hero.tenacity;
+            if tenacity > crit {
+                tenacity = crit;
+            }
+            let crit_rate = crit - tenacity;
+            self.add_stat("critical damage", (attack as f32 * crit_rate ) as u32);
+            target.add_stat("tenacity ignored", (attack as f32 * tenacity ) as u32);
+            attack = (attack as f32 * crit_rate) as u32; // TODO handle rounding
+            log::debug!("{} critical attack ({}%={}%-{}%)", self,crit_rate*100.,crit*100.,tenacity*100.);
         }
         log::debug!("{} attacks {} with {} attack", self, target,attack );
-        self.deal_damage(target, attack - target.get_defense());
+        self.add_stat("attack", attack);
+        let mut def = target.get_defense();
+
+        let pierce = (def as f32 * self.hero.piercing) as u32; // TODO handle rounding
+        self.add_stat("pierced defense", pierce);
+        log::debug!("{} pierces {} defense of {} ({}%)", self, pierce, def, self.hero.piercing*100.);
+        def -= pierce;
+        
+        self.deal_damage(target, attack - def);
     }
 
     pub fn reset_initiative(&mut self) {

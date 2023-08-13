@@ -21,6 +21,7 @@ pub struct Result {
     pub win: bool,
     pub loss: bool,
     pub stall : bool,
+    pub statistics: Vec<HashMap<String, u32>>,
 }
 
 impl Wave {
@@ -43,8 +44,8 @@ impl Wave {
         }
     }
 
-    pub fn get_statistics(&self) -> Vec<&HashMap<String,u32>> {
-        self.allies.iter().chain(self.enemies.iter()).map(|i| i.get_statistics()).collect()
+    pub fn get_statistics(&self) -> Vec<HashMap<String,u32>> {
+        self.allies.iter().chain(self.enemies.iter()).map(|i| i.copy_statistics()).collect()
     }
 
     pub fn get_instance(&self, actor : InstanceRef) -> &Instance {
@@ -57,6 +58,7 @@ impl Wave {
     }
 
     pub fn find_actor_index(&self) -> Option<InstanceRef> {
+        // TODO look up speed value in case of equal initiative
         let mut index = 0;
         let mut found = false;
         let mut max_initiative = 0;
@@ -184,6 +186,7 @@ impl Wave {
                     win: self.enemies.iter().all(|e| !e.is_alive()),
                     loss: self.allies.iter().all(|a| !a.is_alive()),
                     stall: self.turns >= self.turn_limit,
+                    statistics: self.get_statistics(),
                 }
             }
         }

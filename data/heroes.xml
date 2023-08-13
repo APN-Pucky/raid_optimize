@@ -14,7 +14,7 @@
         <healing_effect>0</healing_effect>
         <leech>0</leech>
         <piercing>0</piercing>
-        <tenacity>0</tenacity>
+        <tenacity>0.01</tenacity>
     </hero>
     <hero>
         <id>2</id>
@@ -29,7 +29,7 @@
         <effect_resistance>0.01</effect_resistance>
         <mastery>0</mastery>
         <healing_effect>0</healing_effect>
-        <leech>0</leech>
+        <leech>0.1</leech>
         <piercing>0</piercing>
         <tenacity>0</tenacity>
     </hero>
