@@ -2,10 +2,13 @@ use std::collections::HashMap;
 use itertools::Itertools;
 
 use rayon::prelude::*;
+use indicatif::ProgressBar;
+use indicatif::ProgressStyle;
 
 use crate::hero::Hero;
 use crate::wave::Wave;
 use crate::wave::Result;
+
 
 
 pub fn get_mean(sum : f32, N: u32) -> f32 {
@@ -165,6 +168,13 @@ impl Sim<'_> {
     pub fn run(&mut self , threads : u32) {
         let vecit : Vec<u32> = (0..threads).collect::<Vec<_>>();
         let iter = self.iterations / threads;
+        let bar = ProgressBar::new(self.iterations as u64);
+        bar.set_style(
+            ProgressStyle::with_template(
+                "{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] ({pos}/{len}, ETA {eta})",
+            )
+            .unwrap(),
+        );
         let results : Vec<CombinedResult> = vecit.par_iter().map(|i| {
             let mut cr = CombinedResult {
                 iterations: 0,
@@ -173,9 +183,12 @@ impl Sim<'_> {
                 stalls: 0,
                 statistics: Vec::new(),
             };
-            for _ in 0..iter {
+            for x in 0..iter {
                 let mut wave = Wave::new(self.allies, self.enemies);
                 cr.add_result(&wave.run());
+                if x % 10000 == 0 {
+                    bar.inc(10000);
+                }
             }
             cr
         }).collect::<Vec<_>>();

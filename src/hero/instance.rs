@@ -163,8 +163,8 @@ impl Instance {
         self.initiative = initiative
     }
 
-    pub fn increase_initiative(&mut self) {
-        self.initiative += self.get_speed();
+    pub fn increase_initiative(&mut self, time: u32) {
+        self.initiative += self.get_speed() * time;
         log::debug!("{} initiative is now {}", self, self.initiative);
     }
 

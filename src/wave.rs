@@ -130,8 +130,16 @@ impl Wave {
     }
 
     pub fn increase_initiatives(&mut self) {
-        self.allies.iter_mut().for_each(|a| a.increase_initiative());
-        self.enemies.iter_mut().for_each(|a| a.increase_initiative());
+        // get the time needed for one to reach threshold
+        let ally_min : i32 = self.allies.iter().map(|a| (self.initiative_threshold as i32 - a.get_initiative() as i32) /(a.get_speed() as i32)).min().unwrap();
+        let enemy_min : i32 = self.enemies.iter().map(|a| (self.initiative_threshold as i32 - a.get_initiative() as i32) /(a.get_speed()as i32)).min().unwrap();
+        let mut min : i32 = ally_min.min(enemy_min);
+        if min < 0 {
+            min = 0;
+        }
+        let umin = min as u32;
+        self.allies.iter_mut().for_each(|a| a.increase_initiative(umin+1));
+        self.enemies.iter_mut().for_each(|a| a.increase_initiative(umin+1));
     }
 
     pub fn act(&mut self, actor : InstanceRef) {
