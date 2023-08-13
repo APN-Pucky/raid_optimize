@@ -106,7 +106,7 @@ impl Wave {
     }
 
     pub fn choose_target(&self, actor : &InstanceRef) -> Option<InstanceRef> {
-        let mut team = self.get_enemy_team(actor);
+        let team = self.get_enemy_team(actor);
         //opponents.iter().filter(|i| i.is_alive()).collect::<Vec<&mut Instance>>().choose_mut(&mut rand::thread_rng())
         let mut ids = Vec::new();
         let mut index = 0;

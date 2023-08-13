@@ -21,7 +21,7 @@ pub struct Instance {
 
 impl fmt::Display for Instance {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}-{} [initiative: {}]", self.hero.name, self.id, self.initiative)
+        write!(f, "{}-{} [health: {}, initiative: {}]", self.hero.name, self.id,self.health, self.initiative)
     }
 }
 

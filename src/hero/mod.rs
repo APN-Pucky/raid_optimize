@@ -27,6 +27,20 @@ pub struct Hero {
     pub tenacity: f32,
 }
 
+pub fn get_hero_by_string<'a>(heroes: &'a Heroes, name: &'a str) -> Option<&'a Hero> {
+    for hero in heroes.heroes.iter() {
+        if hero.name == name { // TOOD handle multiple names
+            return Some(hero);
+        }
+        else if  name  == format!("[{}]", hero.id) {
+            return Some(hero);
+        }
+    }
+    None
+    //panic!("Hero not found: {}", name);
+}
+
+
 impl fmt::Display for Hero {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{} (health: {}, attack: {})", self.name, self.health, self.attack)
