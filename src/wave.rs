@@ -1,8 +1,8 @@
 use rand::Rng;
+use std::collections::HashMap;
 
 use crate::hero::Hero;
 use crate::hero::instance::Instance;
-use crate::hero::statistics::Statistics;
 
 pub struct InstanceRef {
     team: bool,
@@ -43,7 +43,7 @@ impl Wave {
         }
     }
 
-    pub fn get_statistics(&self) -> Vec<&Statistics> {
+    pub fn get_statistics(&self) -> Vec<&HashMap<String,u32>> {
         self.allies.iter().chain(self.enemies.iter()).map(|i| i.get_statistics()).collect()
     }
 

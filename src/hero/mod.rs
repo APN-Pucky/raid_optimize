@@ -1,7 +1,6 @@
 use std::fmt;
 
 pub mod instance;
-pub mod statistics;
 
 #[derive(Deserialize, Debug)]
 pub struct Heroes {

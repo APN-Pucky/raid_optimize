@@ -15,7 +15,8 @@ pub fn main() {
     let enemy = vec![&heroes.heroes[1]];
     let mut wave = Sim::new(
         &ally,
-        &enemy
+        &enemy,
+        100000
     );
     wave.run();
     wave.print_results();

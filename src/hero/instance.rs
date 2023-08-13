@@ -1,4 +1,5 @@
 // Import (via `use`) the `fmt` module to make it available.
+use std::collections::HashMap;
 use std::fmt;
 use log::debug;
 
@@ -7,7 +8,6 @@ use rand::Rng;
 
 use crate::hero::Hero;
 use crate::wave::Wave;
-use crate::hero::statistics::Statistics;
 
 #[derive(Debug)]
 pub struct Instance {
@@ -16,7 +16,7 @@ pub struct Instance {
     health: u32,
     shield: u32,
     initiative: u32,
-    pub statistics: Statistics,
+    statistics: HashMap<String, u32>,    
 }
 
 impl fmt::Display for Instance {
@@ -39,11 +39,15 @@ impl Instance {
             health: hero.health,
             shield: 0,
             initiative: 0,
-            statistics: Statistics::new(),
+            statistics: HashMap::new(),
         }
     }
 
-    pub fn get_statistics(&self) -> &Statistics {
+    pub fn add_stat(&mut self, key: &str, statistics: u32 ) {
+        *self.statistics.entry(key.to_string()).or_insert(0) += statistics;
+    }
+
+    pub fn get_statistics(&self) -> &HashMap<String, u32>{
         &self.statistics
     }
 
@@ -65,6 +69,7 @@ impl Instance {
     pub fn loose_shield(&mut self, damage: u32) -> u32 {
         if self.shield > damage {
             log::debug!("{} looses {} shield", self, damage);
+            self.add_stat("shield lost", damage);
             self.shield -= damage;
             return 0;
         }
@@ -73,6 +78,7 @@ impl Instance {
         }
         else {
             log::debug!("{} looses all {} shield", self, self.shield);
+            self.add_stat("shield lost", self.shield);
             self.shield = 0;
             return damage - self.shield;
         }
@@ -81,30 +87,42 @@ impl Instance {
     pub fn loose_health(&mut self, damage: u32) {
         log::debug!("{} looses {} health", self, damage);
         if self.health < damage {
+            self.add_stat("health lost", self.health);
             self.health = 0;
             return;
         }
         else {
+            self.add_stat("health lost", damage);
             self.health -= damage;
         }
     }
 
     pub fn take_damage(&mut self, damage: u32) {
         debug!("{} takes {} damage", self, damage);
-        self.statistics.damage_taken += damage;
+        self.add_stat("damage taken", damage);
         let dmg = self.loose_shield(damage);
         self.loose_health(dmg);
     }
 
     pub fn deal_damage(&mut self, target: &mut Instance, damage: u32) {
         debug!("{} takes {} damage from {}", target , damage , self);
-        self.statistics.damage_done += damage;
+        self.add_stat("damage done", damage);
         target.take_damage(damage);
     }
 
     pub fn attack(&mut self, target: &mut Instance) {
-        log::debug!("{} attacks {} with {} attack", self, target, self.get_attack());
-        self.deal_damage(target, self.get_attack() - target.get_defense());
+        // test if critical strike
+        self.add_stat("attacks", 1);
+        let mut rng = rand::thread_rng();
+        let crit = rng.gen::<f32>() < self.hero.crit_rate;
+        let mut attack  = self.get_attack();
+        if crit {
+            log::debug!("{} critical strike", self);
+            self.add_stat("critical strikes", 1);
+            attack = (attack as f32 * self.hero.crit_damage) as u32; // TODO handle rounding
+        }
+        log::debug!("{} attacks {} with {} attack", self, target,attack );
+        self.deal_damage(target, attack - target.get_defense());
     }
 
     pub fn reset_initiative(&mut self) {
