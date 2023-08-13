@@ -96,5 +96,5 @@ jobs:
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
           asset_path: ./${{ matrix.triple.target }}.zip
-          asset_name: ${{ steps.get_release_info.outputs.file_name }}-${{ matrix.rid }}.zip
-         asset_content_type: application/zip
+          asset_name: ${{ matrix.triple.target }}.zip
+          asset_content_type: application/zip
