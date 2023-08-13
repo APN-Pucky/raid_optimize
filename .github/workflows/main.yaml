@@ -72,11 +72,13 @@ jobs:
           command: build
           args: --release --all-features --target=${{ matrix.triple.target }}
           use-cross: ${{ matrix.triple.cross }}
+      - name: Move binary to root
+        run: mv target/${{ matrix.triple.target }}/release/raid_optimize* .
       - name: zip it
         if: matrix.triple.os != 'windows-latest'
-        run: zip ${{ matrix.triple.target }}.zip target/${{ matrix.triple.target }}/release/raid_optimize* README.md -r data
+        run: zip ${{ matrix.triple.target }}.zip raid_optimize* README.md -r data
       - name: zip it
-        run: 7z a ${{ matrix.triple.target }}.zip target/${{ matrix.triple.target }}/release/raid_optimize* README.md -r data
+        run: 7z a ${{ matrix.triple.target }}.zip raid_optimize* README.md -r data
         if: matrix.triple.os == 'windows-latest'
       
       - name: Load Release URL File from release job
