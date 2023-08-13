@@ -11,15 +11,15 @@ use crate::wave::Result;
 
 
 
-pub fn get_mean(sum : f32, N: u32) -> f32 {
-    (sum as f32) / N as f32
+pub fn get_mean(sum : f64, N: u32) -> f64 {
+    (sum ) / N as f64
 }
 
-pub fn get_standard_deviation(sum : f32, sum_sq:f32, N: u32) -> f32 {
-    ((sum_sq as f32 - sum as f32 * sum as f32 / N as f32) / N as f32).sqrt()
+pub fn get_standard_deviation(sum : f64, sum_sq:f64, N: u32) -> f64 {
+    ((sum_sq - sum  * sum  / N as f64) / N as f64).sqrt()
 }
 
-pub fn get_mean_and_standard_deviation(sum : f32, sum_sq:f32, N: u32) -> (f32, f32) {
+pub fn get_mean_and_standard_deviation(sum : f64, sum_sq:f64, N: u32) -> (f64, f64) {
     (get_mean(sum, N), get_standard_deviation(sum, sum_sq, N))
 }
 
@@ -41,8 +41,8 @@ pub struct CombinedResult {
 }
 
 pub struct CombinedStatistics {
-    pub hm: HashMap<String, f32>,
-    pub hm_sq: HashMap<String, f32>,
+    pub hm: HashMap<String, f64>,
+    pub hm_sq: HashMap<String, f64>,
 }
 
 impl  CombinedResult {
@@ -110,7 +110,7 @@ impl  CombinedResult {
         }
         for i in 0..statistics.len() {
             for (key, value) in &added[i] {
-                let v= *value as f32;
+                let v= *value as f64;
                 *statistics[i].hm.entry(key.clone()).or_insert(0.0) += v;
                 *statistics[i].hm_sq.entry(key.clone()).or_insert(0.0) += v*v;
             }
