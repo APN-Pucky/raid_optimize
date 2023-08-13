@@ -1,27 +1,37 @@
+use std::fmt;
+
+pub mod instance;
+pub mod statistics;
 
 #[derive(Deserialize, Debug)]
-struct Heroes {
+pub struct Heroes {
     #[serde(rename="hero")]
-    heroes: Vec<Hero>,
+    pub heroes: Vec<Hero>,
 }
 
-#[derive(Deserialize, Debug)]
-struct Hero {
-    id: u32,
-    name: String,
-    health: u32,
-    attack: u32,
-    defense: u32,
-    speed: u32,
-    crit_rate: f32,
-    crit_damage: f32,
-    effect_hit: f32,
-    effect_resistance: f32,
-    mastery: f32,
-    healing_effect: f32,
-    leech: f32,
-    piercing: f32,
-    tenacity: f32,
+#[derive(Deserialize, Debug, Clone)]
+pub struct Hero {
+    pub id: u32,
+    pub name: String,
+    pub health: u32,
+    pub attack: u32,
+    pub defense: u32,
+    pub speed: u32,
+    pub crit_rate: f32,
+    pub crit_damage: f32,
+    pub effect_hit: f32,
+    pub effect_resistance: f32,
+    pub mastery: f32,
+    pub healing_effect: f32,
+    pub leech: f32,
+    pub piercing: f32,
+    pub tenacity: f32,
+}
+
+impl fmt::Display for Hero {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} (health: {}, attack: {})", self.name, self.health, self.attack)
+    }
 }
 
 #[cfg(test)]

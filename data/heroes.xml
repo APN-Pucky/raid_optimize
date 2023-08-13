@@ -3,7 +3,7 @@
         <id>1</id>
         <name>Superman</name>
         <health>100</health>
-        <attack>10</attack>
+        <attack>100</attack>
         <defense>10</defense>
         <speed>10</speed>
         <crit_rate>0.01</crit_rate>
@@ -17,10 +17,10 @@
         <tenacity>0</tenacity>
     </hero>
     <hero>
-        <id>1</id>
-        <name>Superman</name>
+        <id>2</id>
+        <name>Not Superman</name>
         <health>100</health>
-        <attack>10</attack>
+        <attack>100</attack>
         <defense>10</defense>
         <speed>10</speed>
         <crit_rate>0.01</crit_rate>

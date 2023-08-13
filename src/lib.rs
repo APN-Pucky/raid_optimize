@@ -2,8 +2,12 @@
 extern crate serde_derive;
 extern crate serde;
 extern crate serde_xml_rs;
+extern crate rand;
+extern crate log;
 
-mod hero;
+pub mod hero;
+pub mod sim;
+pub mod wave;
 
 pub fn add(left: usize, right: usize) -> usize {
     left + right
