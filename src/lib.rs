@@ -8,6 +8,7 @@ extern crate log;
 pub mod hero;
 pub mod sim;
 pub mod wave;
+pub mod player;
 
 pub fn add(left: usize, right: usize) -> usize {
     left + right

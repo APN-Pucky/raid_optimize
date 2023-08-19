@@ -128,6 +128,27 @@ impl  CombinedResult {
             println!("\t {}: {:.2} +- {:.2}", key, get_mean(value, self.iterations), get_standard_deviation(value, self.statistics[index].hm_sq[key], self.iterations));
         }
     }
+
+    pub fn get_mean(&self, index: usize,key: &str) -> f64 {
+        let hm =  &self.statistics[index].hm;
+        // hm has key? else return 0.0
+        if hm.contains_key(key) {
+            get_mean(hm[key], self.iterations)
+        }
+        else {
+            0.0
+        }
+    }
+
+    pub fn get_std(&self, index: usize , key : &str) -> f64 {
+        let hm =  &self.statistics[index].hm;
+        if hm.contains_key(key) {
+            get_standard_deviation(hm[key], self.statistics[index].hm_sq[key], self.iterations)
+        }
+        else {
+            0.0
+        }
+    }
     
 }
 
@@ -161,19 +182,38 @@ impl Sim<'_> {
         let barlen = 20.0;
         let mut atable = Table::new();
         let mut row = Vec::new();
+
+        let mut all_keys = Vec::new();
+        let mut ii = 0;
+        for _ in self.allies.iter() {
+            for key in self.result.statistics[ii].hm.keys() {
+                all_keys.push(key.clone());
+            }
+            ii+=1;
+        }
+        for _ in self.enemies.iter() {
+            for key in self.result.statistics[ii].hm.keys() {
+                all_keys.push(key.clone());
+            }
+            ii+=1;
+        }
+        // make all_keys unique
+        all_keys.sort();
+        all_keys.dedup();
+
         row.push(Cell::new("Allies"));
         for hero in self.allies.iter() {
             row.push(Cell::new(&hero.name));
         }
         atable.set_titles(Row::new(row));
 
-        for key in self.result.statistics[0].hm.keys().sorted() {
+        for key in all_keys.iter() {
             let mut row = Vec::new();
             row.push(Cell::new(&key));
             let mut index = 0;
             let mut max : f64 = 0.0;
             for her in self.allies.iter() {
-                let value =get_mean(self.result.statistics[index].hm[key], self.iterations) ;
+                let value =self.result.get_mean(index,key) ;
                 if value > max {
                     max = value;
                 }
@@ -181,14 +221,15 @@ impl Sim<'_> {
             }
             index = 0;
             for her in self.allies.iter() {
-                let value = self.result.statistics[index].hm[key];
-                let mean = get_mean(value, self.iterations);
+                //let value = self.result.statistics[index].hm[key];
+                let mean = self.result.get_mean(index, key);
+                let std = self.result.get_std(index, key);
                 let mut s: String;
                 if bar {
                     s = "=".repeat((mean/max*barlen) as usize) + &" ".repeat(((max-mean)/max*barlen) as usize);
                 }
                 else {
-                    s = format!("{:.2} +- {:.2}",get_mean(value, self.iterations), get_standard_deviation(value, self.result.statistics[index].hm_sq[key], self.iterations));
+                    s = format!("{:.2} +- {:.2}",mean, std);
                 }
                 row.push(Cell::new(&s));
                 index += 1;
@@ -207,28 +248,29 @@ impl Sim<'_> {
             row.push(Cell::new(&hero.name));
         }
         etable.set_titles(Row::new(row));
-        for key in self.result.statistics[0].hm.keys().sorted() {
+        for key in all_keys.iter() {
             let mut row = Vec::new();
             row.push(Cell::new(&key));
             let mut index = self.allies.len();
             let mut max : f64 = 0.0;
-            for her in self.enemies.iter() {
-                let value =get_mean(self.result.statistics[index].hm[key], self.iterations) ;
+            for _her in self.enemies.iter() {
+                let value =self.result.get_mean(index,key) ;
                 if value > max {
                     max = value;
                 }
                 index += 1;
             }
             index = self.allies.len();
-            for her in self.enemies.iter() {
-                let value = self.result.statistics[index].hm[key];
-                let mean = get_mean(value, self.iterations);
+            for _her in self.enemies.iter() {
+                //let value = self.result.statistics[index].hm[key];
+                let mean = self.result.get_mean(index, key);
+                let std = self.result.get_std(index, key);
                 let mut s : String ;
                 if bar {
                     s = "=".repeat((mean/max*barlen) as usize) + &" ".repeat(((max-mean)/max*barlen) as usize);
                 }
                 else {
-                    s = format!("{:.2} +- {:.2}",get_mean(value, self.iterations), get_standard_deviation(value, self.result.statistics[index].hm_sq[key], self.iterations));
+                    s = format!("{:.2} +- {:.2}",mean, std);
                 }
                 row.push(Cell::new(&s));
                 index += 1;

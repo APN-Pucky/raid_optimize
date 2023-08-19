@@ -1,6 +1,10 @@
 use std::fmt;
 
 pub mod instance;
+pub mod skill;
+pub mod effect;
+
+use crate::hero::skill::Skill;
 
 #[derive(Deserialize, Debug)]
 pub struct Heroes {
@@ -25,6 +29,8 @@ pub struct Hero {
     pub leech: f32,
     pub piercing: f32,
     pub tenacity: f32,
+    pub damage_reflection : f32,
+    pub skills: Vec<Skill>,
 }
 
 pub fn get_hero_by_string<'a>(heroes: &'a Heroes, name: &'a str) -> Option<&'a Hero> {
@@ -78,6 +84,13 @@ mod tests {
                 <leech>0.15</leech>
                 <piercing>0.15</piercing>
                 <tenacity>0.15</tenacity>
+                <skills>
+                    <ScorchedSoul>
+                        <attack_damage_ratio>1.0</attack_damage_ratio>
+                        <hp_burning_chance>0.5</hp_burning_chance>
+                        <hp_burning_turns>2</hp_burning_turns>
+                    </ScorchedSoul>
+                </skills>
             </hero>
             "#,
         )

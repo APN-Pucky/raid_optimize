@@ -1,36 +1,54 @@
 <heroes>
     <hero>
         <id>1</id>
-        <name>Superman</name>
-        <health>100</health>
-        <attack>100</attack>
-        <defense>10</defense>
-        <speed>10</speed>
-        <crit_rate>0.10</crit_rate>
+        <name>Natalie</name>
+        <health>61778</health>
+        <attack>7431</attack>
+        <defense>6485</defense>
+        <speed>1399</speed>
+        <crit_rate>0.098</crit_rate>
         <crit_damage>1.5</crit_damage>
-        <effect_hit>0.01</effect_hit>
-        <effect_resistance>0.01</effect_resistance>
+        <effect_hit>0.223</effect_hit>
+        <effect_resistance>0.0</effect_resistance>
         <mastery>0</mastery>
-        <healing_effect>0</healing_effect>
+        <healing_effect>0.046</healing_effect>
         <leech>0</leech>
         <piercing>0</piercing>
-        <tenacity>0.01</tenacity>
+        <tenacity>0.0</tenacity>
+        <damage_reflection>0.0</damage_reflection>
+        <skills>
+            <ScytheStrike>
+                <cooldown>0</cooldown>
+                <attack_damage_ratio>1.4</attack_damage_ratio>
+                <bleed_chance>0.4</bleed_chance>
+                <bleed_turns>2</bleed_turns>
+            </ScytheStrike>
+        </skills>
     </hero>
     <hero>
         <id>2</id>
-        <name>Not Superman</name>
-        <health>100</health>
-        <attack>100</attack>
-        <defense>10</defense>
-        <speed>10</speed>
-        <crit_rate>0.05</crit_rate>
-        <crit_damage>1.5</crit_damage>
-        <effect_hit>0.01</effect_hit>
-        <effect_resistance>0.01</effect_resistance>
+        <name>Seth</name>
+        <health>95772</health>
+        <attack>6566</attack>
+        <defense>7109</defense>
+        <speed>1076</speed>
+        <crit_rate>0.083</crit_rate>
+        <crit_damage>1.523</crit_damage>
+        <effect_hit>2.1</effect_hit>
+        <effect_resistance>0.0</effect_resistance>
         <mastery>0</mastery>
-        <healing_effect>0</healing_effect>
-        <leech>0.1</leech>
+        <healing_effect>0465</healing_effect>
+        <leech>0.0</leech>
         <piercing>0</piercing>
         <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <skills>
+            <TideBigHit>
+                <cooldown>0</cooldown>
+                <max_hp_damage_ratio>0.18</max_hp_damage_ratio>
+                <suffocated_chance>0.1</suffocated_chance>
+                <suffocated_turns>1</suffocated_turns>
+            </TideBigHit>
+        </skills>
     </hero>
 </heroes>
