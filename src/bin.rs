@@ -22,6 +22,7 @@ pub fn main() {
     let mut print_version = false;
     let mut no_stats = false;
     let mut no_results = false;
+    let mut bar = false;
 
     {
         let mut ap = ArgumentParser::new();
@@ -47,6 +48,8 @@ pub fn main() {
             .add_option(&["--no-results"],
             StoreTrue,
             "Don't print results");
+        ap.refer(&mut bar)
+            .add_option(&["-b", "--bar"], StoreTrue, "Bar");
         ap.parse_args_or_exit();
     }
     if print_version {
@@ -95,6 +98,6 @@ pub fn main() {
         wave.print_results();
     }
     if !no_stats {
-        wave.print_statistics();
+        wave.print_statistics(bar);
     }
 }
