@@ -17,7 +17,7 @@ path = "src/bin.rs"
 [dependencies]
 serde_derive = "^1.0"
 serde = "^1.0"
-serde-xml-rs = "^0.3.1"
+serde-xml-rs = "^0.6.0"
 rand = "*"
 log = "^0.4.20"
 env_logger ="^0.10.0"
