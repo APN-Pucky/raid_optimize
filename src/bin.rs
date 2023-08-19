@@ -19,6 +19,7 @@ pub fn main() {
     let mut str_enemy = String::new();
     let mut iterations : u64 = 10000;
     let mut threads= 1;
+    let mut print_version = false;
 
     {
         let mut ap = ArgumentParser::new();
@@ -31,7 +32,16 @@ pub fn main() {
             .add_option(&["-i", "--iterations"], Store, "Number of iterations").required();
         ap.refer(&mut threads)
             .add_option(&["-t", "--threads"], Store, "Number of threads");
+        // print version
+        ap.refer(&mut print_version)
+            .add_option(&["-v", "--version"],
+            StoreTrue,
+            "Print version");
         ap.parse_args_or_exit();
+    }
+    if print_version {
+        println!("Version: {}", env!("CARGO_PKG_VERSION"));
+        return;
     }
     // parse heros from xml
     let file_string = std::fs::read_to_string("data/heroes.xml").unwrap();
