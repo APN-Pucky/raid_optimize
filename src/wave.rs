@@ -7,6 +7,9 @@ use crate::hero::instance::Instance;
 use crate::hero::skill::{Skill, get_targets, execute_skill};
 use crate::player::Player;
 
+pub const TURN_LIMIT : u32 = 300;
+pub const TURN_METER_THRESHOLD : u32 = 1000;
+
 #[derive(Debug,Copy,Clone)]
 pub struct InstanceRef {
     pub team: bool,
@@ -47,8 +50,8 @@ impl Wave {
             ally_player: ap,
             enemy_player: ep,
             turns: 0,
-            turn_limit: 300,
-            initiative_threshold: 1000,
+            turn_limit: TURN_LIMIT,
+            initiative_threshold: TURN_METER_THRESHOLD,
         }
     }
 
@@ -96,7 +99,7 @@ impl Wave {
                     max_index = index;
                     found = true;
                 }
-                if (actor.get_turn_meter() == max_turn_meter) {
+                if actor.get_turn_meter() == max_turn_meter {
                     // compare by speed stat
                     if actor.get_speed() > self.get_instance(InstanceRef{team : found,index: max_index}).get_speed() {
                         max_turn_meter = actor.get_turn_meter();
@@ -136,7 +139,7 @@ impl Wave {
         }
     }
 
-    pub fn get_team(&self, actor : InstanceRef) -> &Vec<Instance> {
+    pub fn get_ally_team(&self, actor : &InstanceRef) -> &Vec<Instance> {
         if actor.team {
             &self.allies
         }
@@ -151,6 +154,72 @@ impl Wave {
         }
         else {
             &self.enemies
+        }
+    }
+
+    pub fn inflict_team(&mut self, actor : &InstanceRef, effect : Effect, chance: f32, turns :u32) {
+        if turns == 0 {
+            return;
+        }
+        if actor.team {
+            self.enemies.iter_mut().for_each(|a| a.get_inflicted(actor,effect,chance, turns));
+        }
+        else {
+            self.allies.iter_mut().for_each(|a| a.get_inflicted(actor,effect, chance, turns));
+        }
+    }
+
+    pub fn attack_team(&mut self, actor : &InstanceRef, damage : u32) {
+        if actor.team {
+            self.enemies.iter_mut().for_each(|a| a.take_damage(damage));
+        }
+        else {
+            self.allies.iter_mut().for_each(|a| a.take_damage(damage));
+        }
+    }
+
+    pub fn increase_turn_meter_team(&mut self, actor : &InstanceRef, increase_ratio : f32) {
+        if actor.team {
+            self.allies.iter_mut().for_each(|a| a.increase_turn_meter((increase_ratio * TURN_METER_THRESHOLD as f32 ) as u32));
+        }
+        else {
+            self.enemies.iter_mut().for_each(|a| a.increase_turn_meter((increase_ratio * TURN_METER_THRESHOLD as f32) as u32));
+        }
+    }
+
+    pub fn cleanse_team<F>(&mut self, actor : &InstanceRef, effect_closure: &F ,layers:u32) where F : Fn(&Effect) -> bool {
+        if actor.team {
+            self.allies.iter_mut().for_each(|a| a.cleanse(effect_closure,layers));
+        }
+        else {
+            self.enemies.iter_mut().for_each(|a| a.cleanse(effect_closure,layers));
+        }
+    }
+
+    pub fn restore_max_hp_own_team(&mut self, actor : &InstanceRef, restore_max_hp: u32) {
+        if actor.team {
+            self.allies.iter_mut().for_each(|a| a.heal(restore_max_hp));
+        }
+        else {
+            self.enemies.iter_mut().for_each(|a| a.heal(restore_max_hp));
+        }
+    }
+
+    pub fn restore_max_hp_ratio_own_team(&mut self, actor : &InstanceRef, restore_max_hp_ratio: f32) {
+        if actor.team {
+            self.allies.iter_mut().for_each(|a| a.heal((a.get_max_health() as f32 * restore_max_hp_ratio ) as u32));
+        }
+        else {
+            self.enemies.iter_mut().for_each(|a| a.heal((a.get_max_health() as f32 * restore_max_hp_ratio ) as u32));
+        }
+    }
+
+    pub fn shield_team(&mut self, actor : &InstanceRef, shield_value:u32, shield_turns:u32) {
+        if actor.team {
+            self.allies.iter_mut().for_each(|a| a.add_shield(shield_value, shield_turns));
+        }
+        else {
+            self.enemies.iter_mut().for_each(|a| a.add_shield(shield_value, shield_turns));
         }
     }
 
@@ -176,14 +245,14 @@ impl Wave {
         }
     }
 
-    pub fn increase_initiatives(&mut self) {
+    pub fn progress_turn_meter(&mut self) {
         // get the time needed for one to reach threshold
         let mut min : f32 = self.allies.iter().chain(self.enemies.iter()).filter(|a| a.is_alive()).map(|a| (self.initiative_threshold - a.get_turn_meter() ) as f32 /(a.get_speed() as f32)).fold(f32::INFINITY, |a, b| a.min(b));
         if min < 0.0 {
             min = 0.0;
         }
-        self.allies.iter_mut().for_each(|a| a.increase_turn_meter(min));
-        self.enemies.iter_mut().for_each(|a| a.increase_turn_meter(min));
+        self.allies.iter_mut().for_each(|a| a.progress_turn_meter(min));
+        self.enemies.iter_mut().for_each(|a| a.progress_turn_meter(min));
     }
 
     pub fn before_action(&mut self, actor : InstanceRef) {
@@ -197,15 +266,37 @@ impl Wave {
             e = &mut self.allies;
         }
         log::debug!("before {} acts", a);
+        // apply effects 
+        // apply heal
+        let n = a.effects.get(Effect::Heal);
+        if n> 0 {
+            let heal = (a.get_max_health() * 5 * n) /100;
+            a.heal(heal);
+        }
+        // apply bleed
         let n = a.effects.get(Effect::Bleed);
         if n > 0 {
             let b : &Vec<(u32,InstanceRef)> = a.effects.hm.get(&Effect::Bleed).unwrap();
-            // get last element of b
+            // get inflictor
             let nn: &InstanceRef = &b.last().unwrap().1;
-            let dmg_vec = vec![0.30,0.50,0.70,0.90,1.05,1.20,1.35,1.45,1.55,1.65];
-            let bleed_dmg = (e[nn.index].get_attack_damage()as f32 * dmg_vec[n as usize]) as u32;
+            let dmg_vec = vec![30,50,70,90,105,120,135,145,155,165];
+            let bleed_dmg = (e[nn.index].get_attack_damage() * dmg_vec[n as usize]) /100;
             a.take_bleed_damage(bleed_dmg);
         }
+        // apply HP burning
+        let n = a.effects.get(Effect::HPBurning);
+        if n > 0 {
+            let b : &Vec<(u32,InstanceRef)> = a.effects.hm.get(&Effect::HPBurning).unwrap();
+            // get inflictor
+            let inflictor : &InstanceRef = &b.last().unwrap().1;
+            let mut hp_burn_dmg = (a.get_max_health() * 8 * n) / 100;
+            let max = 3*e[inflictor.index].get_max_health() /10;
+            if hp_burn_dmg > max {
+                hp_burn_dmg = max;
+            }
+            a.take_hp_burning_damage(hp_burn_dmg);
+        }
+
         a.reduce_cooldowns();
     }
 
@@ -221,6 +312,8 @@ impl Wave {
         }
         log::debug!("after {} acts", a);
         a.set_turn_meter(0);
+        a.reduce_effects();
+        a.reduce_shields();
     }
 
     pub fn act(&mut self, actor : InstanceRef) {
@@ -298,7 +391,7 @@ impl Wave {
     pub fn run(& mut self) -> Result {
         loop {
             self.info();
-            self.increase_initiatives();
+            self.progress_turn_meter();
             match self.find_actor_index() {
                 Some(ir) => {
                     self.act(ir);

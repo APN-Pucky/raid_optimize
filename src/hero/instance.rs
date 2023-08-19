@@ -7,7 +7,7 @@ use rand::seq::SliceRandom;
 use rand::Rng;
 
 use crate::hero::Hero;
-use crate::wave::{Wave, InstanceRef};
+use crate::wave::{Wave, InstanceRef, TURN_METER_THRESHOLD};
 use crate::hero::skill::Skill;
 use crate::hero::effect::Effect;
 
@@ -18,9 +18,9 @@ pub struct Instance {
     pub hero: Hero,
     pub id : u32,
     pub iref : InstanceRef,
-    pub health: u32,
-    pub shield: u32,
-    pub turn_meter: u32,
+    health: u32,
+    shield: Vec<(u32,u32)>, // (shield, turns)
+    turn_meter: u32,
     pub cooldowns : Vec<u32>,
     pub statistics: HashMap<String, u32>,    
     pub effects : Effects,
@@ -56,18 +56,22 @@ impl Effects {
         }
     }
 
-    pub fn reduce(&mut self) {
-        for (k,v) in self.hm.iter_mut() {
-            reduce_effect(v);
+    pub fn remove_empty(&mut self) {
+        // remove zero elements from effect vectors
+        for (_,v) in self.hm.iter_mut() {
+            v.retain(|&(x,_)| x > 0);
         }
+        self.hm.retain(|_,v| v.len() > 0);
     }
-}
 
-pub fn reduce_effect(e : &mut Vec<(u32,InstanceRef)>) {
-    for (j,i) in e.iter_mut() {
-        *j -= 1;
+    pub fn reduce(&mut self) {
+        for (_,v) in self.hm.iter_mut() {
+            for (j,_) in v.iter_mut() {
+                *j -= 1;
+            }
+        }
+        self.remove_empty();
     }
-    e.retain(|&(x,i)| x > 0);
 }
 
 impl fmt::Display for Instance {
@@ -89,7 +93,7 @@ impl Instance {
             id,
             iref,
             health: hero.health,
-            shield: 0,
+            shield: Vec::new(),
             turn_meter: 0,
             cooldowns : hero.skills.iter().map(|_| 0).collect(),
             statistics: HashMap::new(),
@@ -118,7 +122,39 @@ impl Instance {
         self.hero.skills.iter().zip(self.get_cooldown_mask()).filter(|(_,c)| *c).map(|(s,_)| s.clone()).collect()
     }
 
+    pub fn cleanse<F>(&mut self, effect_closure:&F, layers: u32) where F : Fn(&Effect) -> bool {
+        for (k,v) in self.effects.hm.iter_mut() {
+            if effect_closure(k) {
+                // drop `layers` randomly of v
+                if v.len() > layers as usize {
+                    let mut rng = rand::thread_rng();
+                    //let mut v = v.clone();
+                    v.shuffle(&mut rng);
+                    for i in 0..layers {
+                        v.pop();
+                    }
+                }
+                else {
+                    // empty v
+                    v.clear();
+                }
+            }
+        }
+        self.effects.remove_empty();
+    }
+
+    pub fn restore(&mut self, target: &mut Instance, heal: u32 ) {
+        let mut heal = (heal as f32 * self.hero.healing_effect) as u32; // TODO handle rounding
+        log::debug!("{} restores {} health to {}", self, heal, target);
+        self.add_stat("health restored", heal);
+        target.heal(heal);
+    }
+
     pub fn heal(&mut self, health: u32) {
+        if ! self.health > 0 {
+            log::warn!("{} is dead, cannot heal", self);
+            return;
+        }
         let mut heal = (health as f32 * self.hero.healing_effect) as u32; // TODO handle rounding
         log::debug!("{} heals {} health", self, heal);
         self.add_stat("health healed", heal);
@@ -142,14 +178,18 @@ impl Instance {
         self.hero.defense
     }
 
-    #[deprecated(note="use `get_attack_damage` instead")]
     pub fn get_attack(&self) -> u32 {
-        self.get_attack_damage()
+        // TODO handle attack buff/debuff
+        if self.has_effect(Effect::AttackUpII) {
+            (self.hero.attack * 140) / 100
+        }
+        else {
+            self.hero.attack
+        }
     }
 
     pub fn get_attack_damage(&self) -> u32 {
-        // TODO handle attack buff/debuff
-        self.hero.attack
+        self.get_attack() 
     }
 
     pub fn get_max_health(&self) -> u32 {
@@ -164,16 +204,41 @@ impl Instance {
         }
     }
 
+    pub fn reduce_shields(&mut self) {
+        let mut i = 0;
+        while i < self.shield.len() {
+            self.shield[i].1 -= 1;
+            if self.shield[i].1 == 0 {
+                self.shield.remove(i);
+            }
+            else {
+                i += 1;
+            }
+        }
+    }
 
     pub fn reduce_effects(&mut self) {
         self.effects.reduce();
     }
 
     pub fn reduce_turn_meter(&mut self, target:&mut Instance, turn_meter_reduction_ratio: f32) {
-        let mut turn_meter = (target.get_turn_meter() as f32 * turn_meter_reduction_ratio ) as u32; // TODO handle rounding ;
-        target.set_turn_meter(turn_meter);
+        // relative to total!
+        let mut red = (TURN_METER_THRESHOLD as f32 * turn_meter_reduction_ratio)as u32;
+        let turn = target.get_turn_meter();
+        if red > turn {
+            red  = turn
+        }
+        let mut turn_meter = turn - red;
         log::debug!("{} reduces turn meter of {} by {} to {}", self, target, turn_meter_reduction_ratio, turn_meter);
+        target.set_turn_meter(turn_meter);
         self.add_stat("turn meter reduced", turn_meter);
+    }
+
+    pub fn get_inflicted(&mut self, iref: &InstanceRef, effect: Effect,chance : f32, turns:u32) {
+        let mut rng = rand::thread_rng();
+        if rng.gen::<f32>() < chance {
+            self.effects.push(effect, turns, *iref);
+        }
     }
 
     pub fn inflict(&mut self, target : &mut Instance, effect: Effect, chance : f32, turns: u32) {
@@ -185,6 +250,19 @@ impl Instance {
         }
     }
 
+    pub fn inflict_hp_burning(&mut self, target : &mut Instance, chance: f32,turns: u32) {
+        let n = target.effects.get(Effect::HPBurning);
+        if n < 5 {       
+            self.inflict(target, Effect::HPBurning, chance,turns);
+        }
+    }
+
+    pub fn take_hp_burning_damage(&mut self, dmg: u32) {
+        log::debug!("{} takes {} damage from hp_burning", self, dmg);
+        // todo handle mastery
+        self.take_damage(dmg);
+    }
+
     pub fn inflict_bleed(&mut self, target : &mut Instance, bleed_chance: f32,bleed_turns: u32) {
         let mut rng = rand::thread_rng();
         if rng.gen::<f32>() < bleed_chance {
@@ -193,8 +271,8 @@ impl Instance {
                 log::debug!("{} inflicts {} bleed on {}", self, bleed_turns, target);
                 self.add_stat("bleed inflicted", 1);
                 target.effects.push(Effect::Bleed, bleed_turns,self.iref );
-                let dmg_vec = vec![0.14,0.18,0.22,0.26,0.30,0.30,0.30,0.30,0.30,0.30];
-                let bleed_dmg = (self.get_attack_damage()as f32 * dmg_vec[(n) as usize]) as u32;
+                let dmg_vec = vec![14,18,22,26,30,30,30,30,30,30];
+                let bleed_dmg = (self.get_attack_damage() * dmg_vec[(n) as usize])/100;
                 target.take_bleed_damage(bleed_dmg);
             }
             else {
@@ -209,27 +287,49 @@ impl Instance {
         self.take_damage(bleed_dmg);
     }
 
-    pub fn after_action(&mut self) {
-        // TODO handle effects
-        self.reduce_effects();
+    pub fn get_shield(&self) -> u32 {
+        let mut shield = 0;
+        for (s,_) in self.shield.iter() {
+            shield += s;
+        }
+        shield
     }
 
+    pub fn subtract_shield(&mut self, var:u32) {
+        self.add_stat("shield blocked", var);
+        let mut value = var;
+        let mut i = 0;
+        while i < self.shield.len() {
+            if self.shield[i].0 > value {
+                self.shield[i].0 -= value;
+                return;
+            }
+            else {
+                value -= self.shield[i].0;
+                self.shield.remove(i);
+            }
+        }
+    }
+
+    pub fn add_shield(&mut self, value:u32,turns:u32) {
+        self.shield.push((value,turns));
+    }
 
     pub fn loose_shield(&mut self, damage: u32) -> u32 {
-        if self.shield > damage {
+        let current_shield = self.get_shield();
+        if current_shield > damage {
             log::debug!("{} looses {} shield", self, damage);
-            self.add_stat("shield lost", damage);
-            self.shield -= damage;
+            self.subtract_shield(damage);
             return 0;
         }
-        else if self.shield == 0 {
+        else if current_shield == 0 {
             return damage;
         }
-        else {
-            log::debug!("{} looses all {} shield", self, self.shield);
-            self.add_stat("shield lost", self.shield);
-            self.shield = 0;
-            return damage - self.shield;
+        else { // damage > shield
+            log::debug!("{} looses all {} shield", self, current_shield);
+            self.add_stat("shield blocked", current_shield);
+            self.shield = Vec::new();
+            return damage - current_shield;
         }
     }
 
@@ -303,7 +403,15 @@ impl Instance {
         self.turn_meter= turn_meter
     }
 
-    pub fn increase_turn_meter(&mut self, time: f32) {
+    pub fn increase_turn_meter(&mut self, turn_meter: u32) {
+        self.turn_meter+= turn_meter
+    }
+
+    pub fn decrease_turn_meter(&mut self, turn_meter: u32) {
+        self.turn_meter+= turn_meter
+    }
+
+    pub fn progress_turn_meter(&mut self, time: f32) {
         self.turn_meter+= (self.get_speed() as f32 * time) as u32;
         log::debug!("{} turn_meter is now {}", self, self.turn_meter);
     }
@@ -313,8 +421,15 @@ impl Instance {
     }
 
     pub fn get_speed(&self) -> u32 {
+        let mut fact = 1.0;
         // TODO handle speed buff/debuff
-        self.hero.speed
+        if self.has_effect(Effect::SpeedUpI) {
+            fact *= 1.2;
+        }
+        if self.has_effect(Effect::SpeedDownII) {
+            fact *= 0.6;
+        }
+        (self.hero.speed as f32 * fact ) as  u32
     }
 
     pub fn get_hero(&self) -> &Hero {
@@ -325,12 +440,26 @@ impl Instance {
         self.health
     }
 
-    pub fn get_shield(&self) -> u32 {
-        self.shield
-    }
-
     pub fn get_turn_meter(&self) -> u32 {
         self.turn_meter
+    }
+
+    pub fn get_basic_attack_damage(&self) -> u32 {
+        if self.has_effect(Effect::RippleII) {
+            (self.get_attack() * 140) / 100
+        }
+        else {
+            self.get_attack()
+        }
+    }
+
+    pub fn get_effect_resistance(&self) -> f32 {
+        // TODO handle effect resistance buff/debuff
+        let mut fact = 1.0;
+        if self.has_effect(Effect::EffectResistanceDownII) {
+            fact = 0.5;
+        }
+        self.hero.effect_resistance * fact
     }
 }
 

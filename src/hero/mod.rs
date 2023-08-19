@@ -30,6 +30,7 @@ pub struct Hero {
     pub piercing: f32,
     pub tenacity: f32,
     pub damage_reflection : f32,
+    #[serde(rename="skill")]
     pub skills: Vec<Skill>,
 }
 
@@ -85,14 +86,14 @@ mod tests {
                 <piercing>0.15</piercing>
                 <tenacity>0.15</tenacity>
                 <damage_reflection>0.15</damage_reflection>
-                <skills>
+                <skill>
                     <ScorchedSoul>
                         <cooldown>3</cooldown>
                         <attack_damage_ratio>1.0</attack_damage_ratio>
                         <hp_burning_chance>0.5</hp_burning_chance>
                         <hp_burning_turns>2</hp_burning_turns>
                     </ScorchedSoul>
-                </skills>
+                </skill>
             </hero>
             "#,
         )

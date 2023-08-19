@@ -16,14 +16,31 @@
         <piercing>0</piercing>
         <tenacity>0.0</tenacity>
         <damage_reflection>0.0</damage_reflection>
-        <skills>
+        <skill>
             <ScytheStrike>
                 <cooldown>0</cooldown>
                 <attack_damage_ratio>1.4</attack_damage_ratio>
                 <bleed_chance>0.4</bleed_chance>
                 <bleed_turns>2</bleed_turns>
             </ScytheStrike>
-        </skills>
+        </skill>
+        <skill>
+            <BloodthirstyScythe>
+                <cooldown>4</cooldown>
+                <attack_damage_ratio>1.4</attack_damage_ratio>
+                <bleed_chance>0.5</bleed_chance>
+                <bleed_turns>2</bleed_turns>
+            </BloodthirstyScythe>
+        </skill>
+        <skill>
+            <EnergyBurst>
+                <cooldown>5</cooldown>
+                <attack_damage_ratio>1.4</attack_damage_ratio>
+                <bleed_turns>2</bleed_turns>
+                <reduce_effect_resistance_chance>0.3</reduce_effect_resistance_chance>
+                <reduce_effect_resistance_turns>2</reduce_effect_resistance_turns>
+            </EnergyBurst>
+        </skill>
     </hero>
     <hero>
         <id>2</id>
@@ -42,13 +59,115 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <skills>
+        <skill>
             <TideBigHit>
                 <cooldown>0</cooldown>
                 <max_hp_damage_ratio>0.18</max_hp_damage_ratio>
                 <suffocated_chance>0.1</suffocated_chance>
                 <suffocated_turns>1</suffocated_turns>
             </TideBigHit>
-        </skills>
+        </skill>
+        <skill>
+            <DeepSeaPower>
+                <cooldown>5</cooldown>
+                <max_hp_shield_ratio>0.25</max_hp_shield_ratio>
+                <shield_turns>2</shield_turns>
+                <tenacity_increase_turns>2</tenacity_increase_turns>
+
+            </DeepSeaPower>
+        </skill>
+        <skill>
+            <CrystalOfLife>
+                <cooldown>5</cooldown>
+                <max_hp_restore_ratio>0.22</max_hp_restore_ratio>
+                <ripple_turns>2</ripple_turns>
+                <attack_up_turns>2</attack_up_turns>
+            </CrystalOfLife>
+        </skill>
+    </hero>
+    <hero>
+        <id>3</id>
+        <name>Liz</name>
+        <health>95772</health>
+        <attack>6566</attack>
+        <defense>7109</defense>
+        <speed>1076</speed>
+        <crit_rate>0.083</crit_rate>
+        <crit_damage>1.523</crit_damage>
+        <effect_hit>2.1</effect_hit>
+        <effect_resistance>0.0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0465</healing_effect>
+        <leech>0.0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <skill>
+            <ScorchedSoul>
+                <cooldown>0</cooldown>
+                <attack_damage_ratio>1.80</attack_damage_ratio>
+                <hp_burning_chance>0.3</hp_burning_chance>
+                <hp_burning_turns>2</hp_burning_turns>
+            </ScorchedSoul>
+        </skill>
+        <skill>
+            <FireHeal>
+                <cooldown>4</cooldown>
+                <heal_attack_ratio>0.8</heal_attack_ratio>
+                <heal_max_hp_ratio>0.06</heal_max_hp_ratio>
+                <block_debuff_turns>2</block_debuff_turns>
+            </FireHeal>
+        </skill>
+        <skill>
+            <Resurrection>
+                <cooldown>5</cooldown>
+                <restore_max_hp_ratio>0.1</restore_max_hp_ratio>
+                <cleanse_dot_debuffs>3</cleanse_dot_debuffs>
+                <shield_max_hp_ratio>0.2</shield_max_hp_ratio>
+                <shield_turns>2</shield_turns>
+            </Resurrection>
+        </skill>
+    </hero>
+    <hero>
+        <id>3</id>
+        <name>Space</name>
+        <health>95772</health>
+        <attack>6566</attack>
+        <defense>7109</defense>
+        <speed>1076</speed>
+        <crit_rate>0.083</crit_rate>
+        <crit_damage>1.523</crit_damage>
+        <effect_hit>2.1</effect_hit>
+        <effect_resistance>0.0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0465</healing_effect>
+        <leech>0.0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <skill>
+            <Tricks>
+                <cooldown>0</cooldown>
+                <attack_damage_ratio>1.60</attack_damage_ratio>
+                <turn_meter_reduction_ratio>0.15</turn_meter_reduction_ratio>
+            </Tricks>
+        </skill>
+        <skill>
+            <Nightmare>
+                <cooldown>4</cooldown>
+                <attack_damage_ratio>2.0</attack_damage_ratio>
+                <reduce_speed_chance>0.6</reduce_speed_chance>
+                <reduce_speed_turns>2</reduce_speed_turns>
+                <increase_speed_turns>2</increase_speed_turns>
+            </Nightmare>
+        </skill>
+        <skill>
+            <FissionOfLife>
+                <cooldown>5</cooldown>
+                <restore_max_hp_ratio>0.1</restore_max_hp_ratio>
+                <heal_turns>2</heal_turns>
+                <increase_turn_meter_ratio>0.2</increase_turn_meter_ratio>
+            </FissionOfLife>
+        </skill>
     </hero>
 </heroes>
