@@ -31,7 +31,7 @@ pub struct Result {
 }
 
 impl Wave {
-    pub fn new(allies: & Vec<&Hero>, enemies : & Vec<&Hero>) -> Wave {
+    pub fn new(allies: & Vec<&Hero>, enemies : & Vec<&Hero> , ap:Box<dyn Player>, ep:Box<dyn Player>) -> Wave {
         let mut id = 0;
         let a= allies.iter().map(|h| {
             id += 1;
@@ -44,8 +44,8 @@ impl Wave {
         Wave {
             allies:a,
             enemies:e,
-            ally_player: Box::new(crate::player::RandomPlayer{}),
-            enemy_player: Box::new(crate::player::RandomPlayer{}),
+            ally_player: ap,
+            enemy_player: ep,
             turns: 0,
             turn_limit: 300,
             initiative_threshold: 1000,
@@ -85,31 +85,51 @@ impl Wave {
     }
 
     pub fn find_actor_index(&self) -> Option<InstanceRef> {
-        // TODO look up speed value in case of equal initiative
         let mut index = 0;
         let mut found = false;
         let mut max_turn_meter = 0;
         let mut max_index = 0;
         for actor in self.allies.iter() {
-            if actor.get_turn_meter() > max_turn_meter {
-                max_turn_meter = actor.get_turn_meter();
-                max_index = index;
-                found = true;
+            if actor.is_alive() {
+                if actor.get_turn_meter() > max_turn_meter {
+                    max_turn_meter = actor.get_turn_meter();
+                    max_index = index;
+                    found = true;
+                }
+                if (actor.get_turn_meter() == max_turn_meter) {
+                    // compare by speed stat
+                    if actor.get_speed() > self.get_instance(InstanceRef{team : found,index: max_index}).get_speed() {
+                        max_turn_meter = actor.get_turn_meter();
+                        max_index = index;
+                        found = true;
+                    }
+                }
             }
             index += 1;
         }
         index = 0;
         for actor in self.enemies.iter() {
-            if actor.get_turn_meter() > max_turn_meter {
-                max_turn_meter = actor.get_turn_meter();
-                max_index = index;
-                found = false;
+            if actor.is_alive() {
+                if actor.get_turn_meter() > max_turn_meter {
+                    max_turn_meter = actor.get_turn_meter();
+                    max_index = index;
+                    found = false;
+                }
+                if actor.get_turn_meter() == max_turn_meter {
+                    // compare by speed stat
+                    if actor.get_speed() > self.get_instance(InstanceRef{team : found,index: max_index}).get_speed() {
+                        max_turn_meter = actor.get_turn_meter();
+                        max_index = index;
+                        found = false;
+                    }
+                }
             }
             index += 1;
         }
         if max_turn_meter >= self.initiative_threshold {
-            log::debug!("{} acts", self.get_instance(InstanceRef{team : found,index: max_index}));
-            Some(InstanceRef{team : found,index: max_index})
+            let ir = InstanceRef{team : found,index: max_index};
+            log::debug!("{} acts {max_turn_meter}", self.get_instance(ir));
+            Some(ir)
         } else {
             log::debug!("Nobody acts");
             None
@@ -158,7 +178,7 @@ impl Wave {
 
     pub fn increase_initiatives(&mut self) {
         // get the time needed for one to reach threshold
-        let mut min : f32 = self.allies.iter().chain(self.enemies.iter()).map(|a| (self.initiative_threshold - a.get_turn_meter() ) as f32 /(a.get_speed() as f32)).fold(f32::INFINITY, |a, b| a.min(b));
+        let mut min : f32 = self.allies.iter().chain(self.enemies.iter()).filter(|a| a.is_alive()).map(|a| (self.initiative_threshold - a.get_turn_meter() ) as f32 /(a.get_speed() as f32)).fold(f32::INFINITY, |a, b| a.min(b));
         if min < 0.0 {
             min = 0.0;
         }
@@ -172,10 +192,11 @@ impl Wave {
         if actor.team {
             a = &mut self.allies[actor.index];
             e = &mut self.enemies;
-        }{
+        }else {
             a = &mut self.enemies[actor.index];
             e = &mut self.allies;
         }
+        log::debug!("before {} acts", a);
         let n = a.effects.get(Effect::Bleed);
         if n > 0 {
             let b : &Vec<(u32,InstanceRef)> = a.effects.hm.get(&Effect::Bleed).unwrap();
@@ -194,15 +215,25 @@ impl Wave {
         if actor.team {
             a = &mut self.allies[actor.index];
             e = &mut self.enemies;
-        }{
+        }else {
             a = &mut self.enemies[actor.index];
             e = &mut self.allies;
         }
+        log::debug!("after {} acts", a);
         a.set_turn_meter(0);
     }
 
     pub fn act(&mut self, actor : InstanceRef) {
+        //
+        if !self.get_instance(actor).is_alive() {
+            log::debug!("{} is dead -> can't take turn", self.get_instance(actor));
+            return;
+        }
         self.before_action(actor);
+        if !self.get_instance(actor).is_alive() {
+            log::debug!("{} is dead now -> can't take turn", self.get_instance(actor));
+            return;
+        }
         // choose action
         let instance  = self.get_instance(actor);
         let skills : Vec<Skill> = instance.get_active_skills();
@@ -238,7 +269,7 @@ impl Wave {
 
     }
 
-    pub fn print(&self) {
+    pub fn info(&self) {
         log::info!("Turn: {}", self.turns); 
         log::info!("Allies:");
         for a in self.allies.iter() {
@@ -250,9 +281,23 @@ impl Wave {
         }
     }
 
+    pub fn print_allies(&self) {
+        println!("Allies:");
+        for a in self.allies.iter() {
+            println!("{}", a);
+        }
+    }
+
+    pub fn print_enemies(&self) {
+        println!("Enemies:");
+        for e in self.enemies.iter() {
+            println!("{}", e);
+        }
+    }
+
     pub fn run(& mut self) -> Result {
         loop {
-            self.print();
+            self.info();
             self.increase_initiatives();
             match self.find_actor_index() {
                 Some(ir) => {
@@ -277,7 +322,7 @@ impl Wave {
                     log::debug!("Stall");
                 }
                 if win && loss || win && stall || loss && stall {
-                    panic!("Inconsistent result");
+                    panic!("Inconsistent result {},{},{}", win,loss,stall);
                 }
                 return Result {
                     win: self.enemies.iter().all(|e| !e.is_alive()),

@@ -10,6 +10,9 @@ use prettytable::Cell;
 use prettytable::Row;
 
 use crate::hero::Hero;
+use crate::player::ManualPlayer;
+use crate::player::Player;
+use crate::player::RandomPlayer;
 use crate::wave::Wave;
 use crate::wave::Result;
 
@@ -30,6 +33,8 @@ pub fn get_mean_and_standard_deviation(sum : f64, sum_sq:f64, N: u64) -> (f64, f
 pub struct Sim<'a> {
     allies: &'a Vec<&'a Hero>,
     enemies: &'a Vec<&'a Hero>,
+    manual_ally : bool,
+    manual_enemy: bool,
     iterations: u64,
     //results : Vec<Result>,
     result : CombinedResult,
@@ -154,11 +159,13 @@ impl  CombinedResult {
 
 
 impl Sim<'_> {
-    pub fn new<'a>(allies: &'a Vec<&'a Hero>, enemies : &'a Vec<&'a Hero> , iterations: u64) -> Sim<'a> {
+    pub fn new<'a>(allies: &'a Vec<&'a Hero>, enemies : &'a Vec<&'a Hero>,manual_ally:bool,manual_enemy: bool , iterations: u64) -> Sim<'a> {
         // create statistcs vector with one entry per hero
         Sim {
             allies: allies,
             enemies: enemies,
+            manual_ally:manual_ally,
+            manual_enemy:manual_enemy,
             iterations : iterations,
             result : CombinedResult {
                 iterations: 0,
@@ -301,9 +308,22 @@ impl Sim<'_> {
                 statistics: Vec::new(),
             };
             for x in 0..iter {
-                let mut wave = Wave::new(self.allies, self.enemies);
+                let ap : Box<dyn Player> = if self.manual_ally {
+                    Box::new(ManualPlayer{})
+                }
+                else {
+                     Box::new(RandomPlayer{})
+                };
+            
+                let ep : Box<dyn Player> = if self.manual_enemy {
+                    Box::new(ManualPlayer{})
+                }
+                else {
+                    Box::new(RandomPlayer{})
+                };
+                let mut wave = Wave::new(self.allies, self.enemies,ap,ep);
                 cr.add_result(&wave.run());
-                if x % 10000 == 0 {
+                if (x+1) % 10000 == 0 { // plus one because we start at 0 and want the score added after the iteration
                     bar.inc(10000);
                 }
             }

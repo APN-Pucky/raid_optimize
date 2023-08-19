@@ -258,8 +258,10 @@ impl Instance {
         self.add_stat("damage done", damage);
         target.take_damage(damage);
         let leech = (damage as f32 * self.hero.leech) as u32; // TODO handle rounding
-        self.add_stat("leeched", leech);
-        self.heal(leech);
+        if leech > 0 {
+            self.add_stat("leeched", leech);
+            self.heal(leech);
+        }
     }
 
     pub fn attack(&mut self, target: &mut Instance, atk_dmg:u32 ) {
@@ -356,6 +358,7 @@ mod tests {
             leech:0.15,
             piercing:0.15,
             tenacity:0.15,
+            damage_reflection : 0.0,
             skills : Vec::new(),
         };
         let hi : Instance = Instance::new(&h,0,InstanceRef{team:true,index:0});

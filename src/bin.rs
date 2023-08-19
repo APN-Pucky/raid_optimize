@@ -23,6 +23,8 @@ pub fn main() {
     let mut no_stats = false;
     let mut no_results = false;
     let mut bar = false;
+    let mut manual_ally = false;
+    let mut manual_enemy = false;
 
     {
         let mut ap = ArgumentParser::new();
@@ -50,6 +52,10 @@ pub fn main() {
             "Don't print results");
         ap.refer(&mut bar)
             .add_option(&["-b", "--bar"], StoreTrue, "Bar");
+        ap.refer(&mut manual_ally)
+            .add_option(&["--manual-ally"], StoreTrue, "Bar");
+        ap.refer(&mut manual_enemy)
+            .add_option(&["--manual-enemy"], StoreTrue, "Bar");
         ap.parse_args_or_exit();
     }
     if print_version {
@@ -88,9 +94,12 @@ pub fn main() {
         }
     }
 
+
     let mut wave = Sim::new(
         &ally,
         &enemy,
+        manual_ally,
+        manual_enemy,
         iterations
     );
     wave.run(threads);
