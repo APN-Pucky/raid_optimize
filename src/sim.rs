@@ -5,6 +5,10 @@ use rayon::prelude::*;
 use indicatif::ProgressBar;
 use indicatif::ProgressStyle;
 
+use prettytable::Table;
+use prettytable::Cell;
+use prettytable::Row;
+
 use crate::hero::Hero;
 use crate::wave::Wave;
 use crate::wave::Result;
@@ -147,22 +151,63 @@ impl Sim<'_> {
 
 
     pub fn print_results(&self) {
-        println!("wins: {}, losses: {}, stalls: {}", self.result.wins, self.result.losses, self.result.stalls);
+        println!("win%:\t{:>6.2} ({} / {})", self.result.wins as f64 / self.result.iterations as f64*100., self.result.wins, self.result.iterations);
+        println!("stall%:\t{:>6.2} ({} / {})", self.result.stalls as f64 / self.result.iterations as f64*100., self.result.stalls, self.result.iterations);
+        println!("loss%:\t{:>6.2} ({} / {})", self.result.losses as f64 / self.result.iterations as f64*100., self.result.losses, self.result.iterations);
+    }
+
+    pub fn print_table(&self) {
+        let mut atable = Table::new();
+        let mut row = Vec::new();
+        row.push(Cell::new("Allies"));
+        for hero in self.allies.iter() {
+            row.push(Cell::new(&hero.name));
+        }
+        atable.set_titles(Row::new(row));
+
+        for key in self.result.statistics[0].hm.keys().sorted() {
+            let mut row = Vec::new();
+            row.push(Cell::new(&key));
+            let mut index = 0;
+            for her in self.allies.iter() {
+                let value = self.result.statistics[index].hm[key];
+                let s = format!("{:.2} +- {:.2}",get_mean(value, self.iterations), get_standard_deviation(value, self.result.statistics[index].hm_sq[key], self.iterations));
+                row.push(Cell::new(&s));
+                index += 1;
+            }
+            atable.add_row(Row::new(row));
+        }
+        atable.set_format(*prettytable::format::consts::FORMAT_NO_LINESEP_WITH_TITLE);
+        atable.printstd();
+
+
+        let mut etable = Table::new();
+        row = Vec::new();
+        row.push(Cell::new("Enemies"));
+        for hero in self.enemies.iter() {
+            // append to vec
+            row.push(Cell::new(&hero.name));
+        }
+        etable.set_titles(Row::new(row));
+        for key in self.result.statistics[0].hm.keys().sorted() {
+            let mut row = Vec::new();
+            row.push(Cell::new(&key));
+            let mut index = self.allies.len();
+            for her in self.enemies.iter() {
+                let value = self.result.statistics[index].hm[key];
+                let s = format!("{:.2} +- {:.2}",get_mean(value, self.iterations), get_standard_deviation(value, self.result.statistics[index].hm_sq[key], self.iterations));
+                row.push(Cell::new(&s));
+                index += 1;
+            }
+            etable.add_row(Row::new(row));
+        }
+        etable.set_format(*prettytable::format::consts::FORMAT_NO_LINESEP_WITH_TITLE);
+        etable.printstd();
     }
 
 
     pub fn print_statistics(&self) {
-        let mut index = 0;
-        for hero in self.allies.iter() {
-            println!("{}:", hero.name);
-            self.result.print_statistics(index);
-            index += 1;
-        }
-        for hero in self.enemies.iter() {
-            println!("{}:", hero.name);
-            self.result.print_statistics(index);
-            index += 1;
-        }
+        self.print_table();
     }
 
     pub fn run(&mut self , threads : u32) {
