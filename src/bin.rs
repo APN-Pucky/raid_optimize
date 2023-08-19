@@ -17,8 +17,8 @@ pub fn main() {
 
     let mut str_ally = String::new();
     let mut str_enemy = String::new();
-    let mut iterations = 10000;
-    let mut threads = 1;
+    let mut iterations : u64 = 10000;
+    let mut threads= 1;
 
     {
         let mut ap = ArgumentParser::new();

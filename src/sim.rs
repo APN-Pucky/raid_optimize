@@ -11,29 +11,29 @@ use crate::wave::Result;
 
 
 
-pub fn get_mean(sum : f64, N: u32) -> f64 {
+pub fn get_mean(sum : f64, N: u64) -> f64 {
     (sum ) / N as f64
 }
 
-pub fn get_standard_deviation(sum : f64, sum_sq:f64, N: u32) -> f64 {
+pub fn get_standard_deviation(sum : f64, sum_sq:f64, N: u64) -> f64 {
     ((sum_sq - sum  * sum  / N as f64) / N as f64).sqrt()
 }
 
-pub fn get_mean_and_standard_deviation(sum : f64, sum_sq:f64, N: u32) -> (f64, f64) {
+pub fn get_mean_and_standard_deviation(sum : f64, sum_sq:f64, N: u64) -> (f64, f64) {
     (get_mean(sum, N), get_standard_deviation(sum, sum_sq, N))
 }
 
 pub struct Sim<'a> {
     allies: &'a Vec<&'a Hero>,
     enemies: &'a Vec<&'a Hero>,
-    iterations: u32,
+    iterations: u64,
     //results : Vec<Result>,
     result : CombinedResult,
 }
 
 
 pub struct CombinedResult {
-    pub iterations: u32,
+    pub iterations: u64,
     pub wins: u32,
     pub losses: u32,
     pub stalls: u32,
@@ -121,7 +121,7 @@ impl  CombinedResult {
         // loop keys in hashmap hm and print
         for key in self.statistics[index].hm.keys().sorted() {
             let value = self.statistics[index].hm[key];
-            println!("\t {}: {} +- {}", key, get_mean(value, self.iterations), get_standard_deviation(value, self.statistics[index].hm_sq[key], self.iterations));
+            println!("\t {}: {:.2} +- {:.2}", key, get_mean(value, self.iterations), get_standard_deviation(value, self.statistics[index].hm_sq[key], self.iterations));
         }
     }
     
@@ -129,7 +129,7 @@ impl  CombinedResult {
 
 
 impl Sim<'_> {
-    pub fn new<'a>(allies: &'a Vec<&'a Hero>, enemies : &'a Vec<&'a Hero> , iterations: u32) -> Sim<'a> {
+    pub fn new<'a>(allies: &'a Vec<&'a Hero>, enemies : &'a Vec<&'a Hero> , iterations: u64) -> Sim<'a> {
         // create statistcs vector with one entry per hero
         Sim {
             allies: allies,
@@ -167,8 +167,8 @@ impl Sim<'_> {
 
     pub fn run(&mut self , threads : u32) {
         let vecit : Vec<u32> = (0..threads).collect::<Vec<_>>();
-        let iter = self.iterations / threads;
-        let bar = ProgressBar::new(self.iterations as u64);
+        let iter = self.iterations / (threads as u64) ;
+        let bar = ProgressBar::new(self.iterations);
         bar.set_style(
             ProgressStyle::with_template(
                 "{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] ({pos}/{len}, ETA {eta})",
