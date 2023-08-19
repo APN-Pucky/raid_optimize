@@ -84,8 +84,10 @@ mod tests {
                 <leech>0.15</leech>
                 <piercing>0.15</piercing>
                 <tenacity>0.15</tenacity>
+                <damage_reflection>0.15</damage_reflection>
                 <skills>
                     <ScorchedSoul>
+                        <cooldown>3</cooldown>
                         <attack_damage_ratio>1.0</attack_damage_ratio>
                         <hp_burning_chance>0.5</hp_burning_chance>
                         <hp_burning_turns>2</hp_burning_turns>
