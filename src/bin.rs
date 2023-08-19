@@ -20,6 +20,8 @@ pub fn main() {
     let mut iterations : u64 = 10000;
     let mut threads= 1;
     let mut print_version = false;
+    let mut no_stats = false;
+    let mut no_results = false;
 
     {
         let mut ap = ArgumentParser::new();
@@ -37,6 +39,14 @@ pub fn main() {
             .add_option(&["-v", "--version"],
             StoreTrue,
             "Print version");
+        ap.refer(&mut no_stats)
+            .add_option(&["--no-stats"],
+            StoreTrue,
+            "Don't print statistics");
+        ap.refer(&mut no_results)
+            .add_option(&["--no-results"],
+            StoreTrue,
+            "Don't print results");
         ap.parse_args_or_exit();
     }
     if print_version {
@@ -81,6 +91,10 @@ pub fn main() {
         iterations
     );
     wave.run(threads);
-    wave.print_results();
-    wave.print_statistics();
+    if !no_results{
+        wave.print_results();
+    }
+    if !no_stats {
+        wave.print_statistics();
+    }
 }
