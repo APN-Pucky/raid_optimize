@@ -3,7 +3,7 @@ use std::fmt;
 pub mod instance;
 pub mod skill;
 pub mod effect;
-pub mod stats;
+pub mod stat;
 
 use crate::hero::skill::Skill;
 

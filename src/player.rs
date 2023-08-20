@@ -12,12 +12,12 @@ pub trait Player {
 pub struct RandomPlayer {}
 
 impl Player for RandomPlayer {
-    fn pick_target(&self, wave : &Wave, actor : InstanceRef, skill : Skill, targets: Vec<InstanceRef>) -> InstanceRef {
+    fn pick_target(&self, _wave : &Wave, _actor : InstanceRef, _skill : Skill, targets: Vec<InstanceRef>) -> InstanceRef {
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..targets.len());
         targets[index]
     }
-    fn pick_skill(&self, wave : &Wave, actor : InstanceRef, skills: Vec<Skill>) -> Skill{
+    fn pick_skill(&self, _wave : &Wave, _actor : InstanceRef, skills: Vec<Skill>) -> Skill{
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..skills.len());
         skills[index]
@@ -75,8 +75,7 @@ impl ManualPlayer {
                 true
             }
             "q" => {
-                std::process::exit(0);
-                false
+                std::process::exit(0)
             },
             _ => {false}
         }

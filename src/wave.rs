@@ -1,10 +1,11 @@
+use enum_map::EnumMap;
 use rand::Rng;
-use std::collections::HashMap;
 
 use crate::hero::Hero;
 use crate::hero::effect::Effect;
 use crate::hero::instance::Instance;
 use crate::hero::skill::{Skill, get_targets, execute_skill};
+use crate::hero::stat::Stat;
 use crate::player::Player;
 
 pub const TURN_LIMIT : u32 = 300;
@@ -30,7 +31,7 @@ pub struct Result {
     pub win: bool,
     pub loss: bool,
     pub stall : bool,
-    pub statistics: Vec<HashMap<String, u32>>,
+    pub statistics: Vec<EnumMap<Stat, u32>>,
 }
 
 impl Wave {
@@ -55,7 +56,7 @@ impl Wave {
         }
     }
 
-    pub fn get_statistics(&self) -> Vec<HashMap<String,u32>> {
+    pub fn get_statistics(&self) -> Vec<EnumMap<Stat,u32>> {
         self.allies.iter().chain(self.enemies.iter()).map(|i| i.copy_statistics()).collect()
     }
 
@@ -256,8 +257,8 @@ impl Wave {
     }
 
     pub fn before_action(&mut self, actor : InstanceRef) {
-        let mut a; 
-        let mut e;
+        let a; 
+        let e;
         if actor.team {
             a = &mut self.allies[actor.index];
             e = &mut self.enemies;
@@ -301,14 +302,14 @@ impl Wave {
     }
 
     pub fn after_action(&mut self, actor :InstanceRef) {
-        let mut a; 
-        let mut e;
+        let a; 
+        //let e;
         if actor.team {
             a = &mut self.allies[actor.index];
-            e = &mut self.enemies;
+            //e = &mut self.enemies;
         }else {
             a = &mut self.enemies[actor.index];
-            e = &mut self.allies;
+            //e = &mut self.allies;
         }
         log::debug!("after {} acts", a);
         a.set_turn_meter(0);

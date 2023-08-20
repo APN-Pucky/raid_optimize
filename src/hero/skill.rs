@@ -1,8 +1,6 @@
-use itertools::max;
 
 use crate::wave::Wave;
 use crate::wave::InstanceRef;
-use crate::hero::instance::Instance;
 use crate::hero::effect::Effect;
 
 use super::effect::is_dot;
@@ -101,35 +99,35 @@ pub enum Skill {
 }
 pub fn execute_skill(skill : Skill, actor :&InstanceRef, target :&InstanceRef, wave :&mut Wave) {
     match skill {
-        Skill::Resurrection { cooldown, shield_max_hp_ratio, shield_turns, cleanse_dot_debuffs, restore_max_hp_ratio } => {
+        Skill::Resurrection { shield_max_hp_ratio, shield_turns, cleanse_dot_debuffs, restore_max_hp_ratio ,..} => {
             let max_hp = wave.get_instance(*actor).get_max_health();
             wave.restore_max_hp_ratio_own_team(actor,restore_max_hp_ratio);
             wave.shield_team(actor,(shield_max_hp_ratio * max_hp as f32) as u32,shield_turns);
             wave.cleanse_team(actor,&|e| is_dot(e),cleanse_dot_debuffs);
         },
-        Skill::BloodthirstyScythe { cooldown, attack_damage_ratio, bleed_chance, bleed_turns } =>{
+        Skill::BloodthirstyScythe {  attack_damage_ratio, bleed_chance, bleed_turns ,..} =>{
             let damage = wave.get_instance(*actor).get_attack_damage() as f32 * attack_damage_ratio;
             wave.attack_team(actor, damage as u32);
             wave.inflict_team(actor, Effect::Bleed, bleed_chance, bleed_turns);
         },
-        Skill::EnergyBurst { cooldown, attack_damage_ratio, bleed_turns, reduce_effect_resistance_chance,  reduce_effect_resistance_turns }=> {
+        Skill::EnergyBurst {  attack_damage_ratio, bleed_turns, reduce_effect_resistance_chance,  reduce_effect_resistance_turns ,..}=> {
             let damage = wave.get_instance(*actor).get_attack_damage() as f32 * attack_damage_ratio;
             wave.attack_team(actor, damage as u32);
             wave.inflict_team(actor, Effect::Bleed, 1.0, bleed_turns);
             wave.inflict_team(actor, Effect::EffectResistanceDownII, reduce_effect_resistance_chance, reduce_effect_resistance_turns);
         },
-        Skill::DeepSeaPower { cooldown, max_hp_shield_ratio, shield_turns, tenacity_increase_turns } => {
+        Skill::DeepSeaPower {  max_hp_shield_ratio, shield_turns, tenacity_increase_turns ,..} => {
             let max_hp = wave.get_instance(*actor).get_max_health();
             wave.shield_team(actor,(max_hp_shield_ratio * max_hp as f32) as u32,shield_turns);
             wave.inflict_team(actor, Effect::TenacityUpII, 1.0, tenacity_increase_turns);
         },
-        Skill::CrystalOfLife { cooldown, max_hp_restore_ratio, ripple_turns , attack_up_turns } =>{
+        Skill::CrystalOfLife {  max_hp_restore_ratio, ripple_turns , attack_up_turns ,..} =>{
             let rest_hp = (wave.get_instance(*actor).get_max_health() as f32 * max_hp_restore_ratio) as u32;
             wave.restore_max_hp_own_team(actor,rest_hp);
             wave.inflict_team(actor, Effect::RippleII, 1.0, ripple_turns);
             wave.inflict_team(actor, Effect::AttackUpII, 1.0, attack_up_turns);
         },
-        Skill::FissionOfLife { cooldown, restore_max_hp_ratio, heal_turns, increase_turn_meter_ratio } => {
+        Skill::FissionOfLife {  restore_max_hp_ratio, heal_turns, increase_turn_meter_ratio ,..} => {
             wave.restore_max_hp_ratio_own_team(actor, restore_max_hp_ratio);
             wave.inflict_team(actor, Effect::Heal, 1.0, heal_turns);
             wave.increase_turn_meter_team(actor, increase_turn_meter_ratio);
@@ -140,8 +138,8 @@ pub fn execute_skill(skill : Skill, actor :&InstanceRef, target :&InstanceRef, w
 }
 
 pub fn execute_skill_1_on_1(skill : Skill, actor :&InstanceRef, target :&InstanceRef, wave :&mut Wave) {
-    let mut attacker;
-    let mut defender;
+    let attacker;
+    let defender;
     if actor.team {
         attacker = &mut wave.allies[actor.index];
         defender = &mut wave.enemies[target.index];
@@ -189,7 +187,7 @@ pub fn execute_skill_1_on_1(skill : Skill, actor :&InstanceRef, target :&Instanc
             }
             attacker.inflict(defender,Effect::Suffocated, chance,suffocated_turns);
         },
-        Skill::Nightmare { cooldown, attack_damage_ratio, reduce_speed_chance, reduce_speed_turns, increase_speed_turns } => {
+        Skill::Nightmare {  attack_damage_ratio, reduce_speed_chance, reduce_speed_turns, increase_speed_turns ,..} => {
             attacker.attack(defender, (attacker.get_attack_damage() as f32 * attack_damage_ratio) as u32);
             attacker.inflict(defender,Effect::SpeedDownII, reduce_speed_chance, reduce_speed_turns);
             attacker.inflict(defender,Effect::SpeedUpI, 1.0, increase_speed_turns);

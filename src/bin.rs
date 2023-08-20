@@ -2,12 +2,9 @@ extern crate argparse;
 
 use argparse::{ArgumentParser, StoreTrue, Store};
 
-use log::debug;
-use log::error;
 use log::info;
 use log::warn;
 
-use raid_optimize::test;
 use raid_optimize::hero::Heroes;
 use raid_optimize::sim::Sim;
 use raid_optimize::hero::get_hero_by_string;

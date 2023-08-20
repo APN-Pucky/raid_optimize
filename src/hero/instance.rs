@@ -1,20 +1,20 @@
 // Import (via `use`) the `fmt` module to make it available.
-use std::collections::HashMap;
 use std::fmt;
+use enum_map::EnumMap;
 use log::debug;
 
 use rand::seq::SliceRandom;
 use rand::Rng;
-use enum_map::{EnumMap, EnumArray};
-
 
 
 use crate::hero::Hero;
-use crate::wave::{Wave, InstanceRef, TURN_METER_THRESHOLD};
+use crate::hero::stat::effect_to_stat;
+use crate::wave::{ InstanceRef, TURN_METER_THRESHOLD};
 use crate::hero::skill::Skill;
 use crate::hero::effect::Effect;
 
 use super::skill::get_cooldown;
+use super::stat::Stat;
 
 #[derive(Debug)]
 pub struct Instance {
@@ -26,7 +26,7 @@ pub struct Instance {
     turn_meter: u32,
     pub cooldowns : Vec<u32>,
     track_statistics: bool,
-    pub statistics: HashMap<String, u32>,    
+    pub statistics: EnumMap<Stat,u32>,
     pub effects : Effects,
 }
 
@@ -53,14 +53,14 @@ impl Effects {
 
     pub fn remove_empty(&mut self) {
         // remove zero elements from effect vectors
-        for (key,value) in self.em.iter_mut() {
+        for (_key,value) in self.em.iter_mut() {
             value.retain(|&(x,_)| x > 0);
         }
         //self.hm.retain(|_,v| v.len() > 0);
     }
 
     pub fn reduce(&mut self) {
-        for (key,value) in self.em.iter_mut() {
+        for (_key,value) in self.em.iter_mut() {
             for (j,_) in value.iter_mut() {
                 *j -= 1;
             }
@@ -92,7 +92,7 @@ impl Instance {
             turn_meter: 0,
             cooldowns : hero.skills.iter().map(|_| 0).collect(),
             track_statistics,
-            statistics: HashMap::new(),
+            statistics: EnumMap::default(),
             effects : Effects::new(), 
         }
     }
@@ -126,7 +126,7 @@ impl Instance {
                     let mut rng = rand::thread_rng();
                     //let mut v = v.clone();
                     v.shuffle(&mut rng);
-                    for i in 0..layers {
+                    for _i in 0..layers {
                         v.pop();
                     }
                 }
@@ -140,9 +140,9 @@ impl Instance {
     }
 
     pub fn restore(&mut self, target: &mut Instance, heal: u32 ) {
-        let mut heal = (heal as f32 * self.hero.healing_effect) as u32; // TODO handle rounding
+        let heal = (heal as f32 * self.hero.healing_effect) as u32; // TODO handle rounding
         log::debug!("{} restores {} health to {}", self, heal, target);
-        self.add_stat("health restored", heal);
+        self.add_stat(Stat::HealthRestored, heal);
         target.heal(heal);
     }
 
@@ -151,24 +151,20 @@ impl Instance {
             log::warn!("{} is dead, cannot heal", self);
             return;
         }
-        let mut heal = (health as f32 * self.hero.healing_effect) as u32; // TODO handle rounding
+        let heal = (health as f32 * self.hero.healing_effect) as u32; // TODO handle rounding
         log::debug!("{} heals {} health", self, heal);
-        self.add_stat("health healed", heal);
+        self.add_stat(Stat::HealthHealed, heal);
         self.health += heal;
     }
 
-    pub fn add_stat(&mut self, key: &str, statistics: u32 ) {
+    pub fn add_stat(&mut self, key: Stat, statistics: u32 ) {
         if self.track_statistics {
-            *self.statistics.entry(key.to_string()).or_insert(0) += statistics;
+            self.statistics[key] += statistics;
         }
     }
 
-    pub fn copy_statistics(&self) -> HashMap<String, u32> {
+    pub fn copy_statistics(&self) -> EnumMap<Stat, u32> {
         self.statistics.clone()
-    }
-
-    pub fn get_statistics(&self) -> &HashMap<String, u32>{
-        &self.statistics
     }
 
     pub fn get_defense(&self) -> u32 {
@@ -223,10 +219,10 @@ impl Instance {
         if red > turn {
             red  = turn
         }
-        let mut turn_meter = turn - red;
+        let turn_meter = turn - red;
         log::debug!("{} reduces turn meter of {} by {} to {}", self, target, turn_meter_reduction_ratio, turn_meter);
         target.set_turn_meter(turn_meter);
-        self.add_stat("turn meter reduced", turn_meter);
+        self.add_stat(Stat::TurnMeterReduced, turn_meter);
     }
 
     pub fn get_inflicted(&mut self, iref: &InstanceRef, effect: Effect,chance : f32, turns:u32) {
@@ -240,7 +236,8 @@ impl Instance {
         let mut rng = rand::thread_rng();
         if rng.gen::<f32>() < chance {
             log::debug!("{} inflicts {} for {} on {}", self, effect, turns, target);
-            self.add_stat(&format!("{} inflicted",effect), turns);
+            //self.add_stat(&format!("{} inflicted",effect), turns);
+            self.add_stat(effect_to_stat(effect), turns);
             target.effects.push(effect, turns, self.iref);
         }
     }
@@ -264,7 +261,7 @@ impl Instance {
             let n = target.effects.get(Effect::Bleed);
             if n < 10 {
                 log::debug!("{} inflicts {} bleed on {}", self, bleed_turns, target);
-                self.add_stat("bleed inflicted", 1);
+                self.add_stat(effect_to_stat(Effect::Bleed), bleed_turns);
                 target.effects.push(Effect::Bleed, bleed_turns,self.iref );
                 let dmg_vec = vec![14,18,22,26,30,30,30,30,30,30];
                 let bleed_dmg = (self.get_attack_damage() * dmg_vec[(n) as usize])/100;
@@ -291,9 +288,9 @@ impl Instance {
     }
 
     pub fn subtract_shield(&mut self, var:u32) {
-        self.add_stat("shield blocked", var);
+        self.add_stat(Stat::ShieldBlocked, var);
         let mut value = var;
-        let mut i = 0;
+        let i = 0;
         while i < self.shield.len() {
             if self.shield[i].0 > value {
                 self.shield[i].0 -= value;
@@ -322,7 +319,7 @@ impl Instance {
         }
         else { // damage > shield
             log::debug!("{} looses all {} shield", self, current_shield);
-            self.add_stat("shield blocked", current_shield);
+            self.add_stat(Stat::ShieldBlocked, current_shield);
             self.shield = Vec::new();
             return damage - current_shield;
         }
@@ -331,59 +328,59 @@ impl Instance {
     pub fn loose_health(&mut self, damage: u32) {
         log::debug!("{} looses {} health", self, damage);
         if self.health < damage {
-            self.add_stat("health lost", self.health);
+            self.add_stat(Stat::HealthLost, self.health);
             self.health = 0;
             return;
         }
         else {
-            self.add_stat("health lost", damage);
+            self.add_stat(Stat::HealthLost, damage);
             self.health -= damage;
         }
     }
 
     pub fn take_damage(&mut self, damage: u32) {
         debug!("{} takes {} damage", self, damage);
-        self.add_stat("damage taken", damage);
+        self.add_stat(Stat::DamageTaken, damage);
         let dmg = self.loose_shield(damage);
         self.loose_health(dmg);
     }
 
     pub fn deal_damage(&mut self, target: &mut Instance, damage: u32) {
         debug!("{} takes {} damage from {}", target , damage , self);
-        self.add_stat("damage done", damage);
+        self.add_stat(Stat::DamageDone, damage);
         target.take_damage(damage);
         let leech = (damage as f32 * self.hero.leech) as u32; // TODO handle rounding
         if leech > 0 {
-            self.add_stat("leeched", leech);
+            self.add_stat(Stat::Leeched, leech);
             self.heal(leech);
         }
     }
 
     pub fn attack(&mut self, target: &mut Instance, atk_dmg:u32 ) {
         // test if critical strike
-        self.add_stat("attacks", 1);
+        self.add_stat(Stat::Attacks, 1);
         let mut rng = rand::thread_rng();
         let crit = rng.gen::<f32>() < self.hero.crit_rate;
         let mut attack  = atk_dmg; //(self.get_attack() as f32 * dmg_ratio) as u32;
         if crit {
-            self.add_stat("critical strikes", 1);
-            let mut crit = self.hero.crit_damage;
+            self.add_stat(Stat::CriticalStrikes, 1);
+            let crit = self.hero.crit_damage;
             let mut tenacity = target.hero.tenacity;
             if tenacity > crit {
                 tenacity = crit;
             }
             let crit_rate = crit - tenacity;
-            self.add_stat("critical damage", (attack as f32 * crit_rate ) as u32);
-            target.add_stat("tenacity ignored", (attack as f32 * tenacity ) as u32);
+            self.add_stat(Stat::CriticalDamage, (attack as f32 * crit_rate ) as u32);
+            target.add_stat(Stat::TenacityIgnored, (attack as f32 * tenacity ) as u32);
             attack = (attack as f32 * crit_rate) as u32; // TODO handle rounding
             log::debug!("{} critical attack ({}%={}%-{}%)", self,crit_rate*100.,crit*100.,tenacity*100.);
         }
         log::debug!("{} attacks {} with {} attack", self, target,attack );
-        self.add_stat("attack", attack);
+        self.add_stat(Stat::Attack, attack);
         let mut def = target.get_defense();
 
         let pierce = (def as f32 * self.hero.piercing) as u32; // TODO handle rounding
-        self.add_stat("pierced defense", pierce);
+        self.add_stat(Stat::PiercedDefense, pierce);
         log::debug!("{} pierces {} defense of {} ({}%)", self, pierce, def, self.hero.piercing*100.);
         def -= pierce;
         
