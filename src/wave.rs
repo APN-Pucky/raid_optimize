@@ -244,12 +244,16 @@ impl Wave {
 
     pub fn progress_turn_meter(&mut self) {
         // get the time needed for one to reach threshold
-        let mut min : f32 = self.allies.iter().chain(self.enemies.iter()).filter(|a| a.is_alive()).map(|a| (self.initiative_threshold - a.get_turn_meter() ) as f32 /(a.get_speed() as f32)).fold(f32::INFINITY, |a, b| a.min(b));
+        let mut min : f32 = self.allies.iter().chain(self.enemies.iter())
+            .filter(|a| a.is_alive())
+            .map(|a| (self.initiative_threshold - a.get_turn_meter() ) as f32 /(a.get_speed() as f32))
+            .reduce( |a, b| a.min(b)).unwrap();
         if min < 0.0 {
             min = 0.0;
         }
-        self.allies.iter_mut().for_each(|a| a.progress_turn_meter(min));
-        self.enemies.iter_mut().for_each(|a| a.progress_turn_meter(min));
+        self.allies.iter_mut()
+            .chain(self.enemies.iter_mut())
+            .for_each(|a| a.progress_turn_meter(min));
     }
 
     pub fn before_action(&mut self, actor : InstanceRef) {
