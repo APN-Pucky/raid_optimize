@@ -16,6 +16,9 @@
         <piercing>0</piercing>
         <tenacity>0.0</tenacity>
         <damage_reflection>0.0</damage_reflection>
+        <passive>
+            <None />
+        </passive>
         <skill>
             <ScytheStrike>
                 <cooldown>0</cooldown>
@@ -59,6 +62,9 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
+        <passive>
+            <None />
+        </passive>
         <skill>
             <TideBigHit>
                 <cooldown>0</cooldown>
@@ -97,11 +103,14 @@
         <effect_hit>2.1</effect_hit>
         <effect_resistance>0.0</effect_resistance>
         <mastery>0</mastery>
-        <healing_effect>0465</healing_effect>
+        <healing_effect>0.465</healing_effect>
         <leech>0.0</leech>
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
+        <passive>
+            <None />
+        </passive>
         <skill>
             <ScorchedSoul>
                 <cooldown>0</cooldown>
@@ -140,11 +149,14 @@
         <effect_hit>2.1</effect_hit>
         <effect_resistance>0.0</effect_resistance>
         <mastery>0</mastery>
-        <healing_effect>0465</healing_effect>
+        <healing_effect>0.465</healing_effect>
         <leech>0.0</leech>
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
+        <passive>
+            <None />
+        </passive>
         <skill>
             <Tricks>
                 <cooldown>0</cooldown>

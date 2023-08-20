@@ -4,9 +4,22 @@ use crate::wave::InstanceRef;
 use crate::hero::effect::Effect;
 
 use super::effect::is_dot;
+use super::subskill::SubSkill;
 
-#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Clone ,Copy)]
+type SkillRef = usize;
+
+pub struct NewSkill {
+    pub cooldown : u32,
+    pub subskills : Vec<SubSkill>,
+}
+
+#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Clone )]
 pub enum Skill {
+    Generic {
+        cooldown: u32,
+        #[serde(rename="subskill")]
+        subskills : Vec<SubSkill>,
+    },
     //Liz
     ScorchedSoul {
         cooldown: u32,
@@ -97,47 +110,57 @@ pub enum Skill {
 
 
 }
-pub fn execute_skill(skill : Skill, actor :&InstanceRef, target :&InstanceRef, wave :&mut Wave) {
+pub fn execute_skill(skill : &Skill, actor :&InstanceRef, target :&InstanceRef, wave :&mut Wave) {
     match skill {
+        Skill::Generic{ cooldown, subskills } => {
+            // throw unimpl error panic
+            panic!("GenericSkill not implemented");
+        }
         Skill::Resurrection { shield_max_hp_ratio, shield_turns, cleanse_dot_debuffs, restore_max_hp_ratio ,..} => {
             let max_hp = wave.get_instance(*actor).get_max_health();
-            wave.restore_max_hp_ratio_own_team(actor,restore_max_hp_ratio);
-            wave.shield_team(actor,(shield_max_hp_ratio * max_hp as f32) as u32,shield_turns);
-            wave.cleanse_team(actor,&is_dot,cleanse_dot_debuffs);
+            wave.restore_max_hp_ratio_own_team(actor,*restore_max_hp_ratio);
+            wave.shield_team(actor,shield_max_hp_ratio * max_hp  ,*shield_turns);
+            wave.cleanse_team(actor,&is_dot,*cleanse_dot_debuffs);
         },
         Skill::BloodthirstyScythe {  attack_damage_ratio, bleed_chance, bleed_turns ,..} =>{
-            let damage = wave.get_instance(*actor).get_attack_damage() as f32 * attack_damage_ratio;
-            wave.attack_team(actor, damage as u32);
-            wave.inflict_team(actor, Effect::Bleed, bleed_chance, bleed_turns);
+            let damage = wave.get_instance(*actor).get_attack_damage() * attack_damage_ratio;
+            wave.attack_team(actor, damage );
+            wave.inflict_team(actor, Effect::Bleed,* bleed_chance,* bleed_turns);
         },
         Skill::EnergyBurst {  attack_damage_ratio, bleed_turns, reduce_effect_resistance_chance,  reduce_effect_resistance_turns ,..}=> {
-            let damage = wave.get_instance(*actor).get_attack_damage() as f32 * attack_damage_ratio;
-            wave.attack_team(actor, damage as u32);
-            wave.inflict_team(actor, Effect::Bleed, 1.0, bleed_turns);
-            wave.inflict_team(actor, Effect::EffectResistanceDownII, reduce_effect_resistance_chance, reduce_effect_resistance_turns);
+            let damage = wave.get_instance(*actor).get_attack_damage() * attack_damage_ratio;
+            wave.attack_team(actor, damage );
+            wave.inflict_team(actor, Effect::Bleed, 1.0, *bleed_turns);
+            wave.inflict_team(actor, Effect::EffectResistanceDownII, *reduce_effect_resistance_chance, *reduce_effect_resistance_turns);
         },
         Skill::DeepSeaPower {  max_hp_shield_ratio, shield_turns, tenacity_increase_turns ,..} => {
             let max_hp = wave.get_instance(*actor).get_max_health();
-            wave.shield_team(actor,(max_hp_shield_ratio * max_hp as f32) as u32,shield_turns);
-            wave.inflict_team(actor, Effect::TenacityUpII, 1.0, tenacity_increase_turns);
+            wave.shield_team(actor,max_hp_shield_ratio * max_hp  ,*shield_turns);
+            wave.inflict_team(actor, Effect::TenacityUpII, 1.0, *tenacity_increase_turns);
         },
         Skill::CrystalOfLife {  max_hp_restore_ratio, ripple_turns , attack_up_turns ,..} =>{
-            let rest_hp = (wave.get_instance(*actor).get_max_health() as f32 * max_hp_restore_ratio) as u32;
+            let rest_hp = (wave.get_instance(*actor).get_max_health()  * max_hp_restore_ratio) ;
             wave.restore_max_hp_own_team(actor,rest_hp);
-            wave.inflict_team(actor, Effect::RippleII, 1.0, ripple_turns);
-            wave.inflict_team(actor, Effect::AttackUpII, 1.0, attack_up_turns);
+            wave.inflict_team(actor, Effect::RippleII, 1.0, *ripple_turns);
+            wave.inflict_team(actor, Effect::AttackUpII, 1.0,* attack_up_turns);
         },
         Skill::FissionOfLife {  restore_max_hp_ratio, heal_turns, increase_turn_meter_ratio ,..} => {
-            wave.restore_max_hp_ratio_own_team(actor, restore_max_hp_ratio);
-            wave.inflict_team(actor, Effect::Heal, 1.0, heal_turns);
-            wave.increase_turn_meter_team(actor, increase_turn_meter_ratio);
+            wave.restore_max_hp_ratio_own_team(actor, *restore_max_hp_ratio);
+            wave.inflict_team(actor, Effect::Heal, 1.0, *heal_turns);
+            wave.increase_turn_meter_team(actor, *increase_turn_meter_ratio);
 
+        }
+        Skill::FireHeal{heal_attack_ratio,heal_max_hp_ratio,block_debuff_turns,..} => {
+            let heal = wave.get_instance(*actor).get_attack_damage()*heal_attack_ratio ;
+            let max_hp_heal = wave.get_instance(*target).get_max_health()*heal_max_hp_ratio ;
+            wave.restore(actor,target, heal + max_hp_heal);
+            wave.inflict_friendly(actor,target,Effect::BlockDebuf, 1.0,*block_debuff_turns);
         }
         _ => execute_skill_1_on_1(skill, actor, target, wave),
     }
 }
 
-pub fn execute_skill_1_on_1(skill : Skill, actor :&InstanceRef, target :&InstanceRef, wave :&mut Wave) {
+pub fn execute_skill_1_on_1(skill : &Skill, actor :&InstanceRef, target :&InstanceRef, wave :&mut Wave) {
     let attacker;
     let defender;
     if actor.team {
@@ -149,35 +172,29 @@ pub fn execute_skill_1_on_1(skill : Skill, actor :&InstanceRef, target :&Instanc
         defender = &mut wave.allies[target.index];
     }        
     match skill {
-        Skill::FireHeal{heal_attack_ratio,heal_max_hp_ratio,block_debuff_turns,..} => {
-            let heal = (attacker.get_attack_damage() as f32 * heal_attack_ratio) as u32;
-            let max_hp_heal = (defender.get_max_health() as f32 * heal_max_hp_ratio) as u32;
-            attacker.restore(defender, heal + max_hp_heal);
-            attacker.inflict(defender,Effect::BlockDebuf, 1.0,block_debuff_turns);
-        }
         Skill::ScorchedSoul{attack_damage_ratio,hp_burning_chance, hp_burning_turns ,..} => {
-            attacker.attack(defender,  (attacker.get_attack_damage() as f32 * attack_damage_ratio) as u32);
-            attacker.inflict_hp_burning(defender, hp_burning_chance, hp_burning_turns);
+            attacker.attack(defender,  attacker.get_attack_damage()  *attack_damage_ratio );
+            attacker.inflict_hp_burning(defender, *hp_burning_chance, *hp_burning_turns);
         }
         Skill::Tricks{attack_damage_ratio,turn_meter_reduction_ratio: turn_meter_reduction,..} => {
-            attacker.attack(defender, (attacker.get_attack_damage() as f32 * attack_damage_ratio) as u32);
-            attacker.reduce_turn_meter(defender, turn_meter_reduction);
+            attacker.attack(defender, (attacker.get_attack_damage() * attack_damage_ratio) );
+            attacker.reduce_turn_meter(defender, *turn_meter_reduction);
         }
         Skill::BasicAttack{attack_damage_ratio,..} => {
-            attacker.attack(defender, (attacker.get_attack_damage() as f32 * attack_damage_ratio) as u32);
+            attacker.attack(defender, (attacker.get_attack_damage() * attack_damage_ratio));
         }
         Skill::ScytheStrike { attack_damage_ratio, bleed_chance,bleed_turns,.. } => {
-            attacker.attack(defender, (attacker.get_attack_damage() as f32 * attack_damage_ratio) as u32);
-            attacker.inflict_bleed(defender,bleed_chance,bleed_turns);
+            attacker.attack(defender, (attacker.get_attack_damage() * attack_damage_ratio) );
+            attacker.inflict_bleed(defender,*bleed_chance,*bleed_turns);
         }
         Skill::DarknightStrike { attack_damage_ratio,.. }  => {
-            attacker.attack(defender, (attacker.get_attack_damage() as f32 * attack_damage_ratio) as u32);
-            attacker.attack(defender, (attacker.get_attack_damage() as f32 * attack_damage_ratio) as u32);
+            attacker.attack(defender, (attacker.get_attack_damage() * attack_damage_ratio) );
+            attacker.attack(defender, (attacker.get_attack_damage() * attack_damage_ratio) );
         }
         Skill::TideBigHit { max_hp_damage_ratio, suffocated_chance, suffocated_turns,.. } => {
             log::debug!("{} uses Tide Big Hit on {}", attacker, defender);
-            let mut chance = suffocated_chance;
-            attacker.attack(defender, (attacker.get_max_health() as f32 * max_hp_damage_ratio) as u32);
+            let mut chance = *suffocated_chance;
+            attacker.attack(defender, (attacker.get_max_health() * max_hp_damage_ratio) );
             if defender.has_effect(Effect::WetI) 
             || defender.has_effect(Effect::WetII) 
             || defender.has_effect(Effect::ColdI) 
@@ -185,21 +202,22 @@ pub fn execute_skill_1_on_1(skill : Skill, actor :&InstanceRef, target :&Instanc
                 log::debug!("{} is wet or cold +15% suffocation chance", defender);
                 chance += 0.15;
             }
-            attacker.inflict(defender,Effect::Suffocated, chance,suffocated_turns);
+            attacker.inflict(defender,Effect::Suffocated, chance,*suffocated_turns);
         },
         Skill::Nightmare {  attack_damage_ratio, reduce_speed_chance, reduce_speed_turns, increase_speed_turns ,..} => {
-            attacker.attack(defender, (attacker.get_attack_damage() as f32 * attack_damage_ratio) as u32);
-            attacker.inflict(defender,Effect::SpeedDownII, reduce_speed_chance, reduce_speed_turns);
-            attacker.inflict(defender,Effect::SpeedUpI, 1.0, increase_speed_turns);
+            attacker.attack(defender, (attacker.get_attack_damage() * attack_damage_ratio) );
+            attacker.inflict(defender,Effect::SpeedDownII, *reduce_speed_chance, *reduce_speed_turns);
+            //TODO target make no sense here
+            //attacker.inflict(defender,Effect::SpeedUpI, 1.0, increase_speed_turns);
 
         }
         _ => panic!("Skill not implemented"),
     }
     // cooldown the used skill
-    attacker.cooldown(skill);
+    attacker.cooldown_s(skill);
 }
 
-pub fn get_targets(skill : Skill, actor :&InstanceRef, wave :&Wave) -> Option<Vec<InstanceRef>> {
+pub fn get_targets(skill : &Skill, actor :&InstanceRef, wave :&Wave) -> Option<Vec<InstanceRef>> {
     match skill {
         //Liz
         Skill::ScorchedSoul{..} => get_alive_enemies(actor,wave),
@@ -220,10 +238,11 @@ pub fn get_targets(skill : Skill, actor :&InstanceRef, wave :&Wave) -> Option<Ve
         //
         Skill::BasicAttack{..} => get_alive_enemies(actor,wave),
         Skill::DarknightStrike { ..} => get_alive_enemies(actor,wave),
+        Skill::Generic{ cooldown, subskills } => todo!(),
     }
 }
 
-pub fn get_cooldown(skill: Skill) ->u32 {
+pub fn get_cooldown(skill: &Skill) ->&u32 {
     match skill {
         //Liz
         Skill::ScorchedSoul{cooldown,..} => cooldown,
@@ -243,6 +262,7 @@ pub fn get_cooldown(skill: Skill) ->u32 {
         Skill::FissionOfLife { cooldown, ..} => cooldown,
         Skill::BasicAttack{cooldown,..} => cooldown,
         Skill::DarknightStrike { cooldown,..} => cooldown,
+        Skill::Generic{ cooldown, subskills } => todo!(),
     }
 }
 

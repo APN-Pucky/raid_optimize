@@ -100,15 +100,15 @@ impl  CombinedResult {
                 });
             }
         }
-        for i in 0..statistics.len() {
-            for (key, _value) in added[i].hm.iter() {
-                statistics[i].hm[key] += added[i].hm[key];
-                statistics[i].hm_sq[key]+= added[i].hm_sq[key];
+        for (s,a) in statistics.iter_mut().zip(added.iter()) {
+            for (key, _value) in a.hm.iter() {
+                s.hm[key] += a.hm[key];
+                s.hm_sq[key]+= a.hm_sq[key];
             }
         }
     }
 
-    pub fn add_statistics( statistics : &mut Vec<CombinedStatistics>,  added : &Vec<EnumMap<Stat,u32>>) {
+    pub fn add_statistics( statistics : &mut Vec<CombinedStatistics>,  added : &Vec<EnumMap<Stat,f32>>) {
         if statistics.len() < added.len() {
             for _i in statistics.len()..added.len() {
                 statistics.push(CombinedStatistics {
@@ -117,19 +117,22 @@ impl  CombinedResult {
                 });
             }
         }
-        for i in 0..statistics.len() {
-            for (key, value) in added[i].iter() {
+        for (s,a) in statistics.iter_mut().zip(added.iter()) {
+            for (key, value) in a {
                 let v= *value as f64;
-                statistics[i].hm[key] += v;
-                statistics[i].hm_sq[key] += v*v;
+                s.hm[key] += v;
+                s.hm_sq[key] += v*v;
             }
         }
     }
 
     pub fn print_statistics(&self, index : usize) {
-        for (key,_value) in self.statistics[index].hm.iter() {
-            let value = self.statistics[index].hm[key];
-            println!("\t {}: {:.2} +- {:.2}", key, get_mean(value, self.iterations), get_standard_deviation(value, self.statistics[index].hm_sq[key], self.iterations));
+        for (key,value) in self.statistics[index].hm.iter() {
+            //let value = self.statistics[index].hm[key];
+            println!("\t {}: {:.2} +- {:.2}", key, 
+                get_mean(*value, self.iterations), 
+                get_standard_deviation(*value, self.statistics[index].hm_sq[key], 
+                self.iterations));
         }
     }
 

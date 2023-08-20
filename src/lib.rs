@@ -15,11 +15,6 @@ pub mod player;
 use rand::Rng;
 
 #[inline]
-pub fn div(left: u32, right: f32) -> u32 {
-    (left as f32 / right) as u32 
-}
-
-#[inline]
 pub fn roll(chance:f32) -> bool {
     if chance >= 1.0 {
         return true

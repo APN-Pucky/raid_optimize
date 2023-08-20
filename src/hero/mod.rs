@@ -4,8 +4,13 @@ pub mod instance;
 pub mod skill;
 pub mod effect;
 pub mod stat;
+pub mod subskill;
+pub mod effects;
+pub mod passive;
 
 use crate::hero::skill::Skill;
+
+use self::passive::Passive;
 
 #[derive(Deserialize, Debug)]
 pub struct Heroes {
@@ -17,10 +22,10 @@ pub struct Heroes {
 pub struct Hero {
     pub id: u32,
     pub name: String,
-    pub health: u32,
-    pub attack: u32,
-    pub defense: u32,
-    pub speed: u32,
+    pub health: f32,
+    pub attack: f32,
+    pub defense: f32,
+    pub speed: f32,
     pub crit_rate: f32,
     pub crit_damage: f32,
     pub effect_hit: f32,
@@ -33,6 +38,8 @@ pub struct Hero {
     pub damage_reflection : f32,
     #[serde(rename="skill")]
     pub skills: Vec<Skill>,
+    #[serde(rename="passive")]
+    pub passives : Vec<Passive>,
 }
 
 pub fn get_hero_by_string<'a>(heroes: &'a Heroes, name: &'a str) -> Option<&'a Hero> {
@@ -85,6 +92,9 @@ mod tests {
                 <piercing>0.15</piercing>
                 <tenacity>0.15</tenacity>
                 <damage_reflection>0.15</damage_reflection>
+                <passive>
+                    <BloodthirstyDesire />
+                </passive>
                 <skill>
                     <ScorchedSoul>
                         <cooldown>3</cooldown>
@@ -93,6 +103,12 @@ mod tests {
                         <hp_burning_turns>2</hp_burning_turns>
                     </ScorchedSoul>
                 </skill>
+                <skill>
+                    <Generic>
+                        <cooldown>3</cooldown>
+                        <subskill target="SingleEnemy" ratio="2.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
+                    </Generic>
+                </skill>
             </hero>
             "#,
         )
@@ -100,10 +116,10 @@ mod tests {
 
         assert_eq!(hero.id, 1);
         assert_eq!(hero.name, "Elhain");
-        assert_eq!(hero.health, 15000);
-        assert_eq!(hero.attack, 1000);
-        assert_eq!(hero.defense, 1000);
-        assert_eq!(hero.speed, 100);
+        assert_eq!(hero.health, 15000.);
+        assert_eq!(hero.attack, 1000.);
+        assert_eq!(hero.defense, 1000.);
+        assert_eq!(hero.speed, 100.);
         assert_eq!(hero.crit_rate, 0.15);
         assert_eq!(hero.crit_damage, 1.5);
         assert_eq!(hero.effect_hit, 0.15);
