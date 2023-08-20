@@ -31,5 +31,9 @@ strum_macros = "^0.25"
 enum-map = "^2.6"
 enum-map-derive = "*"
 
+#[profile.release]
+#debug = true
+
 [profile.release]
-debug = true
+lto = true
+opt-level = 3

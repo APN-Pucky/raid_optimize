@@ -9,7 +9,7 @@ use crate::hero::stat::Stat;
 use crate::player::Player;
 
 pub const TURN_LIMIT : u32 = 300;
-pub const TURN_METER_THRESHOLD : u32 = 1000;
+pub const TURN_METER_THRESHOLD : f32 = 1000.0;
 
 #[derive(Debug,Copy,Clone)]
 pub struct InstanceRef {
@@ -24,7 +24,7 @@ pub struct Wave {
     pub enemy_player : Box<dyn Player>,
     turns: u32,
     turn_limit: u32,
-    initiative_threshold: u32,
+    initiative_threshold: f32,
 }
 
 pub struct Result {
@@ -89,53 +89,64 @@ impl Wave {
     }
 
     pub fn find_actor_index(&self) -> Option<InstanceRef> {
-        let mut index = 0;
-        let mut found = false;
-        let mut max_turn_meter = 0;
-        let mut max_index = 0;
-        for actor in self.allies.iter() {
-            if actor.is_alive() {
-                if actor.get_turn_meter() > max_turn_meter {
-                    max_turn_meter = actor.get_turn_meter();
-                    max_index = index;
-                    found = true;
-                }
-                if actor.get_turn_meter() == max_turn_meter {
-                    // compare by speed stat
-                    if actor.get_speed() > self.get_instance(InstanceRef{team : found,index: max_index}).get_speed() {
-                        max_turn_meter = actor.get_turn_meter();
-                        max_index = index;
-                        found = true;
-                    }
-                }
-            }
-            index += 1;
-        }
-        index = 0;
-        for actor in self.enemies.iter() {
-            if actor.is_alive() {
-                if actor.get_turn_meter() > max_turn_meter {
-                    max_turn_meter = actor.get_turn_meter();
-                    max_index = index;
-                    found = false;
-                }
-                if actor.get_turn_meter() == max_turn_meter {
-                    // compare by speed stat
-                    if actor.get_speed() > self.get_instance(InstanceRef{team : found,index: max_index}).get_speed() {
-                        max_turn_meter = actor.get_turn_meter();
-                        max_index = index;
-                        found = false;
-                    }
-                }
-            }
-            index += 1;
-        }
-        if max_turn_meter >= self.initiative_threshold {
-            let ir = InstanceRef{team : found,index: max_index};
-            Some(ir)
-        } else {
-            None
-        }
+        self.allies.iter().chain(self.enemies.iter())
+            // get those alive
+            .filter(|a| a.is_alive())
+            // get those with enough turn meter
+            .filter(|a| a.get_turn_meter() >= self.initiative_threshold)
+            // get instance with highest speed
+            .max_by(|a,b| a.get_speed().partial_cmp(&b.get_speed()).unwrap())
+            // get instanceref
+            .map(|a| a.iref)
+
+
+        //let mut index = 0;
+        //let mut found = false;
+        //let mut max_turn_meter = 0.0;
+        //let mut max_index = 0;
+        //for actor in self.allies.iter() {
+        //    if actor.is_alive() {
+        //        if actor.get_turn_meter() > max_turn_meter {
+        //            max_turn_meter = actor.get_turn_meter();
+        //            max_index = index;
+        //            found = true;
+        //        }
+        //        if actor.get_turn_meter() == max_turn_meter {
+        //            // compare by speed stat
+        //            if actor.get_speed() > self.get_instance(InstanceRef{team : found,index: max_index}).get_speed() {
+        //                max_turn_meter = actor.get_turn_meter();
+        //                max_index = index;
+        //                found = true;
+        //            }
+        //        }
+        //    }
+        //    index += 1;
+        //}
+        //index = 0;
+        //for actor in self.enemies.iter() {
+        //    if actor.is_alive() {
+        //        if actor.get_turn_meter() > max_turn_meter {
+        //            max_turn_meter = actor.get_turn_meter();
+        //            max_index = index;
+        //            found = false;
+        //        }
+        //        if actor.get_turn_meter() == max_turn_meter {
+        //            // compare by speed stat
+        //            if actor.get_speed() > self.get_instance(InstanceRef{team : found,index: max_index}).get_speed() {
+        //                max_turn_meter = actor.get_turn_meter();
+        //                max_index = index;
+        //                found = false;
+        //            }
+        //        }
+        //    }
+        //    index += 1;
+        //}
+        //if max_turn_meter >= self.initiative_threshold {
+        //    let ir = InstanceRef{team : found,index: max_index};
+        //    Some(ir)
+        //} else {
+        //    None
+        //}
     }
 
     pub fn get_ally_team(&self, actor : &InstanceRef) -> &Vec<Instance> {
@@ -179,10 +190,10 @@ impl Wave {
 
     pub fn increase_turn_meter_team(&mut self, actor : &InstanceRef, increase_ratio : f32) {
         if actor.team {
-            self.allies.iter_mut().for_each(|a| a.increase_turn_meter((increase_ratio * TURN_METER_THRESHOLD as f32 ) as u32));
+            self.allies.iter_mut().for_each(|a| a.increase_turn_meter((increase_ratio * TURN_METER_THRESHOLD  ) ));
         }
         else {
-            self.enemies.iter_mut().for_each(|a| a.increase_turn_meter((increase_ratio * TURN_METER_THRESHOLD as f32) as u32));
+            self.enemies.iter_mut().for_each(|a| a.increase_turn_meter((increase_ratio * TURN_METER_THRESHOLD ) ));
         }
     }
 
@@ -224,7 +235,6 @@ impl Wave {
 
     pub fn choose_target(&self, actor : &InstanceRef) -> Option<InstanceRef> {
         let team = self.get_enemy_team(actor);
-        //opponents.iter().filter(|i| i.is_alive()).collect::<Vec<&mut Instance>>().choose_mut(&mut rand::thread_rng())
         let mut ids = Vec::new();
         for (index,target) in team.iter().enumerate() {
             if target.is_alive()  {
@@ -246,7 +256,7 @@ impl Wave {
         // get the time needed for one to reach threshold
         let mut min : f32 = self.allies.iter().chain(self.enemies.iter())
             .filter(|a| a.is_alive())
-            .map(|a| (self.initiative_threshold - a.get_turn_meter() ) as f32 /(a.get_speed() as f32))
+            .map(|a| (self.initiative_threshold - a.get_turn_meter() ) as f32 /(a.get_speed()))
             .reduce( |a, b| a.min(b)).unwrap();
         if min < 0.0 {
             min = 0.0;
@@ -257,15 +267,11 @@ impl Wave {
     }
 
     pub fn before_action(&mut self, actor : InstanceRef) {
-        let a; 
-        let e;
-        if actor.team {
-            a = &mut self.allies[actor.index];
-            e = &mut self.enemies;
-        }else {
-            a = &mut self.enemies[actor.index];
-            e = &mut self.allies;
-        }
+        let (a,e) = if actor.team {
+                (&mut self.allies[actor.index], &mut self.enemies)
+            }else {
+                (&mut self.enemies[actor.index], &mut self.allies)
+            };
         log::debug!("before {} acts", a);
         // apply effects 
         // apply heal
@@ -310,7 +316,7 @@ impl Wave {
                 //e = &mut self.allies;
             };
         log::debug!("after {} acts", a);
-        a.set_turn_meter(0);
+        a.set_turn_meter(0.0);
         a.reduce_effects();
         a.reduce_shields();
     }
@@ -331,19 +337,19 @@ impl Wave {
         let skills : Vec<Skill> = instance.get_active_skills();
         log::debug!("{} has active skills {:?}", instance, skills);
         let skill :Skill = if actor.team {
-                self.ally_player.pick_skill(self, actor, skills)
+                self.ally_player.pick_skill(self, actor, &skills)
             }
             else {
-                 self.enemy_player.pick_skill(self, actor, skills)
+                 self.enemy_player.pick_skill(self, actor, &skills)
             };
         // get targets
         match get_targets(skill, &actor, self) {
             Some(ts) => {
                 let target : InstanceRef = if actor.team {
-                        self.ally_player.pick_target(self, actor, skill, ts)
+                        self.ally_player.pick_target(self, actor, skill, &ts)
                     }
                     else {
-                        self.enemy_player.pick_target(self, actor, skill,ts)
+                        self.enemy_player.pick_target(self, actor, skill, &ts)
                     };
                 // apply skill
                 execute_skill(skill, &actor, &target, self);

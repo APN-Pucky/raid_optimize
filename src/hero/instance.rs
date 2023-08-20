@@ -9,6 +9,7 @@ use rand::Rng;
 
 use crate::hero::Hero;
 use crate::hero::stat::effect_to_stat;
+use crate::roll;
 use crate::wave::{ InstanceRef, TURN_METER_THRESHOLD};
 use crate::hero::skill::Skill;
 use crate::hero::effect::Effect;
@@ -23,7 +24,7 @@ pub struct Instance {
     pub iref : InstanceRef,
     health: u32,
     shield: Vec<(u32,u32)>, // (shield, turns)
-    turn_meter: u32,
+    turn_meter: f32,
     pub cooldowns : Vec<u32>,
     track_statistics: bool,
     pub statistics: EnumMap<Stat,u32>,
@@ -101,7 +102,7 @@ impl Instance {
             iref,
             health: hero.health,
             shield: Vec::new(),
-            turn_meter: 0,
+            turn_meter: 0.0,
             cooldowns : hero.skills.iter().map(|_| 0).collect(),
             track_statistics,
             statistics: EnumMap::default(),
@@ -120,11 +121,12 @@ impl Instance {
     }
     
     pub fn reduce_cooldowns(&mut self) {
-        for i in 0..self.cooldowns.len() {
-            if self.cooldowns[i] > 0 {
-                self.cooldowns[i] -= 1;
-            }
-        }
+        self.cooldowns.iter_mut().for_each(|c| *c = c.saturating_sub(1));
+        //for i in 0..self.cooldowns.len() {
+        //    if self.cooldowns[i] > 0 {
+        //        self.cooldowns[i] -= 1;
+        //    }
+        //}
     }
 
     #[deprecated]
@@ -133,14 +135,17 @@ impl Instance {
     }
 
     pub fn get_active_skills(&self) -> Vec<Skill> {
-        let mut ret  = Vec::new();
-        for i in 0..self.cooldowns.len() {
-            if self.cooldowns[i] == 0 {
-                ret.push(self.hero.skills[i]);
-            }
-        }
-        ret
-        //self.hero.skills.iter().zip(self.get_cooldown_mask()).filter(|(_,c)| *c).map(|(s,_)| *s).collect()
+        self.hero.skills.iter()
+            .zip(self.cooldowns.iter())
+            .filter_map(|(s,c)| if *c == 0 {Some(*s)} else {None})
+            .collect()
+        //let mut ret  = Vec::new();
+        //for i in 0..self.cooldowns.len() {
+        //    if self.cooldowns[i] == 0 {
+        //        ret.push(self.hero.skills[i]);
+        //    }
+        //}
+        //ret
     }
 
     pub fn cleanse<F>(&mut self, effect_closure:&F, layers: u32) where F : Fn(Effect) -> bool {
@@ -239,7 +244,7 @@ impl Instance {
 
     pub fn reduce_turn_meter(&mut self, target:&mut Instance, turn_meter_reduction_ratio: f32) {
         // relative to total!
-        let mut red = (TURN_METER_THRESHOLD as f32 * turn_meter_reduction_ratio)as u32;
+        let mut red = (TURN_METER_THRESHOLD * turn_meter_reduction_ratio);
         let turn = target.get_turn_meter();
         if red > turn {
             red  = turn
@@ -247,19 +252,17 @@ impl Instance {
         let turn_meter = turn - red;
         log::debug!("{} reduces turn meter of {} by {} to {}", self, target, turn_meter_reduction_ratio, turn_meter);
         target.set_turn_meter(turn_meter);
-        self.add_stat(Stat::TurnMeterReduced, turn_meter);
+        //self.add_stat(Stat::TurnMeterReduced, turn_meter);
     }
 
     pub fn get_inflicted(&mut self, iref: &InstanceRef, effect: Effect,chance : f32, turns:u32) {
-        let mut rng = rand::thread_rng();
-        if rng.gen::<f32>() < chance {
+        if roll(chance) {
             self.effects.push(effect, turns, *iref);
         }
     }
 
     pub fn inflict(&mut self, target : &mut Instance, effect: Effect, chance : f32, turns: u32) {
-        let mut rng = rand::thread_rng();
-        if rng.gen::<f32>() < chance {
+        if roll(chance) {
             log::debug!("{} inflicts {} for {} on {}", self, effect, turns, target);
             //self.add_stat(&format!("{} inflicted",effect), turns);
             self.add_stat(effect_to_stat(effect), turns);
@@ -281,8 +284,7 @@ impl Instance {
     }
 
     pub fn inflict_bleed(&mut self, target : &mut Instance, bleed_chance: f32,bleed_turns: u32) {
-        let mut rng = rand::thread_rng();
-        if rng.gen::<f32>() < bleed_chance {
+        if roll(bleed_chance) {
             let n = target.effects.get(Effect::Bleed);
             if n < 10 {
                 log::debug!("{} inflicts {} bleed on {}", self, bleed_turns, target);
@@ -412,23 +414,23 @@ impl Instance {
     }
 
     pub fn reset_turn_meter(&mut self) {
-        self.set_turn_meter(0)
+        self.set_turn_meter(0.0)
     }
 
-    pub fn set_turn_meter(&mut self, turn_meter: u32) {
+    pub fn set_turn_meter(&mut self, turn_meter: f32) {
         self.turn_meter= turn_meter
     }
 
-    pub fn increase_turn_meter(&mut self, turn_meter: u32) {
+    pub fn increase_turn_meter(&mut self, turn_meter: f32) {
         self.turn_meter+= turn_meter
     }
 
-    pub fn decrease_turn_meter(&mut self, turn_meter: u32) {
+    pub fn decrease_turn_meter(&mut self, turn_meter: f32) {
         self.turn_meter+= turn_meter
     }
 
     pub fn progress_turn_meter(&mut self, time: f32) {
-        self.turn_meter+= (self.get_speed() as f32 * time) as u32;
+        self.turn_meter+= (self.get_speed() * time);
         log::debug!("{} turn_meter is now {}", self, self.turn_meter);
     }
 
@@ -436,16 +438,15 @@ impl Instance {
         self.health > 0
     }
 
-    pub fn get_speed(&self) -> u32 {
+    pub fn get_speed(&self) -> f32 {
         let mut fact = 1.0;
-        // TODO handle speed buff/debuff
         if self.has_effect(Effect::SpeedUpI) {
             fact *= 1.2;
         }
         if self.has_effect(Effect::SpeedDownII) {
             fact *= 0.6;
         }
-        (self.hero.speed as f32 * fact ) as  u32
+        self.hero.speed as f32 * fact 
     }
 
     pub fn get_hero(&self) -> &Hero {
@@ -456,7 +457,7 @@ impl Instance {
         self.health
     }
 
-    pub fn get_turn_meter(&self) -> u32 {
+    pub fn get_turn_meter(&self) -> f32 {
         self.turn_meter
     }
 

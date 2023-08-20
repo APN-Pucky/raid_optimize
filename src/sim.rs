@@ -293,12 +293,13 @@ impl Sim<'_> {
                 };
                 let mut wave = Wave::new(self.allies, self.enemies,ap,ep,track_statistics);
                 cr.add_result(&wave.run());
-                if (x+1) % 10000 == 0 { // plus one because we start at 0 and want the score added after the iteration
-                    bar.inc(10000);
+                if (x+1) % 100000 == 0 { // plus one because we start at 0 and want the score added after the iteration
+                    bar.inc(100000);
                 }
             }
             cr
         }).collect::<Vec<_>>();
+
         self.result = results.iter().fold(CombinedResult::new(&Vec::new()), |mut acc, x| {
             CombinedResult::add_combined_result(&mut acc, x);
             acc

@@ -5,19 +5,19 @@ use crate::{wave::{Wave, InstanceRef}, hero::skill::Skill};
 
 
 pub trait Player {
-    fn pick_skill(&self, wave : &Wave, actor : InstanceRef, skills: Vec<Skill>) -> Skill;
-    fn pick_target(&self, wave : &Wave, actor : InstanceRef, skill : Skill, targets: Vec<InstanceRef>) -> InstanceRef; 
+    fn pick_skill(&self, wave : &Wave, actor : InstanceRef, skills: &Vec<Skill>) -> Skill;
+    fn pick_target(&self, wave : &Wave, actor : InstanceRef, skill : Skill, targets: &Vec<InstanceRef>) -> InstanceRef; 
 }
 
 pub struct RandomPlayer {}
 
 impl Player for RandomPlayer {
-    fn pick_target(&self, _wave : &Wave, _actor : InstanceRef, _skill : Skill, targets: Vec<InstanceRef>) -> InstanceRef {
+    fn pick_target(&self, _wave : &Wave, _actor : InstanceRef, _skill : Skill, targets: &Vec<InstanceRef>) -> InstanceRef {
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..targets.len());
         targets[index]
     }
-    fn pick_skill(&self, _wave : &Wave, _actor : InstanceRef, skills: Vec<Skill>) -> Skill{
+    fn pick_skill(&self, _wave : &Wave, _actor : InstanceRef, skills: &Vec<Skill>) -> Skill{
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..skills.len());
         skills[index]
@@ -83,7 +83,7 @@ impl ManualPlayer {
 }
 
 impl Player for ManualPlayer {
-    fn pick_target(&self, wave : &Wave, actor : InstanceRef, skill : Skill, targets: Vec<InstanceRef>) -> InstanceRef {
+    fn pick_target(&self, wave : &Wave, actor : InstanceRef, skill : Skill, targets: &Vec<InstanceRef>) -> InstanceRef {
         println!("Pick target for {} using skill {:?}", wave.get_instance(actor).hero.name, skill);
         for (i, target) in targets.iter().enumerate() {
             println!(" {}: {}", i, wave.get_instance(*target));
@@ -111,7 +111,7 @@ impl Player for ManualPlayer {
     }
 
 
-    fn pick_skill(&self, wave : &Wave, actor : InstanceRef, skills: Vec<Skill>) -> Skill{
+    fn pick_skill(&self, wave : &Wave, actor : InstanceRef, skills: &Vec<Skill>) -> Skill{
         println!("Pick skill for {}", wave.get_instance(actor).hero.name);
         for (i, skill) in skills.iter().enumerate() {
             println!(" {}: {:?}", i, skill);
