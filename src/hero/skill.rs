@@ -103,7 +103,7 @@ pub fn execute_skill(skill : Skill, actor :&InstanceRef, target :&InstanceRef, w
             let max_hp = wave.get_instance(*actor).get_max_health();
             wave.restore_max_hp_ratio_own_team(actor,restore_max_hp_ratio);
             wave.shield_team(actor,(shield_max_hp_ratio * max_hp as f32) as u32,shield_turns);
-            wave.cleanse_team(actor,&|e| is_dot(e),cleanse_dot_debuffs);
+            wave.cleanse_team(actor,&is_dot,cleanse_dot_debuffs);
         },
         Skill::BloodthirstyScythe {  attack_damage_ratio, bleed_chance, bleed_turns ,..} =>{
             let damage = wave.get_instance(*actor).get_attack_damage() as f32 * attack_damage_ratio;
@@ -249,44 +249,32 @@ pub fn get_cooldown(skill: Skill) ->u32 {
 fn get_alive_allies(actor : & InstanceRef, wave : &Wave) -> Option<Vec<InstanceRef>> {
     let team = wave.get_ally_team(actor);
     let mut ids = Vec::new();
-    let mut index = 0;
-    for target in team.iter() {
+    for (index,target) in team.iter().enumerate() {
         if target.is_alive()  {
-            ids.push(index);
+            ids.push(InstanceRef{team: actor.team, index});
         }
-        index += 1;
     }
-    if ids.len() == 0 {
-        return None;
+    if ids.is_empty() {
+        None
     }
     else {
-        let mut targets = Vec::new();
-        for i in 0..ids.len() {
-            targets.push(InstanceRef{team: actor.team, index: ids[i]});
-        }
-        return Some(targets);
+        Some(ids)
     }
 }
 
 fn get_alive_enemies(actor :&InstanceRef, wave :&Wave) -> Option<Vec<InstanceRef>> {
     let team = wave.get_enemy_team(actor);
     let mut ids = Vec::new();
-    let mut index = 0;
-    for target in team.iter() {
+    for (index,target) in team.iter().enumerate() {
         if target.is_alive()  {
-            ids.push(index);
+            ids.push(InstanceRef{team: !actor.team, index});
         }
-        index += 1;
     }
-    if ids.len() == 0 {
-        return None;
+    if ids.is_empty() {
+        None
     }
     else {
-        let mut targets = Vec::new();
-        for i in 0..ids.len() {
-            targets.push(InstanceRef{team: !actor.team, index: ids[i]});
-        }
-        return Some(targets);
+        Some(ids)
     }
 }
 

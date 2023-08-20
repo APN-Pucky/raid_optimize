@@ -66,7 +66,7 @@ pub fn main() {
     let mut ally = vec![];
     let mut enemy = vec![];
 
-    for name in str_ally.split(",").map(|s| s.trim()) {
+    for name in str_ally.split(',').map(|s| s.trim()) {
         let hero = get_hero_by_string(&heroes, name);
         match hero {
             Some(h) => {
@@ -78,7 +78,7 @@ pub fn main() {
             }
         }
     }
-    for name in str_enemy.split(",").map(|s| s.trim()) {
+    for name in str_enemy.split(',').map(|s| s.trim()) {
         let hero = get_hero_by_string(&heroes, name);
         match hero {
             Some(h) => {

@@ -35,7 +35,7 @@ pub struct Result {
 }
 
 impl Wave {
-    pub fn new(allies: & Vec<&Hero>, enemies : & Vec<&Hero> , ap:Box<dyn Player>, ep:Box<dyn Player> , track_statistics : bool) -> Wave {
+    pub fn new(allies: & [&Hero], enemies : & [&Hero] , ap:Box<dyn Player>, ep:Box<dyn Player> , track_statistics : bool) -> Wave {
         let mut id = 0;
         let a= allies.iter().map(|h| {
             id += 1;
@@ -57,7 +57,7 @@ impl Wave {
     }
 
     pub fn get_statistics(&self) -> Vec<EnumMap<Stat,u32>> {
-        self.allies.iter().chain(self.enemies.iter()).map(|i| i.copy_statistics()).collect()
+        self.allies.iter().chain(self.enemies.iter()).map(|i| i.statistics).collect()
     }
 
     pub fn get_instance(&self, actor : InstanceRef) -> &Instance {
@@ -132,10 +132,8 @@ impl Wave {
         }
         if max_turn_meter >= self.initiative_threshold {
             let ir = InstanceRef{team : found,index: max_index};
-            log::debug!("{} acts {max_turn_meter}", self.get_instance(ir));
             Some(ir)
         } else {
-            log::debug!("Nobody acts");
             None
         }
     }
@@ -228,16 +226,14 @@ impl Wave {
         let team = self.get_enemy_team(actor);
         //opponents.iter().filter(|i| i.is_alive()).collect::<Vec<&mut Instance>>().choose_mut(&mut rand::thread_rng())
         let mut ids = Vec::new();
-        let mut index = 0;
-        for target in team.iter() {
+        for (index,target) in team.iter().enumerate() {
             if target.is_alive()  {
                 ids.push(index);
             }
-            index += 1;
         }
         // pick random index from ids
-        if ids.len() == 0 {
-            return None;
+        if ids.is_empty() {
+            None
         }
         else {
             let mut rng = rand::thread_rng();
@@ -302,15 +298,13 @@ impl Wave {
     }
 
     pub fn after_action(&mut self, actor :InstanceRef) {
-        let a; 
-        //let e;
-        if actor.team {
-            a = &mut self.allies[actor.index];
-            //e = &mut self.enemies;
-        }else {
-            a = &mut self.enemies[actor.index];
-            //e = &mut self.allies;
-        }
+        let a = if actor.team {
+                &mut self.allies[actor.index]
+                //e = &mut self.enemies;
+            }else {
+                &mut self.enemies[actor.index]
+                //e = &mut self.allies;
+            };
         log::debug!("after {} acts", a);
         a.set_turn_meter(0);
         a.reduce_effects();
@@ -332,23 +326,21 @@ impl Wave {
         let instance  = self.get_instance(actor);
         let skills : Vec<Skill> = instance.get_active_skills();
         log::debug!("{} has active skills {:?}", instance, skills);
-        let skill :Skill; 
-        if actor.team {
-            skill = self.ally_player.pick_skill(self, actor, skills);
-        }
-        else {
-            skill = self.enemy_player.pick_skill(self, actor, skills);
-        }
+        let skill :Skill = if actor.team {
+                self.ally_player.pick_skill(self, actor, skills)
+            }
+            else {
+                 self.enemy_player.pick_skill(self, actor, skills)
+            };
         // get targets
         match get_targets(skill, &actor, self) {
             Some(ts) => {
-                let target : InstanceRef;
-                if actor.team {
-                    target = self.ally_player.pick_target(self, actor, skill, ts);
-                }
-                else {
-                    target = self.enemy_player.pick_target(self, actor, skill,ts);
-                }
+                let target : InstanceRef = if actor.team {
+                        self.ally_player.pick_target(self, actor, skill, ts)
+                    }
+                    else {
+                        self.enemy_player.pick_target(self, actor, skill,ts)
+                    };
                 // apply skill
                 execute_skill(skill, &actor, &target, self);
             },
@@ -393,12 +385,14 @@ impl Wave {
         loop {
             self.info();
             self.progress_turn_meter();
-            match self.find_actor_index() {
-                Some(ir) => {
-                    self.act(ir);
-                    self.turns += 1;
-                },
-                None => {},
+            
+            if let Some(ir) = self.find_actor_index() {
+                log::debug!("{} acts", self.get_instance(ir));
+                self.act(ir);
+                self.turns += 1;
+            }
+            else {
+                log::debug!("Nobody acts");
             }
 
             // game over
@@ -415,7 +409,7 @@ impl Wave {
                 if stall {
                     log::debug!("Stall");
                 }
-                if win && loss || win && stall || loss && stall {
+                if (stall || loss) && win || loss && stall {
                     panic!("Inconsistent result {},{},{}", win,loss,stall);
                 }
                 return Result {

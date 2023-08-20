@@ -36,6 +36,12 @@ pub struct Effects {
     //pub vm : [Vec<(u32,InstanceRef)>;Effect::NumberOfEffects as usize],
 }
 
+impl Default for Effects {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Effects {
     pub fn new() -> Effects {
         Effects {
@@ -56,16 +62,22 @@ impl Effects {
         for (_key,value) in self.em.iter_mut() {
             value.retain(|&(x,_)| x > 0);
         }
-        //self.hm.retain(|_,v| v.len() > 0);
     }
 
     pub fn reduce(&mut self) {
         for (_key,value) in self.em.iter_mut() {
-            for (j,_) in value.iter_mut() {
-                *j -= 1;
-            }
+            let mut i = 0;
+            while i < value.len() {
+                value[i].0 -= 1;
+                if value[i].0 == 0 {
+                    value.remove(i);
+                }
+                else {
+                    i += 1;
+                }
+            } 
         }
-        self.remove_empty();
+        //self.remove_empty();
     }
 }
 
@@ -99,7 +111,12 @@ impl Instance {
 
     pub fn cooldown(&mut self, skill :Skill) {
         // find index of skill in hero.skills
-        self.hero.skills.iter().position(|s| *s == skill).map(|i| self.cooldowns[i] = get_cooldown(skill));
+        if let Some(i) = self.hero.skills.iter().position(|s| *s == skill) {
+            self.cooldowns[i] = get_cooldown(skill);
+        }
+        else {
+            panic!("Skill {:?} not found in hero {:?}", skill, self.hero);
+        }
     }
     
     pub fn reduce_cooldowns(&mut self) {
@@ -110,12 +127,20 @@ impl Instance {
         }
     }
 
+    #[deprecated]
     pub fn get_cooldown_mask(&self) -> Vec<bool> {
         self.cooldowns.iter().map(|c| *c == 0).collect()
     }
 
     pub fn get_active_skills(&self) -> Vec<Skill> {
-        self.hero.skills.iter().zip(self.get_cooldown_mask()).filter(|(_,c)| *c).map(|(s,_)| s.clone()).collect()
+        let mut ret  = Vec::new();
+        for i in 0..self.cooldowns.len() {
+            if self.cooldowns[i] == 0 {
+                ret.push(self.hero.skills[i]);
+            }
+        }
+        ret
+        //self.hero.skills.iter().zip(self.get_cooldown_mask()).filter(|(_,c)| *c).map(|(s,_)| *s).collect()
     }
 
     pub fn cleanse<F>(&mut self, effect_closure:&F, layers: u32) where F : Fn(Effect) -> bool {
@@ -163,9 +188,9 @@ impl Instance {
         }
     }
 
-    pub fn copy_statistics(&self) -> EnumMap<Stat, u32> {
-        self.statistics.clone()
-    }
+    //pub fn copy_statistics(&self) -> EnumMap<Stat, u32> {
+    //    self.statistics.clone()
+    //}
 
     pub fn get_defense(&self) -> u32 {
         // TODO handle defense buff/debuff
@@ -192,7 +217,7 @@ impl Instance {
     }
 
     pub fn has_effect(&self, key: Effect) -> bool {
-        self.effects.em[key].len() > 0
+        !self.effects.em[key].is_empty()
     }
 
     pub fn reduce_shields(&mut self) {
@@ -312,16 +337,16 @@ impl Instance {
         if current_shield > damage {
             log::debug!("{} looses {} shield", self, damage);
             self.subtract_shield(damage);
-            return 0;
+            0
         }
         else if current_shield == 0 {
-            return damage;
+            damage
         }
         else { // damage > shield
             log::debug!("{} looses all {} shield", self, current_shield);
             self.add_stat(Stat::ShieldBlocked, current_shield);
             self.shield = Vec::new();
-            return damage - current_shield;
+            damage - current_shield
         }
     }
 
@@ -330,7 +355,6 @@ impl Instance {
         if self.health < damage {
             self.add_stat(Stat::HealthLost, self.health);
             self.health = 0;
-            return;
         }
         else {
             self.add_stat(Stat::HealthLost, damage);

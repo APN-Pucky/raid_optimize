@@ -64,7 +64,7 @@ impl  CombinedResult {
             statistics: Vec::new(),
         };
         for r in results {
-            cr.add_result(&r);
+            cr.add_result(r);
         }
         cr
     }
@@ -151,11 +151,11 @@ impl Sim<'_> {
     pub fn new<'a>(allies: &'a Vec<&'a Hero>, enemies : &'a Vec<&'a Hero>,manual_ally:bool,manual_enemy: bool , iterations: u64) -> Sim<'a> {
         // create statistcs vector with one entry per hero
         Sim {
-            allies: allies,
-            enemies: enemies,
-            manual_ally:manual_ally,
-            manual_enemy:manual_enemy,
-            iterations : iterations,
+            allies,
+            enemies,
+            manual_ally,
+            manual_enemy,
+            iterations,
             result : CombinedResult {
                 iterations: 0,
                 wins: 0,
@@ -203,13 +203,12 @@ impl Sim<'_> {
                 //let value = self.result.statistics[index].hm[key];
                 let mean = self.result.get_mean(index, key);
                 let std = self.result.get_std(index, key);
-                let s: String;
-                if bar {
-                    s = "=".repeat((mean/max*barlen) as usize) + &" ".repeat(((max-mean)/max*barlen) as usize);
-                }
-                else {
-                    s = format!("{:.2} +- {:.2}",mean, std);
-                }
+                let s: String = if bar {
+                        "=".repeat((mean/max*barlen) as usize) + &" ".repeat(((max-mean)/max*barlen) as usize)
+                    }
+                    else {
+                        format!("{:.2} +- {:.2}",mean, std)
+                    };
                 row.push(Cell::new(&s));
                 index += 1;
             }
@@ -244,13 +243,12 @@ impl Sim<'_> {
                 //let value = self.result.statistics[index].hm[key];
                 let mean = self.result.get_mean(index, key);
                 let std = self.result.get_std(index, key);
-                let s : String ;
-                if bar {
-                    s = "=".repeat((mean/max*barlen) as usize) + &" ".repeat(((max-mean)/max*barlen) as usize);
-                }
-                else {
-                    s = format!("{:.2} +- {:.2}",mean, std);
-                }
+                let s : String = if bar {
+                        "=".repeat((mean/max*barlen) as usize) + &" ".repeat(((max-mean)/max*barlen) as usize)
+                    }
+                    else {
+                        format!("{:.2} +- {:.2}",mean, std)
+                    };
                 row.push(Cell::new(&s));
                 index += 1;
             }

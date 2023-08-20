@@ -37,11 +37,9 @@ pub struct Hero {
 
 pub fn get_hero_by_string<'a>(heroes: &'a Heroes, name: &'a str) -> Option<&'a Hero> {
     for hero in heroes.heroes.iter() {
-        if hero.name == name { // TOOD handle multiple names
-            return Some(hero);
-        }
-        else if  name  == format!("[{}]", hero.id) {
-            return Some(hero);
+        if hero.name == name  || name  == format!("[{}]", hero.id) 
+        { // TOOD handle multiple names
+            return Some(hero)
         }
     }
     None

@@ -28,7 +28,7 @@ pub struct ManualPlayer {}
 
 impl ManualPlayer {
     fn handle_inputs(&self,s :&str , wave:&Wave, actor : InstanceRef) -> bool {
-        match s.as_ref() {
+        match s {
             "s" => {
                 // show status
                 if actor.team {
