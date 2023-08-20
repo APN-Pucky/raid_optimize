@@ -289,7 +289,7 @@ impl Sim<'_> {
     }
 
 
-    pub fn run(&mut self , threads : u32) {
+    pub fn run(&mut self , threads : u32,track_statistics:bool) {
         let vecit : Vec<u32> = (0..threads).collect::<Vec<_>>();
         let iter = self.iterations / (threads as u64) ;
         let bar = ProgressBar::new(self.iterations);
@@ -321,7 +321,7 @@ impl Sim<'_> {
                 else {
                     Box::new(RandomPlayer{})
                 };
-                let mut wave = Wave::new(self.allies, self.enemies,ap,ep);
+                let mut wave = Wave::new(self.allies, self.enemies,ap,ep,track_statistics);
                 cr.add_result(&wave.run());
                 if (x+1) % 10000 == 0 { // plus one because we start at 0 and want the score added after the iteration
                     bar.inc(10000);

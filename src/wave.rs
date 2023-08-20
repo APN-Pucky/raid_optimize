@@ -34,15 +34,15 @@ pub struct Result {
 }
 
 impl Wave {
-    pub fn new(allies: & Vec<&Hero>, enemies : & Vec<&Hero> , ap:Box<dyn Player>, ep:Box<dyn Player>) -> Wave {
+    pub fn new(allies: & Vec<&Hero>, enemies : & Vec<&Hero> , ap:Box<dyn Player>, ep:Box<dyn Player> , track_statistics : bool) -> Wave {
         let mut id = 0;
         let a= allies.iter().map(|h| {
             id += 1;
-            Instance::new(h, id , InstanceRef { team:true, index: (id-1) as usize })
+            Instance::new(h, id , InstanceRef { team:true, index: (id-1) as usize },track_statistics)
         }).collect();
         let e= enemies.iter().map(|h| {
             id += 1;
-            Instance::new(h, id, InstanceRef { team:false, index: (id-1-allies.len()as u32) as usize })
+            Instance::new(h, id, InstanceRef { team:false, index: (id-1-allies.len()as u32) as usize },track_statistics)
         }).collect();
         Wave {
             allies:a,
@@ -187,7 +187,7 @@ impl Wave {
         }
     }
 
-    pub fn cleanse_team<F>(&mut self, actor : &InstanceRef, effect_closure: &F ,layers:u32) where F : Fn(&Effect) -> bool {
+    pub fn cleanse_team<F>(&mut self, actor : &InstanceRef, effect_closure: &F ,layers:u32) where F : Fn(Effect) -> bool {
         if actor.team {
             self.allies.iter_mut().for_each(|a| a.cleanse(effect_closure,layers));
         }
@@ -276,7 +276,7 @@ impl Wave {
         // apply bleed
         let n = a.effects.get(Effect::Bleed);
         if n > 0 {
-            let b : &Vec<(u32,InstanceRef)> = a.effects.hm.get(&Effect::Bleed).unwrap();
+            let b : &Vec<(u32,InstanceRef)> = &a.effects.em[Effect::Bleed];
             // get inflictor
             let nn: &InstanceRef = &b.last().unwrap().1;
             let dmg_vec = vec![30,50,70,90,105,120,135,145,155,165];
@@ -286,7 +286,7 @@ impl Wave {
         // apply HP burning
         let n = a.effects.get(Effect::HPBurning);
         if n > 0 {
-            let b : &Vec<(u32,InstanceRef)> = a.effects.hm.get(&Effect::HPBurning).unwrap();
+            let b : &Vec<(u32,InstanceRef)> = &a.effects.em[Effect::HPBurning];
             // get inflictor
             let inflictor : &InstanceRef = &b.last().unwrap().1;
             let mut hp_burn_dmg = (a.get_max_health() * 8 * n) / 100;

@@ -100,9 +100,9 @@ pub fn main() {
         &enemy,
         manual_ally,
         manual_enemy,
-        iterations
+        iterations,
     );
-    wave.run(threads);
+    wave.run(threads,!no_stats);
     if !no_results{
         wave.print_results();
     }

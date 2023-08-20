@@ -4,6 +4,8 @@ extern crate serde;
 extern crate serde_xml_rs;
 extern crate rand;
 extern crate log;
+extern crate enum_map;
+extern crate enum_map_derive;
 
 pub mod hero;
 pub mod sim;

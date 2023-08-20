@@ -1,6 +1,6 @@
-use crate::wave::InstanceRef;
+use enum_map::Enum;
 
-#[derive(Debug, Eq, Hash, PartialEq,strum_macros::Display,Copy,Clone)]
+#[derive(Debug,Enum, PartialEq, Eq ,strum_macros::Display,Copy,Clone )]
 pub enum Effect {
     WetI,
     WetII,
@@ -20,7 +20,7 @@ pub enum Effect {
     SpeedUpI,
 }
 
-pub fn is_dot(effect : &Effect) -> bool {
+pub fn is_dot(effect : Effect) -> bool {
     match effect {
         Effect::WetI => false,
         Effect::WetII => false,

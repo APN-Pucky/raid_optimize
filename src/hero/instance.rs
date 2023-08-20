@@ -5,6 +5,9 @@ use log::debug;
 
 use rand::seq::SliceRandom;
 use rand::Rng;
+use enum_map::{EnumMap, EnumArray};
+
+
 
 use crate::hero::Hero;
 use crate::wave::{Wave, InstanceRef, TURN_METER_THRESHOLD};
@@ -22,51 +25,43 @@ pub struct Instance {
     shield: Vec<(u32,u32)>, // (shield, turns)
     turn_meter: u32,
     pub cooldowns : Vec<u32>,
+    track_statistics: bool,
     pub statistics: HashMap<String, u32>,    
     pub effects : Effects,
 }
 
 #[derive(Debug)]
 pub struct Effects {
-    pub hm : HashMap<Effect, Vec<(u32,InstanceRef)>>,
+    pub em : EnumMap<Effect,Vec<(u32,InstanceRef)>>,
+    //pub vm : [Vec<(u32,InstanceRef)>;Effect::NumberOfEffects as usize],
 }
 
 impl Effects {
     pub fn new() -> Effects {
         Effects {
-            hm : HashMap::new(),
+            em : EnumMap::default(),
         }
     }
 
     pub fn get(&self, key: Effect) -> u32 {
-        match self.hm.get(&key) {
-            Some(v) => v.len() as u32,
-            None => 0,
-        }
+        self.em[key].len() as u32
     }
 
     pub fn push(&mut self, key: Effect, turns : u32, ir:InstanceRef) {
-        match self.hm.get_mut(&key) {
-            Some(v) => v.push((turns,ir)),
-            None => {
-                let mut v = Vec::new();
-                v.push((turns,ir));
-                self.hm.insert(key, v);
-            }
-        }
+        self.em[key ].push((turns,ir));
     }
 
     pub fn remove_empty(&mut self) {
         // remove zero elements from effect vectors
-        for (_,v) in self.hm.iter_mut() {
-            v.retain(|&(x,_)| x > 0);
+        for (key,value) in self.em.iter_mut() {
+            value.retain(|&(x,_)| x > 0);
         }
-        self.hm.retain(|_,v| v.len() > 0);
+        //self.hm.retain(|_,v| v.len() > 0);
     }
 
     pub fn reduce(&mut self) {
-        for (_,v) in self.hm.iter_mut() {
-            for (j,_) in v.iter_mut() {
+        for (key,value) in self.em.iter_mut() {
+            for (j,_) in value.iter_mut() {
                 *j -= 1;
             }
         }
@@ -87,7 +82,7 @@ impl PartialEq for Instance {
 }
 
 impl Instance {
-    pub fn new(hero: &Hero, id:u32, iref: InstanceRef) -> Instance {
+    pub fn new(hero: &Hero, id:u32, iref: InstanceRef , track_statistics : bool) -> Instance {
         Instance {
             hero: hero.clone(),
             id,
@@ -96,6 +91,7 @@ impl Instance {
             shield: Vec::new(),
             turn_meter: 0,
             cooldowns : hero.skills.iter().map(|_| 0).collect(),
+            track_statistics,
             statistics: HashMap::new(),
             effects : Effects::new(), 
         }
@@ -122,8 +118,8 @@ impl Instance {
         self.hero.skills.iter().zip(self.get_cooldown_mask()).filter(|(_,c)| *c).map(|(s,_)| s.clone()).collect()
     }
 
-    pub fn cleanse<F>(&mut self, effect_closure:&F, layers: u32) where F : Fn(&Effect) -> bool {
-        for (k,v) in self.effects.hm.iter_mut() {
+    pub fn cleanse<F>(&mut self, effect_closure:&F, layers: u32) where F : Fn(Effect) -> bool {
+        for (k,v) in self.effects.em.iter_mut() {
             if effect_closure(k) {
                 // drop `layers` randomly of v
                 if v.len() > layers as usize {
@@ -162,7 +158,9 @@ impl Instance {
     }
 
     pub fn add_stat(&mut self, key: &str, statistics: u32 ) {
-        *self.statistics.entry(key.to_string()).or_insert(0) += statistics;
+        if self.track_statistics {
+            *self.statistics.entry(key.to_string()).or_insert(0) += statistics;
+        }
     }
 
     pub fn copy_statistics(&self) -> HashMap<String, u32> {
@@ -198,10 +196,7 @@ impl Instance {
     }
 
     pub fn has_effect(&self, key: Effect) -> bool {
-        match self.effects.hm.get(&key) {
-            Some(v) => v.len() > 0,
-            None => false,
-        }
+        self.effects.em[key].len() > 0
     }
 
     pub fn reduce_shields(&mut self) {
@@ -490,7 +485,7 @@ mod tests {
             damage_reflection : 0.0,
             skills : Vec::new(),
         };
-        let hi : Instance = Instance::new(&h,0,InstanceRef{team:true,index:0});
+        let hi : Instance = Instance::new(&h,0,InstanceRef{team:true,index:0},false);
         assert_eq!(h.health, hi.health);
 
     }
