@@ -1,5 +1,5 @@
 
-#[derive(Deserialize,Debug, Clone, Copy,Eq, PartialEq)]
+#[derive(Deserialize,Debug, Clone, Copy, PartialEq)]
 pub enum Passive {
     None,
     Generic,
@@ -10,6 +10,8 @@ pub enum Passive {
     //Seth
     DeepSeaBloodline,
     //Space
-    Resplendence,
+    Resplendence {
+        turn_meter_ratio: f32,
+    },
     //...
 }

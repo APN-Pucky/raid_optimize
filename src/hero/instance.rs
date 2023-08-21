@@ -403,6 +403,7 @@ impl Instance<'_> {
     }
 
     pub fn set_turn_meter(&mut self, turn_meter: f32) {
+        log::debug!("{} turn_meter set to {}", self, turn_meter);
         self.turn_meter= turn_meter
     }
 
@@ -416,7 +417,7 @@ impl Instance<'_> {
 
     pub fn progress_turn_meter(&mut self, time: f32) {
         self.turn_meter+= (self.get_speed() * time);
-        log::debug!("{} turn_meter is now {}", self, self.turn_meter);
+        log::debug!("{} turn_meter progressed to {}", self, self.turn_meter);
     }
 
     pub fn is_alive(&self) -> bool {

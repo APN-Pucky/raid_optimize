@@ -4,6 +4,7 @@ use rand::Rng;
 use crate::hero::Hero;
 use crate::hero::effect::Effect;
 use crate::hero::instance::Instance;
+use crate::hero::passive::Passive;
 use crate::hero::skill::{Skill, get_targets, execute_skill};
 use crate::hero::stat::Stat;
 use crate::player::Player;
@@ -366,7 +367,23 @@ impl Wave<'_> {
         }
     }
 
+    pub fn begin_wave(&mut self) {
+        log::debug!("Wave begins");
+        self.allies.iter_mut()
+            .chain(self.enemies.iter_mut())
+            .for_each(|a| 
+                match a.passives[..] {
+                    [ Passive::Resplendence { turn_meter_ratio }, .. ] => {
+                        log::debug!("{} has Resplendence", a);
+                        a.set_turn_meter(TURN_METER_THRESHOLD * turn_meter_ratio);
+                    },
+                    _ => {}
+                }
+            );
+    }
+
     pub fn run(& mut self) -> Result {
+        self.begin_wave();
         loop {
             self.info();
             self.progress_turn_meter();

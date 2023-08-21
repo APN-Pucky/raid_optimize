@@ -155,7 +155,7 @@
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
         <passive>
-            <None />
+            <Resplendence turn_meter_ratio="0.15" />
         </passive>
         <skill>
             <Tricks>
