@@ -9,10 +9,12 @@ use prettytable::Cell;
 use prettytable::Row;
 
 use crate::hero::Hero;
+use crate::hero::instance::Instance;
 use crate::hero::stat::Stat;
 use crate::player::ManualPlayer;
 use crate::player::Player;
 use crate::player::RandomPlayer;
+use crate::wave::InstanceRef;
 use crate::wave::Wave;
 use crate::wave::Result;
 
@@ -294,7 +296,16 @@ impl Sim<'_> {
                 else {
                     Box::new(RandomPlayer{})
                 };
-                let mut wave = Wave::new(self.allies, self.enemies,ap,ep,track_statistics);
+                let mut id = 0;
+                let mut a : Vec<Instance>= self.allies.iter().map(|h| {
+                    id += 1;
+                    Instance::new(h, id , InstanceRef { team:true, index: (id-1) as usize },track_statistics)
+                }).collect();
+                let mut e: Vec<Instance>= self.enemies.iter().map(|h| {
+                    id += 1;
+                    Instance::new(h, id, InstanceRef { team:false, index: (id-1-self.allies.len()as u32) as usize },track_statistics)
+                }).collect();
+                let mut wave = Wave::new(&mut a, &mut e,ap,ep,track_statistics);
                 cr.add_result(&wave.run());
                 if (x+1) % 100000 == 0 { // plus one because we start at 0 and want the score added after the iteration
                     bar.inc(100000);

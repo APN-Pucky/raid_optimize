@@ -18,8 +18,8 @@ pub struct InstanceRef {
 }
 
 pub struct Wave<'a> {
-    pub allies: Vec<Instance<'a>>, // should this be position dependent?
-    pub enemies: Vec<Instance<'a>>,
+    pub allies: &'a mut Vec<Instance<'a>>, // should this be position dependent?
+    pub enemies: &'a mut Vec<Instance<'a>>,
     pub ally_player : Box<dyn Player>,
     pub enemy_player : Box<dyn Player>,
     turns: u32,
@@ -47,16 +47,7 @@ impl<'a> Wave<'a> {
 }
 
 impl Wave<'_> {
-    pub fn new<'a>(allies: &'a  [&'a Hero], enemies : &'a  [&'a Hero] , ap:Box<dyn Player>, ep:Box<dyn Player> , track_statistics : bool) -> Wave<'a> {
-        let mut id = 0;
-        let a= allies.iter().map(|h| {
-            id += 1;
-            Instance::new(h, id , InstanceRef { team:true, index: (id-1) as usize },track_statistics)
-        }).collect();
-        let e= enemies.iter().map(|h| {
-            id += 1;
-            Instance::new(h, id, InstanceRef { team:false, index: (id-1-allies.len()as u32) as usize },track_statistics)
-        }).collect();
+    pub fn new<'a>(a: &'a mut  Vec<Instance<'a>>, e: &'a mut Vec<Instance<'a>>, ap:Box<dyn Player>, ep:Box<dyn Player> , track_statistics : bool) -> Wave<'a> {
         Wave {
             allies:a,
             enemies:e,
