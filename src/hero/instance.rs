@@ -1,7 +1,6 @@
 // Import (via `use`) the `fmt` module to make it available.
 use std::fmt;
 use enum_map::EnumMap;
-use log::debug;
 
 use rand::seq::SliceRandom;
 use rand::Rng;
@@ -9,7 +8,7 @@ use rand::Rng;
 
 use crate::hero::Hero;
 use crate::hero::stat::effect_to_stat;
-use crate::roll;
+use crate::{roll, indent, debug, warn, info, error};
 use crate::wave::{ InstanceRef, TURN_METER_THRESHOLD};
 use crate::hero::skill::Skill;
 use crate::hero::effect::Effect;
@@ -18,6 +17,7 @@ use super::effects::Effects;
 use super::passive::Passive;
 use super::skill::get_cooldown;
 use super::stat::Stat;
+
 
 #[derive(Debug)]
 pub struct Instance<'a> {
@@ -151,7 +151,7 @@ impl Instance<'_> {
 
     pub fn restore(&mut self, target: &mut Instance, heal: f32 ) {
         //let heal = heal * self.hero.healing_effect; 
-        log::debug!("{} restores {} health to {}", self, heal, target);
+        debug!("{} restores {} health to {}", self, heal, target);
         self.add_stat(Stat::HealthRestored, heal);
         target.heal(heal);
     }
@@ -162,12 +162,12 @@ impl Instance<'_> {
 
     pub fn heal(&mut self, health: f32) {
         if self.is_dead() {
-            log::warn!("{} is dead, cannot heal [{},{}]", self,self.health,self.health > 0.0);
+            warn!("{} is dead, cannot heal [{},{}]", self,self.health,self.health > 0.0);
             return;
         }
         let heal = health * (1.+self.hero.healing_effect); // TODO handle rounding
         let new_health = self.hero.health.min(self.health + heal);
-        log::debug!("{} heals {} health (healing_effect: {})", self, heal, self.hero.healing_effect);
+        debug!("{} heals {} health (healing_effect: {})", self, heal, self.hero.healing_effect);
         self.add_stat(Stat::HealthHealed, new_health- self.health );
         self.health = new_health;
     }
@@ -235,7 +235,7 @@ impl Instance<'_> {
             red  = turn
         }
         let turn_meter = turn - red;
-        log::debug!("{} reduces turn meter of {} by {} to {}", self, target, turn_meter_reduction_ratio, turn_meter);
+        debug!("{} reduces turn meter of {} by {} to {}", self, target, turn_meter_reduction_ratio, turn_meter);
         target.set_turn_meter(turn_meter);
         //self.add_stat(Stat::TurnMeterReduced, turn_meter);
     }
@@ -248,7 +248,7 @@ impl Instance<'_> {
 
     pub fn inflict(&mut self, target : &mut Instance, effect: Effect, chance : f32, turns: u32) {
         if roll(chance) {
-            log::debug!("{} inflicts {} for {} on {}", self, effect, turns, target);
+            debug!("{} inflicts {} for {} on {}", self, effect, turns, target);
             //self.add_stat(&format!("{} inflicted",effect), turns);
             self.add_stat(effect_to_stat(effect), turns as f32);
             target.effects.push(effect, turns, self.iref);
@@ -263,7 +263,7 @@ impl Instance<'_> {
     }
 
     pub fn take_hp_burning_damage(&mut self, dmg: f32) {
-        log::debug!("{} takes {} damage from hp_burning", self, dmg);
+        debug!("{} takes {} damage from hp_burning", self, dmg);
         // todo handle mastery
         self.take_damage(dmg);
     }
@@ -272,7 +272,7 @@ impl Instance<'_> {
         if roll(bleed_chance) {
             let n = target.effects.get(Effect::Bleed);
             if n < 10 {
-                log::debug!("{} inflicts {} bleed on {}", self, bleed_turns, target);
+                debug!("{} inflicts {} bleed on {}", self, bleed_turns, target);
                 self.add_stat(effect_to_stat(Effect::Bleed), bleed_turns as f32);
                 target.effects.push(Effect::Bleed, bleed_turns,self.iref );
                 let dmg_vec = vec![0.14,0.18,0.22,0.26,0.30,0.30,0.30,0.30,0.30,0.30];
@@ -280,13 +280,13 @@ impl Instance<'_> {
                 target.take_bleed_damage(bleed_dmg);
             }
             else {
-                log::debug!("{} already has 10 bleed", target);
+                debug!("{} already has 10 bleed", target);
             }
         }
     }
 
     pub fn take_bleed_damage(&mut self, bleed_dmg: f32) {
-        log::debug!("{} takes {} damage from bleed", self, bleed_dmg);
+        debug!("{} takes {} damage from bleed", self, bleed_dmg);
         // todo handle mastery
         self.take_damage(bleed_dmg);
     }
@@ -322,7 +322,7 @@ impl Instance<'_> {
     pub fn loose_shield(&mut self, damage: f32) -> f32 {
         let current_shield = self.get_shield();
         if current_shield > damage {
-            log::debug!("{} looses {} shield", self, damage);
+            debug!("{} looses {} shield", self, damage);
             self.subtract_shield(damage);
             0.0
         }
@@ -330,7 +330,7 @@ impl Instance<'_> {
             damage
         }
         else { // damage > shield
-            log::debug!("{} looses all {} shield", self, current_shield);
+            debug!("{} looses all {} shield", self, current_shield);
             self.add_stat(Stat::ShieldBlocked, current_shield);
             self.shield = Vec::new();
             damage - current_shield
@@ -338,7 +338,7 @@ impl Instance<'_> {
     }
 
     pub fn loose_health(&mut self, damage: f32) {
-        log::debug!("{} looses {} health", self, damage);
+        debug!("{} looses {} health", self, damage);
         if self.health < damage {
             self.add_stat(Stat::HealthLost, self.health);
             self.health = 0.0;
@@ -369,6 +369,8 @@ impl Instance<'_> {
 
     pub fn attack(&mut self, target: &mut Instance, atk_dmg:f32 ) {
         // test if critical strike
+        debug!("{} attacks {} with {} attack", self, target,atk_dmg);
+        indent!({
         self.add_stat(Stat::Attacks, 1.0);
         let mut rng = rand::thread_rng();
         let crit = rng.gen::<f32>() < self.hero.crit_rate;
@@ -384,28 +386,28 @@ impl Instance<'_> {
             self.add_stat(Stat::CriticalDamage, attack  * crit_rate  );
             target.add_stat(Stat::TenacityIgnored, attack  * tenacity );
             attack = (attack * crit_rate);
-            log::debug!("{} critical attack ({}%={}%-{}%)", self,crit_rate*100.,crit*100.,tenacity*100.);
+            debug!("{} critical attack ({}%={}%-{}%)", self,crit_rate*100.,crit*100.,tenacity*100.);
         }
-        log::debug!("{} attacks {} with {} attack", self, target,attack );
         self.add_stat(Stat::Attack, attack);
         let mut def = target.get_defense();
 
         let pierce = (def  * self.hero.piercing); // TODO handle rounding
         self.add_stat(Stat::PiercedDefense, pierce);
-        log::debug!("{} pierces {} defense of {} ({}%)", self, pierce, def, self.hero.piercing*100.);
+        debug!("{} pierces {} defense of {} ({}%)", self, pierce, def, self.hero.piercing*100.);
         def -= pierce;
         
         self.deal_damage(target, attack - def);
+        })
     }
 
     pub fn reset_turn_meter(&mut self) {
         self.set_turn_meter(0.0)
     }
 
-    pub fn set_turn_meter(&mut self, turn_meter: f32) {
-        log::debug!("{} turn_meter set to {}", self, turn_meter);
+    pub fn set_turn_meter(&mut self, turn_meter: f32) { indent!({
+        debug!("{} turn_meter set to {}", self, turn_meter);
         self.turn_meter= turn_meter
-    }
+    })}
 
     pub fn increase_turn_meter(&mut self, turn_meter: f32) {
         self.turn_meter+= turn_meter
@@ -417,7 +419,7 @@ impl Instance<'_> {
 
     pub fn progress_turn_meter(&mut self, time: f32) {
         self.turn_meter+= (self.get_speed() * time);
-        log::debug!("{} turn_meter progressed to {}", self, self.turn_meter);
+        debug!("{} turn_meter progressed to {}", self, self.turn_meter);
     }
 
     pub fn is_alive(&self) -> bool {

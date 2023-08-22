@@ -8,9 +8,11 @@ use crate::hero::passive::Passive;
 use crate::hero::skill::{Skill, get_targets, execute_skill};
 use crate::hero::stat::Stat;
 use crate::player::Player;
+use crate::{debug, indent, info};
 
 pub const TURN_LIMIT : u32 = 300;
 pub const TURN_METER_THRESHOLD : f32 = 1000.0;
+
 
 #[derive(Debug,Copy,Clone)]
 pub struct InstanceRef {
@@ -228,6 +230,8 @@ impl Wave<'_> {
     }
 
     pub fn progress_turn_meter(&mut self) {
+        debug!("Progressing turn meter");
+        indent!({
         // get the time needed for one to reach threshold
         let mut min : f32 = self.allies.iter().chain(self.enemies.iter())
             .filter(|a| a.is_alive())
@@ -240,6 +244,7 @@ impl Wave<'_> {
         self.allies.iter_mut()
             .chain(self.enemies.iter_mut())
             .for_each(|a| a.progress_turn_meter(min));
+        })
     }
 
     pub fn before_action(&mut self, actor : InstanceRef) {
@@ -248,7 +253,8 @@ impl Wave<'_> {
             }else {
                 (&mut self.enemies[actor.index], &mut self.allies)
             };
-        log::debug!("before {} acts", a);
+        debug!("before {} acts", a);
+        indent!({
         // apply effects 
         // apply heal
         let n = a.effects.get(Effect::Heal);
@@ -281,6 +287,7 @@ impl Wave<'_> {
         }
 
         a.reduce_cooldowns();
+        })
     }
 
     pub fn after_action(&mut self, actor :InstanceRef) {
@@ -291,33 +298,38 @@ impl Wave<'_> {
                 &mut self.enemies[actor.index]
                 //e = &mut self.allies;
             };
-        log::debug!("after {} acts", a);
+        debug!("after {} acts", a);
+        indent!({
         a.set_turn_meter(0.0);
         a.reduce_effects();
         a.reduce_shields();
+        })
     }
 
+
     pub fn act(&mut self, actor : InstanceRef) {
+        debug!("{} acts", self.get_instance(actor));
+        indent!({
         //
         if !self.get_instance(actor).is_alive() {
-            log::debug!("{} is dead -> can't take turn", self.get_instance(actor));
+            debug!("{} is dead -> can't take turn", self.get_instance(actor));
             return;
         }
         self.before_action(actor);
         if !self.get_instance(actor).is_alive() {
-            log::debug!("{} is dead now -> can't take turn", self.get_instance(actor));
+            debug!("{} is dead now -> can't take turn", self.get_instance(actor));
             return;
         }
         // choose action
         let skills : Vec<&Skill> = self.get_active_skills(&actor);
-        log::debug!("{} has active skills {:?}", self.get_instance(actor), skills);
+        debug!("{} has active skills {:?}", self.get_instance(actor), skills);
         let skill :&Skill = if actor.team {
                 self.ally_player.pick_skill(self, actor, &skills)
             }
             else {
                  self.enemy_player.pick_skill(self, actor, &skills)
             };
-        log::debug!("{} chooses {}", self.get_instance(actor), skill);
+        debug!("{} chooses {}", self.get_instance(actor), skill);
         // get targets
         match get_targets(&skill, &actor, self) {
             Some(ts) => {
@@ -332,24 +344,24 @@ impl Wave<'_> {
             },
             None => {
                 // TODO maybe not even provide this option as active skill
-                log::debug!("{} has no valid targets for {}", self.get_instance(actor), skill);
+                debug!("{} has no valid targets for {}", self.get_instance(actor), skill);
                 return;
             },
         }
         // finish
         self.after_action(actor);
-
+        })
     }
 
-    pub fn info(&self) {
-        log::info!("Turn: {}", self.turns); 
-        log::info!("Allies:");
+    pub fn log_info(&self) {
+        info!("Turn: {}", self.turns); 
+        info!("Allies:");
         for a in self.allies.iter() {
-            log::info!("{}", a);
+            info!("{}", a);
         }
-        log::info!("Enemies:");
+        info!("Enemies:");
         for e in self.enemies.iter() {
-            log::info!("{}", e);
+            info!("{}", e);
         }
     }
 
@@ -368,28 +380,29 @@ impl Wave<'_> {
     }
 
     pub fn begin_wave(&mut self) {
-        log::debug!("Wave begins");
-        self.allies.iter_mut()
-            .chain(self.enemies.iter_mut())
-            .for_each(|a| 
-                match a.passives[..] {
-                    [ Passive::Resplendence { turn_meter_ratio }, .. ] => {
-                        log::debug!("{} has Resplendence", a);
-                        a.set_turn_meter(TURN_METER_THRESHOLD * turn_meter_ratio);
-                    },
-                    _ => {}
-                }
-            );
+        debug!("Wave begin");
+        indent!({
+            self.allies.iter_mut()
+                .chain(self.enemies.iter_mut())
+                .for_each(|a| 
+                    match a.passives[..] {
+                        [ Passive::Resplendence { turn_meter_ratio }, .. ] => {
+                            debug!("{} has Resplendence", a);
+                            a.set_turn_meter(TURN_METER_THRESHOLD * turn_meter_ratio);
+                        },
+                        _ => {}
+                    }
+                );
+        })
     }
 
     pub fn run(& mut self) -> Result {
         self.begin_wave();
         loop {
-            self.info();
+            self.log_info();
             self.progress_turn_meter();
             
             if let Some(ir) = self.find_actor_index() {
-                log::debug!("{} acts", self.get_instance(ir));
                 self.act(ir);
                 self.turns += 1;
             }

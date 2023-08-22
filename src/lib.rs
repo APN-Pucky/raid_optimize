@@ -14,6 +14,80 @@ pub mod player;
 
 use rand::Rng;
 
+
+thread_local!(static LOG_STACK : std::cell::RefCell<usize> = std::cell::RefCell::new(0));
+#[macro_export]
+macro_rules! indent {
+    ($fun:block) => {{
+        crate::LOG_STACK.with(|log_stack| {
+            {
+            let mut log_stack = log_stack.borrow_mut();
+            *log_stack += 1;
+            }
+            let this_is_what_might_get_returned = {
+                $fun
+            };
+            {
+            let mut log_stack = log_stack.borrow_mut();
+            *log_stack -= 1;
+            }
+            this_is_what_might_get_returned
+        })
+    }};
+}
+
+#[macro_export]
+macro_rules! debug {
+    ($($arg:tt)*) => {{
+        crate::LOG_STACK.with(|log_stack| {
+            let log_stack = log_stack.borrow();
+            let indent = " ".repeat(*log_stack);
+            log::debug!(target: "", "{}{}", indent, format!($($arg)*));
+        })
+    }};
+}
+
+#[macro_export]
+macro_rules! debug_indent {
+    ($($arg:tt)*, $fun:block) => {{
+        debug!($($arg)*);
+        indent!($fun)
+    }};
+}
+
+#[macro_export]
+macro_rules! warn{
+    ($($arg:tt)*) => {{
+        crate::LOG_STACK.with(|log_stack| {
+            let log_stack = log_stack.borrow();
+            let indent = " ".repeat(*log_stack);
+            log::warn!(target: "","{}{}", indent, format!($($arg)*));
+        })
+    }};
+}
+
+#[macro_export]
+macro_rules! error{
+    ($($arg:tt)*) => {{
+        crate::LOG_STACK.with(|log_stack| {
+            let log_stack = log_stack.borrow();
+            let indent = " ".repeat(*log_stack);
+            log::error!(target: "","{}{}", indent, format!($($arg)*));
+        })
+    }};
+}
+
+#[macro_export]
+macro_rules! info{
+    ($($arg:tt)*) => {{
+        crate::LOG_STACK.with(|log_stack| {
+            let log_stack = log_stack.borrow();
+            let indent = " ".repeat(*log_stack);
+            log::info!(target: "","{}{}", indent, format!($($arg)*));
+        })
+    }};
+}
+
 #[inline]
 pub fn roll(chance:f32) -> bool {
     if chance >= 1.0 {
