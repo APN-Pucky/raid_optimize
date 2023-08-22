@@ -17,6 +17,7 @@ use rand::Rng;
 
 thread_local!(static LOG_STACK : std::cell::RefCell<usize> = std::cell::RefCell::new(0));
 #[macro_export]
+#[cfg(debug_assertions)]
 macro_rules! indent {
     ($fun:block) => {{
         crate::LOG_STACK.with(|log_stack| {
@@ -35,8 +36,14 @@ macro_rules! indent {
         })
     }};
 }
+#[macro_export]
+#[cfg(not(debug_assertions))]
+macro_rules! indent {
+    ($fun:block) => {$fun}
+}
 
 #[macro_export]
+#[cfg(debug_assertions)]
 macro_rules! debug {
     ($($arg:tt)*) => {{
         crate::LOG_STACK.with(|log_stack| {
@@ -46,13 +53,10 @@ macro_rules! debug {
         })
     }};
 }
-
 #[macro_export]
-macro_rules! debug_indent {
-    ($($arg:tt)*, $fun:block) => {{
-        debug!($($arg)*);
-        indent!($fun)
-    }};
+#[cfg(not(debug_assertions))]
+macro_rules! debug {
+    ($($arg:tt)*) => {}
 }
 
 #[macro_export]
