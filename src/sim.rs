@@ -10,13 +10,12 @@ use prettytable::Row;
 
 use crate::hero::Hero;
 use crate::hero::instance::Instance;
-use crate::hero::stat::Stat;
 use crate::player::ManualPlayer;
 use crate::player::Player;
 use crate::player::RandomPlayer;
-use crate::wave::InstanceRef;
 use crate::wave::Wave;
 use crate::wave::Result;
+use crate::wave::stat::Stat;
 
 
 
@@ -32,7 +31,7 @@ pub fn get_mean_and_standard_deviation(sum : f64, sum_sq:f64, n: u64) -> (f64, f
     (get_mean(sum, n), get_standard_deviation(sum, sum_sq, n))
 }
 
-pub struct Sim<'a> {
+pub struct Sim<'a,const LEN:usize> {
     allies: &'a Vec<&'a Hero>,
     enemies: &'a Vec<&'a Hero>,
     manual_ally : bool,
@@ -152,8 +151,8 @@ impl  CombinedResult {
 }
 
 
-impl Sim<'_> {
-    pub fn new<'a>(allies: &'a Vec<&'a Hero>, enemies : &'a Vec<&'a Hero>,manual_ally:bool,manual_enemy: bool , iterations: u64) -> Sim<'a> {
+impl<const LEN:usize> Sim<'_,LEN> {
+    pub fn new<'a>(allies: &'a Vec<&'a Hero>, enemies : &'a Vec<&'a Hero>,manual_ally:bool,manual_enemy: bool , iterations: u64) -> Sim<'a,LEN> {
         // create statistcs vector with one entry per hero
         Sim {
             allies,
@@ -282,31 +281,35 @@ impl Sim<'_> {
                 stalls: 0,
                 statistics: Vec::new(),
             };
-            for x in 0..iter {
-                let ap : Box<dyn Player> = if self.manual_ally {
-                    Box::new(ManualPlayer{})
-                }
-                else {
-                     Box::new(RandomPlayer{})
-                };
+            let ap : Box<dyn Player<LEN>> = if self.manual_ally {
+                Box::new(ManualPlayer{team_index:0})
+            }
+            else {
+                 Box::new(RandomPlayer{team_index:0})
+            };
             
-                let ep : Box<dyn Player> = if self.manual_enemy {
-                    Box::new(ManualPlayer{})
-                }
-                else {
-                    Box::new(RandomPlayer{})
-                };
-                let mut id = 0;
-                let mut a : Vec<Instance>= self.allies.iter().map(|h| {
-                    id += 1;
-                    Instance::new(h, id , InstanceRef { team:true, index: (id-1) as usize },track_statistics)
-                }).collect();
-                let mut e: Vec<Instance>= self.enemies.iter().map(|h| {
-                    id += 1;
-                    Instance::new(h, id, InstanceRef { team:false, index: (id-1-self.allies.len()as u32) as usize },track_statistics)
-                }).collect();
-                let mut wave = Wave::new(&mut a, &mut e,ap,ep,track_statistics);
+            let ep : Box<dyn Player<LEN>> = if self.manual_enemy {
+                Box::new(ManualPlayer{team_index:1})
+            }
+            else {
+                Box::new(RandomPlayer{team_index:1})
+            };
+            let mut id = 0;
+            let mut a : Vec<Instance>= self.allies.iter().map(|h| {
+                id += 1;
+                Instance::new(h, id , 0,0)
+            }).collect();
+            let mut e: Vec<Instance>= self.enemies.iter().map(|h| {
+                id += 1;
+                Instance::new(h, id, 0,1)
+            }).collect();
+
+            let mut instance : [&mut Instance;LEN] = a.iter_mut().chain(e.iter_mut()).collect::<Vec<_>>().try_into().unwrap();
+            let mut players : Vec<Box<dyn Player<LEN>>> = vec![ap,ep]; 
+            let mut wave = Wave::new(&mut instance, &mut players ,track_statistics);
+            for x in 0..iter {
                 cr.add_result(&wave.run());
+                wave.reset();
                 if (x+1) % 100000 == 0 { // plus one because we start at 0 and want the score added after the iteration
                     bar.inc(100000);
                 }

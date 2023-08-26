@@ -6,6 +6,7 @@ use log::info;
 use log::warn;
 
 use raid_optimize::hero::Heroes;
+use raid_optimize::sim;
 use raid_optimize::sim::Sim;
 use raid_optimize::hero::get_hero_by_string;
 
@@ -90,20 +91,64 @@ pub fn main() {
             }
         }
     }
+    let len : usize = ally.len() + enemy.len();
+
+macro_rules! sim {
+    ($l:tt) => { 
+        const LEN : usize = $l;
+        let mut sim : Sim<'_,LEN> = Sim::new(
+            &ally,
+            &enemy,
+            manual_ally,
+            manual_enemy,
+            iterations,
+        );
+        sim.run(threads,!no_stats);
+        if !no_results{
+            sim.print_results();
+        }
+        if !no_stats {
+            sim.print_statistics(bar);
+        }
+     }
+}
+
+    // speed up routines by known size and array on stack
+    match len {
+        1 => {
+            sim!(1);
+        }
+        2 => {
+            sim!(2);
+        }
+        3 => {
+            sim!(3);
+        }
+        4 => {
+            sim!(4);
+        }
+        5 => {
+            sim!(5);
+        }
+        6 => {
+            sim!(6);
+        }
+        7 => {
+            sim!(7);
+        }
+        8 => {
+            sim!(8);
+        }
+        9 => {
+            sim!(9);
+        }
+        10 => {
+            sim!(10);
+        }
+        _ => {
+            panic!("too large team size: {}", len);
+        }
+    }
 
 
-    let mut wave = Sim::new(
-        &ally,
-        &enemy,
-        manual_ally,
-        manual_enemy,
-        iterations,
-    );
-    wave.run(threads,!no_stats);
-    if !no_results{
-        wave.print_results();
-    }
-    if !no_stats {
-        wave.print_statistics(bar);
-    }
 }

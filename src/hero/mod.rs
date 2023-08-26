@@ -3,7 +3,6 @@ use std::fmt;
 pub mod instance;
 pub mod skill;
 pub mod effect;
-pub mod stat;
 pub mod subskill;
 pub mod effects;
 pub mod passive;
@@ -106,7 +105,7 @@ mod tests {
                 <skill>
                     <Generic>
                         <cooldown>3</cooldown>
-                        <subskill target="SingleEnemy" ratio="2.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
+                        <subskill target="SingleEnemy" type="Damage" ratio="2.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
                     </Generic>
                 </skill>
             </hero>

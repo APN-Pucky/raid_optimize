@@ -1,11 +1,12 @@
-use enum_map::Enum;
+use enum_map::{Enum, EnumMap};
 
-use super::effect::Effect;
+use super::{Effect, Wave, InstanceIndex};
 
 #[derive(Debug,Enum, PartialEq, Eq, strum_macros::Display,Copy,Clone)]
 pub enum Stat {
     Attacks,
     Attack,
+    Shielded,
     CriticalStrikes,
     CriticalDamage,
     TenacityIgnored,
@@ -39,5 +40,32 @@ pub fn effect_to_stat(e:Effect) -> Stat {
         Effect::Heal => Stat::EffectInflicted,
         Effect::SpeedDownII => Stat::EffectInflicted,
         Effect::SpeedUpI => Stat::EffectInflicted,
+        Effect::None => Stat::EffectInflicted,
+    }
+}
+
+impl<const LEN:usize> Wave<'_,LEN> {
+    pub fn add_stat(&mut self, actor:InstanceIndex, key: Stat, statistics: f32 ) {
+        if self.track_statistics {
+            self.statistics[actor].sts[key] += statistics;
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct Statistics {
+    pub sts :  EnumMap<Stat,f32>,
+}
+
+impl Statistics {
+    pub fn new() -> Self {
+        Self {
+            sts : EnumMap::default(),
+        }
+    }
+    pub fn clear(&mut self) {
+        for (_key,value) in self.sts.iter_mut() {
+            *value = 0.0;
+        }
     }
 }

@@ -7,31 +7,28 @@ use rand::Rng;
 
 
 use crate::hero::Hero;
-use crate::hero::stat::effect_to_stat;
 use crate::{roll, indent, debug, warn, info, error};
-use crate::wave::{ InstanceRef, TURN_METER_THRESHOLD};
+use crate::wave::{  InstanceIndex, TeamIndex};
 use crate::hero::skill::Skill;
 use crate::hero::effect::Effect;
 
 use super::effects::Effects;
 use super::passive::Passive;
 use super::skill::get_cooldown;
-use super::stat::Stat;
 
+
+//TODO make instance so irrelevant that it can be removed since it only wraps hero
 
 #[derive(Debug)]
 pub struct Instance<'a> {
     pub hero:  &'a Hero,
     pub id : u32,
-    pub iref : InstanceRef,
-    health: f32,
-    shield: Vec<(f32,u32)>, // (shield, turns)
-    turn_meter: f32,
+    pub index: InstanceIndex,
+    pub team : TeamIndex,
+    // these are transported between waves
+    pub health: f32,
+    pub turn_meter: f32,
     pub cooldowns : Vec<u32>,
-    track_statistics: bool,
-    pub statistics: EnumMap<Stat,f32>,
-    pub effects : Effects,
-    pub passives : Vec<Passive>
 }
 
 impl fmt::Display for Instance<'_> {
@@ -64,24 +61,24 @@ impl<'a> Instance<'a> {
 }
 
 impl Instance<'_> {
-    pub fn new(hero: &Hero, id:u32, iref: InstanceRef , track_statistics : bool) -> Instance {
+    pub fn new(hero: &Hero, id:u32,ii:InstanceIndex,ti:TeamIndex) -> Instance {
         Instance {
             hero: hero,
             id,
-            iref,
+            index:ii,
+            team:ti,
             health: hero.health,
-            shield: Vec::new(),
             turn_meter: 0.0,
             cooldowns : hero.skills.iter().map(|_| 0).collect(),
-            track_statistics,
-            statistics: EnumMap::default(),
-            effects : Effects::new(), 
-            passives : hero.passives.clone(),
+            //shield: Vec::new(),
+            //statistics: EnumMap::default(),
+            //effects : Effects::new(), 
+            //passives : hero.passives.clone(),
         }
     }
 
     pub fn has_passive(&self, passive: Passive) -> bool {
-        self.passives.iter().any(|p| *p == passive)
+        self.hero.passives.iter().any(|p| *p == passive)
     }
 
     pub fn cooldown(&mut self, skill :usize) {
@@ -127,38 +124,10 @@ impl Instance<'_> {
         &self.hero.skills[skill_ref]
     }
 
-
-    pub fn cleanse<F>(&mut self, effect_closure:&F, layers: u32) where F : Fn(Effect) -> bool {
-        for (k,v) in self.effects.em.iter_mut() {
-            if effect_closure(k) {
-                // drop `layers` randomly of v
-                if v.len() > layers as usize {
-                    let mut rng = rand::thread_rng();
-                    //let mut v = v.clone();
-                    v.shuffle(&mut rng);
-                    for _i in 0..layers {
-                        v.pop();
-                    }
-                }
-                else {
-                    // empty v
-                    v.clear();
-                }
-            }
-        }
-        self.effects.remove_empty();
-    }
-
-    pub fn restore(&mut self, target: &mut Instance, heal: f32 ) {
-        //let heal = heal * self.hero.healing_effect; 
-        debug!("{} restores {} health to {}", self, heal, target);
-        self.add_stat(Stat::HealthRestored, heal);
-        target.heal(heal);
-    }
-
     pub fn is_dead(&self) -> bool {
         !self.is_alive()
     }
+    /*
 
     pub fn heal(&mut self, health: f32) {
         if self.is_dead() {
@@ -172,117 +141,30 @@ impl Instance<'_> {
         self.health = new_health;
     }
 
-    pub fn add_stat(&mut self, key: Stat, statistics: f32 ) {
-        if self.track_statistics {
-            self.statistics[key] += statistics;
-        }
-    }
-
     //pub fn copy_statistics(&self) -> EnumMap<Stat, u32> {
     //    self.statistics.clone()
     //}
 
-    pub fn get_defense(&self) -> f32 {
-        // TODO handle defense buff/debuff
-        self.hero.defense
-    }
 
-    pub fn get_attack(&self) -> f32 {
-        // TODO handle attack buff/debuff
-        if self.has_effect(Effect::AttackUpII) {
-            self.hero.attack  * 1.4
-        }
-        else {
-            self.hero.attack 
-        }
-    }
+    */
+    //pub fn reduce_turn_meter(&mut self, target:&mut Instance, turn_meter_reduction_ratio: f32) {
+    //    // relative to total!
+    //    let mut red = (TURN_METER_THRESHOLD * turn_meter_reduction_ratio);
+    //    let turn = target.get_turn_meter();
+    //    if red > turn {
+    //        red  = turn
+    //    }
+    //    let turn_meter = turn - red;
+    //    debug!("{} reduces turn meter of {} by {} to {}", self, target, turn_meter_reduction_ratio, turn_meter);
+    //    target.set_turn_meter(turn_meter);
+    //    //self.add_stat(Stat::TurnMeterReduced, turn_meter);
+    //}
 
-    pub fn get_attack_damage(&self) -> f32 {
-        self.get_attack() 
-    }
-
-    pub fn get_max_health(&self) -> f32 {
-        // TODO handle max hp buff/debuff
-        self.hero.health
-    }
-
-    pub fn has_effect(&self, key: Effect) -> bool {
-        !self.effects.em[key].is_empty()
-    }
-
-    pub fn reduce_shields(&mut self) {
-        let mut i = 0;
-        while i < self.shield.len() {
-            self.shield[i].1 -= 1;
-            if self.shield[i].1 == 0 {
-                self.shield.remove(i);
-            }
-            else {
-                i += 1;
-            }
-        }
-    }
-
-    pub fn reduce_effects(&mut self) {
-        self.effects.reduce();
-    }
-
-    pub fn reduce_turn_meter(&mut self, target:&mut Instance, turn_meter_reduction_ratio: f32) {
-        // relative to total!
-        let mut red = (TURN_METER_THRESHOLD * turn_meter_reduction_ratio);
-        let turn = target.get_turn_meter();
-        if red > turn {
-            red  = turn
-        }
-        let turn_meter = turn - red;
-        debug!("{} reduces turn meter of {} by {} to {}", self, target, turn_meter_reduction_ratio, turn_meter);
-        target.set_turn_meter(turn_meter);
-        //self.add_stat(Stat::TurnMeterReduced, turn_meter);
-    }
-
-    pub fn get_inflicted(&mut self, iref: &InstanceRef, effect: Effect,chance : f32, turns:u32) {
-        if roll(chance) {
-            self.effects.push(effect, turns, *iref);
-        }
-    }
-
-    pub fn inflict(&mut self, target : &mut Instance, effect: Effect, chance : f32, turns: u32) {
-        if roll(chance) {
-            debug!("{} inflicts {} for {} on {}", self, effect, turns, target);
-            //self.add_stat(&format!("{} inflicted",effect), turns);
-            self.add_stat(effect_to_stat(effect), turns as f32);
-            target.effects.push(effect, turns, self.iref);
-        }
-    }
-
-    pub fn inflict_hp_burning(&mut self, target : &mut Instance, chance: f32,turns: u32) {
-        let n = target.effects.get(Effect::HPBurning);
-        if n < 5 {       
-            self.inflict(target, Effect::HPBurning, chance,turns);
-        }
-    }
-
+    /*
     pub fn take_hp_burning_damage(&mut self, dmg: f32) {
         debug!("{} takes {} damage from hp_burning", self, dmg);
         // todo handle mastery
         self.take_damage(dmg);
-    }
-
-    pub fn inflict_bleed(&mut self, target : &mut Instance, bleed_chance: f32,bleed_turns: u32) {
-        if roll(bleed_chance) {
-            let n = target.effects.get(Effect::Bleed);
-            if n < 10 {
-                debug!("{} inflicts {} bleed on {}", self, bleed_turns, target);
-                self.add_stat(effect_to_stat(Effect::Bleed), bleed_turns as f32);
-                target.effects.push(Effect::Bleed, bleed_turns,self.iref );
-                let dmg_vec = vec![0.14,0.18,0.22,0.26,0.30,0.30,0.30,0.30,0.30,0.30];
-                let bleed_dmg = (self.get_attack_damage() * dmg_vec[(n) as usize]);
-                target.take_bleed_damage(bleed_dmg);
-            }
-            else {
-                debug!("{} already has 10 bleed", target);
-            }
-        }
     }
 
     pub fn take_bleed_damage(&mut self, bleed_dmg: f32) {
@@ -291,51 +173,6 @@ impl Instance<'_> {
         self.take_damage(bleed_dmg);
     }
 
-    pub fn get_shield(&self) -> f32 {
-        let mut shield: f32 = 0.0;
-        for (s,_) in self.shield.iter() {
-            shield += s;
-        }
-        shield
-    }
-
-    pub fn subtract_shield(&mut self, var:f32) {
-        self.add_stat(Stat::ShieldBlocked, var);
-        let mut value = var;
-        let i = 0;
-        while i < self.shield.len() {
-            if self.shield[i].0 > value {
-                self.shield[i].0 -= value;
-                return;
-            }
-            else {
-                value -= self.shield[i].0;
-                self.shield.remove(i);
-            }
-        }
-    }
-
-    pub fn add_shield(&mut self, value:f32,turns:u32) {
-        self.shield.push((value,turns));
-    }
-
-    pub fn loose_shield(&mut self, damage: f32) -> f32 {
-        let current_shield = self.get_shield();
-        if current_shield > damage {
-            debug!("{} looses {} shield", self, damage);
-            self.subtract_shield(damage);
-            0.0
-        }
-        else if current_shield == 0.0 {
-            damage
-        }
-        else { // damage > shield
-            debug!("{} looses all {} shield", self, current_shield);
-            self.add_stat(Stat::ShieldBlocked, current_shield);
-            self.shield = Vec::new();
-            damage - current_shield
-        }
-    }
 
     pub fn loose_health(&mut self, damage: f32) {
         debug!("{} looses {} health", self, damage);
@@ -399,6 +236,7 @@ impl Instance<'_> {
         self.deal_damage(target, attack - def);
         })
     }
+    */
 
     pub fn reset_turn_meter(&mut self) {
         self.set_turn_meter(0.0)
@@ -417,25 +255,25 @@ impl Instance<'_> {
         self.turn_meter+= turn_meter
     }
 
-    pub fn progress_turn_meter(&mut self, time: f32) {
-        self.turn_meter+= (self.get_speed() * time);
-        debug!("{} turn_meter progressed to {}", self, self.turn_meter);
-    }
+    //pub fn progress_turn_meter(&mut self, time: f32) {
+    //    self.turn_meter+= (self.get_speed() * time);
+    //    debug!("{} turn_meter progressed to {}", self, self.turn_meter);
+    //}
 
     pub fn is_alive(&self) -> bool {
         self.health > 0.0
     }
 
-    pub fn get_speed(&self) -> f32 {
-        let mut fact = 1.0;
-        if self.has_effect(Effect::SpeedUpI) {
-            fact *= 1.2;
-        }
-        if self.has_effect(Effect::SpeedDownII) {
-            fact *= 0.6;
-        }
-        self.hero.speed  * fact 
-    }
+    //pub fn get_speed(&self) -> f32 {
+    //    let mut fact = 1.0;
+    //    if self.has_effect(Effect::SpeedUpI) {
+    //        fact *= 1.2;
+    //    }
+    //    if self.has_effect(Effect::SpeedDownII) {
+    //        fact *= 0.6;
+    //    }
+    //    self.hero.speed  * fact 
+    //}
 
     pub fn get_hero(&self) -> &Hero {
         &self.hero
@@ -447,24 +285,6 @@ impl Instance<'_> {
 
     pub fn get_turn_meter(&self) -> f32 {
         self.turn_meter
-    }
-
-    pub fn get_basic_attack_damage(&self) -> f32 {
-        if self.has_effect(Effect::RippleII) {
-            self.get_attack() * 1.40
-        }
-        else {
-            self.get_attack()
-        }
-    }
-
-    pub fn get_effect_resistance(&self) -> f32 {
-        // TODO handle effect resistance buff/debuff
-        let mut fact = 1.0;
-        if self.has_effect(Effect::EffectResistanceDownII) {
-            fact = 0.5;
-        }
-        self.hero.effect_resistance * fact
     }
 }
 
@@ -496,7 +316,7 @@ mod tests {
             skills : Vec::new(),
             passives : Vec::new(),
         };
-        let hi : Instance = Instance::new(&h,0,InstanceRef{team:true,index:0},false);
+        let hi : Instance = Instance::new(&h,0,1,0);
         assert_eq!(h.health, hi.health);
 
     }

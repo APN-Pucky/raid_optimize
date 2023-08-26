@@ -18,6 +18,7 @@ pub enum Effect {
     Heal,
     SpeedDownII,
     SpeedUpI,
+    None,
 }
 
 pub fn is_dot(effect : Effect) -> bool {
@@ -38,5 +39,6 @@ pub fn is_dot(effect : Effect) -> bool {
         Effect::Heal => false,
         Effect::SpeedDownII => false,
         Effect::SpeedUpI => false,
+        Effect::None => false,
     }
 }

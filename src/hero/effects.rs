@@ -1,10 +1,10 @@
 use enum_map::EnumMap;
 
-use crate::{hero::effect::Effect, wave::InstanceRef};
+use crate::{hero::effect::Effect, wave::InstanceIndex};
 
 #[derive(Debug)]
 pub struct Effects {
-    pub em : EnumMap<Effect,Vec<(u32,InstanceRef)>>,
+    pub em : EnumMap<Effect,Vec<(u32,InstanceIndex)>>,
     //pub vm : [Vec<(u32,InstanceRef)>;Effect::NumberOfEffects as usize],
 }
 
@@ -21,11 +21,21 @@ impl Effects {
         }
     }
 
+    pub fn clear(&mut self) {
+        for (_key,value) in self.em.iter_mut() {
+            value.clear();
+        }
+    }
+
+    pub fn has(&self, key: Effect) -> bool {
+        !self.em[key].is_empty()
+    }
+
     pub fn get(&self, key: Effect) -> u32 {
         self.em[key].len() as u32
     }
 
-    pub fn push(&mut self, key: Effect, turns : u32, ir:InstanceRef) {
+    pub fn push(&mut self, key: Effect, turns : u32, ir:InstanceIndex) {
         self.em[key ].push((turns,ir));
     }
 
