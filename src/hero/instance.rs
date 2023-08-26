@@ -13,6 +13,7 @@ use crate::wave::{ InstanceRef, TURN_METER_THRESHOLD};
 use crate::hero::skill::Skill;
 use crate::hero::effects::Effects;
 
+use super::effects::buff::Buff;
 use super::effects::buff::attribute::AttributeBuff;
 use super::effects::debuff::Debuff;
 use super::effects::debuff::dot::DotDebuff;
@@ -241,6 +242,12 @@ impl Instance<'_> {
         debug!("{} reduces turn meter of {} by {} to {}", self, target, turn_meter_reduction_ratio, turn_meter);
         target.set_turn_meter(turn_meter);
         //self.add_stat(Stat::TurnMeterReduced, turn_meter);
+    }
+
+    pub fn get_inflicted_buff(&mut self, iref: &InstanceRef, effect: Buff,chance : f32, turns:u32) {
+        if roll(chance) {
+            self.effects.buffs.push(effect, turns, *iref);
+        }
     }
 
     pub fn get_inflicted_debuff(&mut self, iref: &InstanceRef, effect: Debuff,chance : f32, turns:u32) {

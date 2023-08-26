@@ -3,12 +3,13 @@ use rand::Rng;
 
 use crate::hero::Hero;
 use crate::hero::effects::Effect;
+use crate::hero::effects::buff::Buff;
 use crate::hero::instance::Instance;
 use crate::hero::passive::Passive;
 use crate::hero::skill::{Skill, get_targets, execute_skill};
 use crate::hero::stat::Stat;
 use crate::player::Player;
-use crate::{debug, indent, info};
+use crate::{debug, indent, info, roll};
 
 pub const TURN_LIMIT : u32 = 300;
 pub const TURN_METER_THRESHOLD : f32 = 1000.0;
@@ -144,16 +145,19 @@ impl Wave<'_> {
         }
     }
 
-    pub fn inflict_team(&mut self, actor : &InstanceRef, effect : Effect, chance: f32, turns :u32) {
+    pub fn inflict_buff_on_team(&mut self, actor : &InstanceRef, effect : Buff, chance: f32, turns :u32) {
         if turns == 0 {
             return;
         }
-        if actor.team {
-            self.enemies.iter_mut().for_each(|a| a.get_inflicted(actor,effect,chance, turns));
+        let t = if actor.team {
+            self.enemies
         }
         else {
-            self.allies.iter_mut().for_each(|a| a.get_inflicted(actor,effect, chance, turns));
-        }
+            self.allies
+        };
+        t.iter_mut().for_each(|a| 
+            a.get_inflicted_buff(actor,effect,chance,turns)
+        )
     }
 
     pub fn attack_team(&mut self, actor : &InstanceRef, damage : f32) {
