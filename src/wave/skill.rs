@@ -1,4 +1,4 @@
-use crate::hero::skill::{Skill, get_cooldown};
+use crate::{hero::skill::{Skill, get_cooldown}, indent, debug};
 
 use super::{InstanceIndex, Wave};
 
@@ -37,7 +37,14 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     
     pub fn reduce_cooldowns(&mut self,actor: InstanceIndex) {
+        debug!("Reducing cooldowns for {} ({}):", self.name(actor), self.cooldowns[actor].len());
         self.cooldowns[actor].iter_mut().for_each(|c| *c = c.saturating_sub(1));
+        indent!({
+            for (i,c) in self.cooldowns[actor].iter().enumerate() {
+                debug!("{}: {}", self.get_skill(actor,i), c);
+            }
+        })
+
     }
 
     pub fn cooldown(&mut self, actor: InstanceIndex,skill : SkillIndex) {

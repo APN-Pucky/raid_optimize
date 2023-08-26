@@ -13,7 +13,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn damage_all_instances(&mut self,actor: InstanceIndex ,damage : f32) {
-        debug!("all instances take {} damage from {}", damage, actor);
+        debug!("all instances take {} damage from {}", damage, self.name(actor));
         indent!({
             for i in 0..LEN {
                 self.damage(actor,i,damage);
@@ -22,13 +22,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn damage_hp_burning(&mut self,actor : InstanceIndex,target:InstanceIndex, dmg: f32) {
-        debug!("{} takes {} damage from hp_burning from {}", target, dmg,actor);
+        debug!("{} takes {} damage from hp_burning from {}", self.name(target), dmg,self.name(actor));
         //TODO track stat
         self.damage(actor,target,dmg);
     }
 
     pub fn damage_bleed(&mut self,actor : InstanceIndex,target:InstanceIndex, bleed_dmg: f32) {
-        debug!("{} takes {} damage from bleed from {}", target, bleed_dmg,actor);
+        debug!("{} takes {} damage from bleed from {}", self.name(target), bleed_dmg,self.name(actor));
         //TODO track stat
         self.damage(actor,target,bleed_dmg);
     }
@@ -42,11 +42,11 @@ impl<const LEN:usize> Wave<'_,LEN> {
             self.add_stat(actor,Stat::HealthLost, damage);
             self.health[actor] -= damage;
         }
-        debug!("{} looses {} health to {}", actor, damage, self.health[actor]);
+        debug!("{} looses {} health to {}",self.name(actor), damage, self.health[actor]);
     }
 
     pub fn damage(&mut self, actor:InstanceIndex, target:InstanceIndex,damage: f32) {
-        debug!("{} takes {} damage from {}", target, damage,actor);
+        debug!("{} takes {} damage from {}", self.name(target), damage,self.name(actor));
         indent!({
             self.add_stat(actor,Stat::DamageTaken, damage);
             self.add_stat(target,Stat::DamageDone, damage);

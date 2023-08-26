@@ -13,7 +13,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         //    }else {
         //        (&mut self.enemies[actor.index], &mut self.allies)
         //    };
-        debug!("before {} acts", actor);
+        debug!("before {} acts", self.name(actor));
         indent!({
             // apply effects 
             // apply heal
@@ -52,24 +52,31 @@ impl<const LEN:usize> Wave<'_,LEN> {
             }
             // choose action
             let skills : Vec<&Skill> = self.get_active_skills(actor);
-            debug!("{} has active skills {:?}", self.fmt(actor), skills);
+            debug!("{} has active skills:", self.name(actor));
+            indent!({
+                for s in skills.iter() {
+                    debug!("{}", s);
+                }
+            });
 
             let skill :&Skill = self.get_player_of_instance(actor).pick_skill(self, actor, &skills);
 
-            debug!("{} chooses {}", self.fmt(actor), skill);
-            // get targets
-            match get_targets(&skill, actor, self) {
-                Some(ts) => {
-                    let target : InstanceIndex = self.get_player_of_instance(actor).pick_target(self, actor, &skill, &ts);
-                    // apply skill
-                    execute_skill(skill, actor, target, self);
-                },
-                None => {
-                    // TODO maybe not even provide this option as active skill
-                    debug!("{} has no valid targets for {}", self.fmt(actor), skill);
-                    return;
-                },
-            }
+            debug!("{} chooses {}", self.name(actor), skill);
+            indent!({
+                // get targets
+                match get_targets(&skill, actor, self) {
+                    Some(ts) => {
+                        let target : InstanceIndex = self.get_player_of_instance(actor).pick_target(self, actor, &skill, &ts);
+                        // apply skill
+                        execute_skill(skill, actor, target, self);
+                    },
+                    None => {
+                        // TODO maybe not even provide this option as active skill
+                        debug!("{} has no valid targets for {}", self.fmt(actor), skill);
+                        return;
+                    },
+                }
+            });
             // finish
             self.after_action(actor);
         })

@@ -70,10 +70,16 @@ impl<const LEN:usize> Wave<'_,LEN> {
         let teams = instances.iter().map(|i| i.team).collect::<Vec<_>>().try_into().unwrap();
         let statistics = instances.iter().map(|_| Statistics::new()).collect::<Vec<_>>().try_into().unwrap();
         let effects = instances.iter().map(|_| Effects::new()).collect::<Vec<_>>().try_into().unwrap();
-        let cooldowns = instances.iter().map(|i| i.cooldowns.clone()).collect::<Vec<_>>().try_into().unwrap();
         let turn_meter = instances.iter().map(|i| i.turn_meter).collect::<Vec<_>>().try_into().unwrap();
         let health = instances.iter().map(|i| i.health).collect::<Vec<_>>().try_into().unwrap();
+        let mut cooldowns : [Vec<u32>;LEN] = instances.iter().map(|_| Vec::new()).collect::<Vec<_>>().try_into().unwrap();
         let shields = instances.iter().map(|_| Vec::new()).collect::<Vec<_>>().try_into().unwrap();
+        // set the values of the cooldowns from the Instances
+        for i in 0..LEN {
+            for j in 0..instances[i].cooldowns.len() {
+                cooldowns[i].push(instances[i].cooldowns[j]);
+            }
+        }
         // transform instances into ECS
         Wave {
             heroes,
@@ -83,7 +89,6 @@ impl<const LEN:usize> Wave<'_,LEN> {
             statistics ,
             shields ,
             effects ,
-            // TODO this is not correct init for multi waves
             cooldowns ,
             turn_meter ,
             health  ,
@@ -98,7 +103,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn reset(&mut self) {
         for i in 0..LEN {
             self.statistics[i].clear();
-            self.cooldowns[i].clear();
+            self.cooldowns[i].iter_mut().for_each(|c| *c = 0);
             self.turn_meter[i] = 0.0;
             self.health[i] = self.get_max_health(i);
             self.shields[i].clear();

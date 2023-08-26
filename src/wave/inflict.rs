@@ -12,14 +12,14 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     fn inflict_any(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, turns :u32) {
-        debug!("{} inflicts {} for {} on {}", actor, effect, turns, target);
+        debug!("{} inflicts {} for {} turns on {}", self.name(actor), effect, turns, self.name(target));
         self.add_stat(actor, effect_to_stat(effect) , turns as f32);
         self.effects[target].push(effect, turns, actor);
     }
 
     fn inflict_hp_burning(&mut self, actor : InstanceIndex, target:InstanceIndex, turns :u32) {
         if self.effects[target].get(Effect::HPBurning) >= 5 {
-            debug!("{} already has max HpBurning", target);
+            debug!("{} already has max HpBurning", self.name(target));
             return;
         }
         self.inflict_any(actor, target, Effect::HPBurning, turns);
@@ -28,7 +28,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
     fn inflict_bleed(&mut self, actor : InstanceIndex, target:InstanceIndex, turns :u32) {
         let n = self.effects[target].get(Effect::Bleed);
         if n >= 10 {
-            debug!("{} already has max Bleed", target );
+            debug!("{} already has max Bleed", self.name(target) );
             return;
         }
         self.inflict_any(actor, target, Effect::Bleed, turns);
@@ -42,7 +42,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             self.inflict(actor, target, effect, turns);
         }
         else{
-            debug!("{} misses {} inflict on {}", actor, effect,  target);
+            debug!("{} misses {} inflict on {}", self.name(actor), effect,  self.name(target));
         }
     }
 
@@ -50,7 +50,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         if turns == 0 {
             return;
         }
-        debug!("{} inflicts {} for {} on enemy team", actor, effect, turns);
+        debug!("{} inflicts {} for {} on enemy team", self.name(actor), effect, turns);
         indent!({
             for i in self.get_enemies_indices(actor) {
                 self.inflict_single(actor, i, effect, chance, turns);
@@ -62,7 +62,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         if turns == 0 {
             return;
         }
-        debug!("{} inflicts {} for {} on ally team", actor, effect, turns);
+        debug!("{} inflicts {} for {} on ally team", self.name(actor), effect, turns);
         indent!({
             for i in self.get_ally_indices(actor) {
                 self.inflict_single(actor, i, effect, chance, turns);

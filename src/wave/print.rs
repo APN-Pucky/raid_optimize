@@ -5,24 +5,43 @@ use super::{Wave, InstanceIndex};
 impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn fmt(&self,actor:InstanceIndex) -> String {
-        format!("{}-{} [health: {}, turn_meter: {}]", self.heroes[actor].name, actor,self.health[actor], self.turn_meter[actor])
+        format!("{}-{} [health: {}, turn_meter: {}, shield: {} = {}]", 
+            self.heroes[actor].name, 
+            actor,
+            self.health[actor], 
+            self.turn_meter[actor],
+            self.get_shield(actor),
+            self.fmt_shield(actor)
+        )
+    }
+
+    pub fn fmt_shield(&self,actor:InstanceIndex) -> String {
+        self.shields[actor].iter().fold(String::new(), |acc, (v,t)| format!("{} + {}({}),", acc, v, t))
+    }
+
+    pub fn name(&self,actor:InstanceIndex) -> String {
+        format!("{}-{}", self.heroes[actor].name, actor)
     }
 
     pub fn log_info(&self) {
         info!("Turn: {}", self.turns); 
-        for p in self.players.iter() {
-            info!("{}", p.get_name());
-            for a in self.get_ally_indices(p.get_team()) {
-                info!("{}", a);
+        indent!({
+            for p in self.players.iter() {
+                info!("{}", p.get_name());
+                indent!({
+                    for a in self.get_ally_indices(p.get_team()) {
+                        info!("{}", self.fmt(a));
+                    }
+                })
             }
-        }
+        })
     }
 
     pub fn print_all(&self) {
         for p in self.players.iter() {
             println!("{}", p.get_name());
             for a in self.get_ally_indices(p.get_team()) {
-                println!("{}", a);
+                println!("{}", self.fmt(a));
             }
         }
     }
@@ -30,14 +49,14 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn print_allies(&self, ii:InstanceIndex) {
         println!("Allies:");
         for a in self.get_ally_indices(ii) {
-            println!("{}", a);
+            println!("{}", self.fmt(a));
         }
     }
 
     pub fn print_enemies(&self,ii:InstanceIndex) {
         println!("Enemies:");
         for e in self.get_enemies_indices(ii) {
-            println!("{}", e);
+            println!("{}", self.fmt(e));
         }
     }
 

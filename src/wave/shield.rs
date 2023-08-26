@@ -4,7 +4,7 @@ use super::{Wave, InstanceIndex};
 
 impl<const LEN:usize> Wave<'_,LEN> {
     pub fn shield(&mut self, actor : InstanceIndex, target : InstanceIndex,shield_value:f32, shield_turns:u32) {
-        debug!("{} shields {} for {} for {}", actor, target, shield_value, shield_turns);
+        debug!("{} shields {} for {} for {}", self.name(actor), self.name(target), shield_value, shield_turns);
         self.add_stat(actor, Stat::Shielded, shield_value);
         self.shields[target].push((shield_value, shield_turns));
     }
@@ -17,7 +17,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         if shield_turns == 0 {
             return;
         }
-        debug!("{} shields ally team for {} for {}", actor, shield_value, shield_turns);
+        debug!("{} shields ally team for {} for {}", self.name(actor), shield_value, shield_turns);
         indent!({
             for i in self.get_ally_indices(actor) {
                 self.shield_single(actor, i, shield_value, shield_turns);
@@ -75,7 +75,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn shield_loose(&mut self,actor : InstanceIndex, damage: f32) -> f32 {
         let current_shield = self.get_shield(actor);
         if current_shield > damage {
-            debug!("{} looses {} shield", actor, damage);
+            debug!("{} looses {} shield", self.name(actor), damage);
             self.shield_subtract(actor,damage);
             0.0
         }
@@ -83,7 +83,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             damage
         }
         else { // damage > shield
-            debug!("{} looses all {} shield", actor, current_shield);
+            debug!("{} looses all {} shield", self.name(actor), current_shield);
             self.add_stat(actor,Stat::ShieldBlocked, current_shield);
             self.shields[actor] = Vec::new();
             damage - current_shield
