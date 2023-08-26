@@ -10,4 +10,25 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn effect_reduce(&mut self, actor: InstanceIndex) {
         self.effects[actor].reduce();
     }
+
+    pub fn count_self_buffs(&self, actor: InstanceIndex) -> usize {
+        let mut count = 0;
+        for (_key,value) in self.effects[actor].em.iter() {
+            // check if actor in value
+            for (_turns,ir) in value.iter() {
+                if *ir == actor {
+                    count += 1;
+                    break;
+                }
+            }
+        }
+        // shield is also an effect
+        for shiedls in self.shields[actor].iter() {
+            if shiedls.2 == actor {
+                count += 1;
+                break;
+            }
+        }
+        count
+    }
 }

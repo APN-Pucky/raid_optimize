@@ -6,7 +6,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn shield(&mut self, actor : InstanceIndex, target : InstanceIndex,shield_value:f32, shield_turns:u32) {
         debug!("{} shields {} for {} for {}", self.name(actor), self.name(target), shield_value, shield_turns);
         self.add_stat(actor, Stat::Shielded, shield_value);
-        self.shields[target].push((shield_value, shield_turns));
+        self.shields[target].push((shield_value, shield_turns,actor));
     }
 
     pub fn shield_single(&mut self, actor : InstanceIndex, target : InstanceIndex,shield_value:f32, shield_turns:u32) {
@@ -65,7 +65,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn get_shield(&self, actor : InstanceIndex) -> f32 {
         let mut shield: f32 = 0.0;
-        for (s,_) in self.shields[actor].iter() {
+        for (s,_,_) in self.shields[actor].iter() {
             shield += s;
         }
         shield

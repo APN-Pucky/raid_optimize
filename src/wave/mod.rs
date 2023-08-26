@@ -1,5 +1,6 @@
 use enum_map::EnumMap;
 use rand::Rng;
+use strum::EnumProperty;
 use std::convert::TryInto;
 
 pub mod damage;
@@ -21,6 +22,7 @@ pub mod print;
 use crate::hero::Hero;
 use crate::hero::effect::Effect;
 use crate::hero::effects::Effects;
+use crate::hero::faction::Faction;
 use crate::hero::instance::Instance;
 use crate::hero::passive::Passive;
 use crate::hero::skill::{Skill, get_targets, execute_skill};
@@ -41,12 +43,13 @@ pub struct Wave<'a, const LEN: usize > {
     pub heroes :  [&'a Hero; LEN], 
     pub teams : [TeamIndex;LEN],
     pub players : &'a mut Vec<Box<dyn Player<LEN>>>, //TODO make this also generic 2!
-    pub shields: [Vec<(f32,u32)>; LEN], // (shield_value, turns)
+    pub shields: [Vec<(f32,u32,InstanceIndex)>; LEN], // (shield_value, turns)
     pub effects : [Effects;LEN], 
     pub statistics: [Statistics;LEN],
     pub turn_meter : [f32;LEN],
     pub cooldowns : [Vec<u32>;LEN],
     pub health : [f32;LEN],
+    pub team_bonds : Vec<EnumMap<Faction,f32>>,
     //pub ally_player : Box<dyn Player>,
     //pub enemy_player : Box<dyn Player>,
     turns: u32,
@@ -75,6 +78,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         let health = instances.iter().map(|i| i.health).collect::<Vec<_>>().try_into().unwrap();
         let mut cooldowns : [Vec<u32>;LEN] = instances.iter().map(|_| Vec::new()).collect::<Vec<_>>().try_into().unwrap();
         let shields = instances.iter().map(|_| Vec::new()).collect::<Vec<_>>().try_into().unwrap();
+        let bonds  = players.iter().map(|p| EnumMap::default()).collect::<Vec<_>>().try_into().unwrap();
         // set the values of the cooldowns from the Instances
         for i in 0..LEN {
             for j in 0..instances[i].cooldowns.len() {
@@ -82,7 +86,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             }
         }
         // transform instances into ECS
-        Wave {
+        let mut w = Wave {
             heroes,
             teams ,
             //instances.iter().map(|i| i.team).collect(),
@@ -98,8 +102,12 @@ impl<const LEN:usize> Wave<'_,LEN> {
             turn_meter_threshold:  1000.0 ,
             track_statistics,
             len : instances.len(),
-        }
+            team_bonds : bonds,
+        };
+        w.set_bonds();
+        w
     }
+
 
     pub fn reset(&mut self) {
         for i in 0..LEN {
@@ -132,6 +140,12 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn get_player_of_team(&self, team : TeamIndex) -> &dyn Player<LEN> {
         &*self.players[team]
+    }
+
+    pub fn get_team_indices(&self, team : TeamIndex) -> Vec<InstanceIndex> {
+        (0..LEN)
+            .filter(|&i| self.teams[i] == team)
+            .collect()
     }
 
     pub fn get_enemies_indices(&self, actor : InstanceIndex) -> Vec<InstanceIndex> {

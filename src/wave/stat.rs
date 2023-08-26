@@ -23,11 +23,14 @@ pub enum Stat {
     HealthRestored,
     HealthLost,
     Leeched,
+    LeechedOf,
     TurnMeterReduced,
     ShieldBlocked,
     EffectInflicted,
     DamageReflected,
     DamageReflecteded,
+    Blocked,
+    BlockedBy,
 }
 
 pub fn effect_to_stat(e:Effect) -> Stat {

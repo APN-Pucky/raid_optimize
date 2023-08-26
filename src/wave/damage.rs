@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::{debug, wave::stat::Stat, indent};
+use crate::{debug, wave::stat::Stat, indent, hero::faction::Faction};
 
 use super::{Wave, InstanceIndex};
 
@@ -46,21 +46,28 @@ impl<const LEN:usize> Wave<'_,LEN> {
             self.add_stat(target,Stat::Pierced, pierce);
             debug!("{} pierces {} defense of {} ({}%)", self.name(actor), pierce, def, p*100.);
             def -= pierce;
-            
-            self.damage(actor,target, attack - def,true);
+             
+            if attack -def > 0. {
+                self.damage(actor,target, (attack - def),true,true);
+            }
+            else {
+                self.add_stat(actor,Stat::Blocked, attack);
+                self.add_stat(target,Stat::BlockedBy, attack);
+                debug!("{} blocked by {} defense of {}", attack, def, self.name(target));
+            }
         })
     }
 
     pub fn damage_hp_burning(&mut self,actor : InstanceIndex,target:InstanceIndex, dmg: f32) {
         debug!("{} takes {} damage from hp_burning from {}", self.name(target), dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,dmg,false);
+        self.damage(actor,target,dmg,false,false);
     }
 
     pub fn damage_bleed(&mut self,actor : InstanceIndex,target:InstanceIndex, bleed_dmg: f32) {
         debug!("{} takes {} damage from bleed from {}", self.name(target), bleed_dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,bleed_dmg,false);
+        self.damage(actor,target,bleed_dmg,false,false);
     }
 
     pub fn loose_health(&mut self, actor:InstanceIndex, damage: f32) {
@@ -75,17 +82,41 @@ impl<const LEN:usize> Wave<'_,LEN> {
         debug!("{} looses {} health to {}",self.name(actor), damage, self.health[actor]);
     }
 
-    pub fn damage(&mut self, actor:InstanceIndex, target:InstanceIndex,damage: f32, reflect:bool) {
+    pub fn damage(&mut self, actor:InstanceIndex, target:InstanceIndex,damage: f32, reflect:bool,leech: bool) {
         debug!("{} takes {} damage from {}", self.name(target), damage,self.name(actor));
         indent!({
+            let mut damage = damage;
+            if self.heroes[target].faction == Faction::DoomLegion {
+                let n = self.count_self_buffs(target).min(5) as f32;
+                let xfact = self.team_bonds[self.teams[target]][Faction::DoomLegion];
+                let r = 1.0 - xfact*n;
+                damage = damage *r;
+                debug!("{} has {}*{} DoomLegion buffs -> damage * {}", self.name(target), n,xfact, r);
+            }
+
             self.add_stat(actor,Stat::DamageTaken, damage);
             self.add_stat(target,Stat::DamageDone, damage);
             let dmg = self.shield_loose(actor,damage);
             self.loose_health(actor,dmg);
+            if leech {
+                self.leech(actor,target,dmg);
+            }
             if reflect {
                 self.reflect_damage(target,actor,dmg * self.get_damage_reflect(target));
             }
         })
+    }
+
+    pub fn leech(&mut self, actor:InstanceIndex, target:InstanceIndex,dmg: f32) {
+        let leech = dmg * self.get_leech(actor);
+        if leech > 0.0 {
+            debug!("{} leeches {} health from {}", self.name(actor), leech,self.name(target));
+            indent!({
+                self.add_stat(actor,Stat::Leeched, leech);
+                self.add_stat(target,Stat::LeechedOf, leech);
+                self.heal(actor,leech);
+            })
+        }
     }
 
     pub fn reflect_damage(&mut self, actor:InstanceIndex, target:InstanceIndex,damage: f32) {
@@ -93,7 +124,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         indent!({
             self.add_stat(actor,Stat::DamageReflected, damage);
             self.add_stat(target,Stat::DamageReflecteded, damage);
-            self.damage(actor,target,damage,false);
+            self.damage(actor,target,damage,false,false);
         })
     }
 

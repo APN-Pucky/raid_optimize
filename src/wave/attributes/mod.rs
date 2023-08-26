@@ -8,6 +8,10 @@ pub mod attack;
 
 impl<const LEN:usize> Wave<'_,LEN> {
 
+    pub fn get_leech(&self, actor : InstanceIndex) -> f32 {
+        self.heroes[actor].leech
+    }
+
     pub fn get_mastery(&self,actor : InstanceIndex) -> f32 {
         self.heroes[actor].mastery
     }
@@ -24,9 +28,8 @@ impl<const LEN:usize> Wave<'_,LEN> {
         debug!("{} base effect hit of {}", self.fmt(actor),self.get_hero(actor).effect_hit);
         indent!({
             if self.heroes[actor].faction == Faction::WizardsEye {
-                let scale = vec![1.0,1.06,1.09,1.12,1.15];
-                let xfact = scale[self.count_faction(actor,Faction::WizardsEye)-1];
-                debug!("{} has {} WizardsEye allies -> effect_hit * {}", self.fmt(actor), self.count_faction(actor,Faction::WizardsEye), xfact);
+                let xfact = self.team_bonds[self.teams[actor]][Faction::WizardsEye];
+                debug!("{} has {} bond with WizardsEye -> effect_hit * {}", self.fmt(actor), xfact, xfact);
                 fact *= xfact;
             }
             if self.effects[actor].has(Effect::EffectHitUpI) {

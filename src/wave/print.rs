@@ -16,7 +16,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn fmt_shield(&self,actor:InstanceIndex) -> String {
-        self.shields[actor].iter().fold(String::new(), |acc, (v,t)| format!("{} + {}({}),", acc, v, t))
+        self.shields[actor].iter().fold(String::new(), |acc, (v,t,_)| format!("{} + {}({}),", acc, v, t))
     }
 
     pub fn name(&self,actor:InstanceIndex) -> String {
