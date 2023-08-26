@@ -1,31 +1,36 @@
-use enum_map::EnumMap;
+use enum_map::{EnumMap, Enum, EnumArray};
+use serde::Deserialize;
 
-use crate::{hero::effect::Effect, wave::InstanceRef};
+use crate::wave::InstanceRef;
 
 #[derive(Debug)]
-pub struct Effects {
-    pub em : EnumMap<Effect,Vec<(u32,InstanceRef)>>,
-    //pub vm : [Vec<(u32,InstanceRef)>;Effect::NumberOfEffects as usize],
+pub struct EffectsMap<T> where T: EnumArray<Vec<(u32,InstanceRef)>>
+{
+    pub em : EnumMap<T,Vec<(u32,InstanceRef)>>,
 }
 
-impl Default for Effects {
+impl<T> Default for EffectsMap<T>  where T: EnumArray<Vec<(u32,InstanceRef)>> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl Effects {
-    pub fn new() -> Effects {
-        Effects {
-            em : EnumMap::default(),
+impl<T> EffectsMap<T>  where T: EnumArray<Vec<(u32,InstanceRef)>> {
+    pub fn new() -> EffectsMap<T> {
+        EffectsMap {
+            em: EnumMap::default(),
         }
     }
 
-    pub fn get(&self, key: Effect) -> u32 {
+    pub fn has(&self, key: T) -> bool {
+        !self.em[key].is_empty()
+    }
+
+    pub fn get(&self, key: T) -> u32 {
         self.em[key].len() as u32
     }
 
-    pub fn push(&mut self, key: Effect, turns : u32, ir:InstanceRef) {
+    pub fn push(&mut self, key: T, turns : u32, ir:InstanceRef) {
         self.em[key ].push((turns,ir));
     }
 

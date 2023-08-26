@@ -2,7 +2,7 @@ use enum_map::EnumMap;
 use rand::Rng;
 
 use crate::hero::Hero;
-use crate::hero::effect::Effect;
+use crate::hero::effects::Effect;
 use crate::hero::instance::Instance;
 use crate::hero::passive::Passive;
 use crate::hero::skill::{Skill, get_targets, execute_skill};

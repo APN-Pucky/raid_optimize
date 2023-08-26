@@ -11,9 +11,11 @@ use crate::hero::stat::effect_to_stat;
 use crate::{roll, indent, debug, warn, info, error};
 use crate::wave::{ InstanceRef, TURN_METER_THRESHOLD};
 use crate::hero::skill::Skill;
-use crate::hero::effect::Effect;
+use crate::hero::effects::Effects;
 
-use super::effects::Effects;
+use super::effects::buff::attribute::AttributeBuff;
+use super::effects::debuff::Debuff;
+use super::effects::debuff::dot::DotDebuff;
 use super::passive::Passive;
 use super::skill::get_cooldown;
 use super::stat::Stat;
@@ -30,7 +32,7 @@ pub struct Instance<'a> {
     pub cooldowns : Vec<u32>,
     track_statistics: bool,
     pub statistics: EnumMap<Stat,f32>,
-    pub effects : Effects,
+    pub effects: Effects, 
     pub passives : Vec<Passive>
 }
 
@@ -189,7 +191,7 @@ impl Instance<'_> {
 
     pub fn get_attack(&self) -> f32 {
         // TODO handle attack buff/debuff
-        if self.has_effect(Effect::AttackUpII) {
+        if self.effects.attribute_buffs.has(AttributeBuff::AttackUpII) {
             self.hero.attack  * 1.4
         }
         else {
@@ -206,9 +208,10 @@ impl Instance<'_> {
         self.hero.health
     }
 
-    pub fn has_effect(&self, key: Effect) -> bool {
-        !self.effects.em[key].is_empty()
-    }
+
+    //pub fn has_effect(&self, key: Effect) -> bool {
+    //    !self.effects.em[key].is_empty()
+    //}
 
     pub fn reduce_shields(&mut self) {
         let mut i = 0;
@@ -240,9 +243,9 @@ impl Instance<'_> {
         //self.add_stat(Stat::TurnMeterReduced, turn_meter);
     }
 
-    pub fn get_inflicted(&mut self, iref: &InstanceRef, effect: Effect,chance : f32, turns:u32) {
+    pub fn get_inflicted_debuff(&mut self, iref: &InstanceRef, effect: Debuff,chance : f32, turns:u32) {
         if roll(chance) {
-            self.effects.push(effect, turns, *iref);
+            self.effects.debuffs.push(effect, turns, *iref);
         }
     }
 

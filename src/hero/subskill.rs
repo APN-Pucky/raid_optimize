@@ -1,4 +1,4 @@
-use super::effect::Effect;
+use super::effects::Effect;
 
 #[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Target {

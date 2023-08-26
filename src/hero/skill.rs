@@ -1,9 +1,9 @@
 
 use crate::wave::Wave;
 use crate::wave::InstanceRef;
-use crate::hero::effect::Effect;
+use crate::hero::effects::Effect;
 
-use super::effect::is_dot;
+use super::effects::is_dot;
 use super::subskill::SubSkill;
 
 type SkillRef = usize;

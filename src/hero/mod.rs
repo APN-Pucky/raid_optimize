@@ -2,10 +2,9 @@ use std::fmt;
 
 pub mod instance;
 pub mod skill;
-pub mod effect;
+pub mod effects;
 pub mod stat;
 pub mod subskill;
-pub mod effects;
 pub mod passive;
 
 use crate::hero::skill::Skill;

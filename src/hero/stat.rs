@@ -1,6 +1,6 @@
 use enum_map::Enum;
 
-use super::effect::Effect;
+use super::effects::Effect;
 
 #[derive(Debug,Enum, PartialEq, Eq, strum_macros::Display,Copy,Clone)]
 pub enum Stat {
