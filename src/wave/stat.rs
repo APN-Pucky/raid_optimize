@@ -5,12 +5,18 @@ use super::{Effect, Wave, InstanceIndex};
 #[derive(Debug,Enum, PartialEq, Eq, strum_macros::Display,Copy,Clone)]
 pub enum Stat {
     Attacks,
+    Defends,
+    Attacked,
     Attack,
     Shielded,
     CriticalStrikes,
+    CriticalStriked,
     CriticalDamage,
-    TenacityIgnored,
-    PiercedDefense,
+    CriticalDamaged,
+    SavedByTenacity,
+    LostToTenacity,
+    Piercing,
+    Pierced,
     DamageDone,
     DamageTaken,
     HealthHealed,
@@ -20,6 +26,8 @@ pub enum Stat {
     TurnMeterReduced,
     ShieldBlocked,
     EffectInflicted,
+    DamageReflected,
+    DamageReflecteded,
 }
 
 pub fn effect_to_stat(e:Effect) -> Stat {
@@ -38,9 +46,11 @@ pub fn effect_to_stat(e:Effect) -> Stat {
         Effect::AttackUpII => Stat::EffectInflicted,
         Effect::TenacityUpII => Stat::EffectInflicted,
         Effect::Heal => Stat::EffectInflicted,
+        Effect::SpeedDownI => Stat::EffectInflicted,
         Effect::SpeedDownII => Stat::EffectInflicted,
         Effect::SpeedUpI => Stat::EffectInflicted,
         Effect::None => Stat::EffectInflicted,
+        _ => Stat::EffectInflicted,
     }
 }
 

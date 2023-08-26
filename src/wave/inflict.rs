@@ -1,4 +1,4 @@
-use crate::{hero::effect::Effect, roll, debug, wave::stat::effect_to_stat, indent};
+use crate::{hero::effect::{Effect, is_debuff}, roll, debug, wave::stat::effect_to_stat, indent};
 
 use super::{ Wave, InstanceIndex};
 
@@ -38,7 +38,24 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn inflict_single(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, chance: f32, turns :u32) {
-        if roll(chance) {
+        if !is_debuff(effect) {
+            self.inflict_buff_single(actor, target, effect, chance, turns);
+        }
+        else {
+            self.inflict_debuff_single(actor, target, effect, chance, turns);
+        }
+    }
+    pub fn inflict_buff_single(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, chance: f32, turns :u32) {
+        // no rolling here
+        self.inflict(actor, target, effect, turns);
+    }
+    pub fn inflict_debuff_single(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, chance: f32, turns :u32) {
+        let eh = self.get_effect_hit(actor)       ;
+        let er = self.get_effect_resistance(target);
+        let mchance = chance * (1.0 + eh - er);
+        debug!("chance of {}%",mchance*100.);
+
+        if roll(mchance) {
             self.inflict(actor, target, effect, turns);
         }
         else{

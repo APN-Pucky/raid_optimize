@@ -15,6 +15,7 @@ pub mod skill;
 pub mod passive;
 pub mod effect;
 pub mod dot;
+pub mod faction;
 pub mod print;
 
 use crate::hero::Hero;

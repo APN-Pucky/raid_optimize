@@ -23,7 +23,8 @@ impl<const LEN:usize> Wave<'_,LEN> {
             let nn: InstanceIndex = b.last().unwrap().1;
             let dmg_vec = vec![0.30,0.50,0.70,0.90,1.05,1.20,1.35,1.45,1.55,1.65];
             let bleed_dmg = self.get_attack_damage(nn) * dmg_vec[n as usize] ;
-            self.damage_bleed(actor,nn,bleed_dmg);
+            let mastery = self.get_mastery(nn);
+            self.damage_bleed(actor,nn,bleed_dmg * (1.0 + mastery));
         }
     }
 
@@ -35,8 +36,11 @@ impl<const LEN:usize> Wave<'_,LEN> {
             // get inflictor
             let inflictor : InstanceIndex= b.last().unwrap().1;
             let mut hp_burn_dmg : f32 = self.get_max_health(actor) * 0.08 * n as f32;
+            let mastery = self.get_mastery(inflictor);
+            hp_burn_dmg *= 1.0 + mastery;
             let max = 0.3*self.get_max_health(inflictor);
             if hp_burn_dmg > max {
+                debug!("{} HP burning damage capped at {}", self.name(actor), max);
                 hp_burn_dmg = max;
             }
             self.damage_hp_burning(actor,inflictor,hp_burn_dmg);
