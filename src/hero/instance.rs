@@ -291,6 +291,8 @@ impl Instance<'_> {
 
 #[cfg(test)]
 mod tests {
+    use crate::hero::{mark::Mark, class::Class, faction::Faction, rarity::Rarity};
+
     use super::*;
 
     #[test]
@@ -315,6 +317,10 @@ mod tests {
             damage_reflection : 0.0,
             skills : Vec::new(),
             passives : Vec::new(),
+            mark: Mark::Blue,
+            class: Class::Attack,
+            faction: Faction::DoomLegion,
+            rarity: Rarity::Common,
         };
         let hi : Instance = Instance::new(&h,0,1,0);
         assert_eq!(h.health, hi.health);

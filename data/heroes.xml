@@ -4,6 +4,10 @@
         <name>Natalie</name>
         <health>61778</health>
         <attack>7431</attack>
+        <rarity>Legendary</rarity>
+        <mark>Blue</mark>
+        <class>Attack</class>
+        <faction>DragonTribe</faction>
         <defense>6485</defense>
         <speed>1399</speed>
         <crit_rate>0.098</crit_rate>
@@ -48,6 +52,10 @@
     <hero>
         <id>2</id>
         <name>Seth</name>
+        <rarity>Legendary</rarity>
+        <mark>Force</mark>
+        <class>Defense</class>
+        <faction>HiddenWave</faction>
         <health>95772</health>
         <attack>6566</attack>
         <defense>7109</defense>
@@ -94,6 +102,10 @@
     <hero>
         <id>3</id>
         <name>Liz</name>
+        <rarity>Epic</rarity>
+        <mark>Force</mark>
+        <class>Support</class>
+        <faction>DoomLegion</faction>
         <health>95772</health>
         <attack>6566</attack>
         <defense>7109</defense>
@@ -140,6 +152,10 @@
     <hero>
         <id>3</id>
         <name>Space</name>
+        <rarity>Legendary</rarity>
+        <mark>Blue</mark>
+        <class>Support</class>
+        <faction>WizardsEye</faction>
         <health>95772</health>
         <attack>6566</attack>
         <defense>7109</defense>

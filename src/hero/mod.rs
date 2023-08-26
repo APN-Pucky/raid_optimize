@@ -6,10 +6,14 @@ pub mod effect;
 pub mod subskill;
 pub mod effects;
 pub mod passive;
+pub mod class;
+pub mod faction;
+pub mod rarity;
+pub mod mark;
 
 use crate::hero::skill::Skill;
 
-use self::passive::Passive;
+use self::{passive::Passive, faction::Faction, rarity::Rarity, class::Class, mark::Mark};
 
 #[derive(Deserialize, Debug)]
 pub struct Heroes {
@@ -21,6 +25,10 @@ pub struct Heroes {
 pub struct Hero {
     pub id: u32,
     pub name: String,
+    pub mark : Mark,
+    pub class: Class,
+    pub faction: Faction,
+    pub rarity : Rarity,
     pub health: f32,
     pub attack: f32,
     pub defense: f32,
@@ -77,6 +85,10 @@ mod tests {
             <hero>
                 <id>1</id>
                 <name>Elhain</name>
+                <rarity>Legendary</rarity>
+                <mark>Blue</mark>
+                <class>Support</class>
+                <faction>WizardsEye</faction>
                 <health>15000</health>
                 <attack>1000</attack>
                 <defense>1000</defense>
