@@ -18,15 +18,16 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn dot_bleed(&mut self, actor : InstanceIndex) {
         // apply bleed
-        let n = self.effects[actor].get(Effect::Bleed);
+        let n = self.effects[actor].get(Effect::Bleed).min(10);
         if n > 0 {
             let b : &Vec<(u32,InstanceIndex)> = &self.effects[actor].em[Effect::Bleed];
             // get inflictor
-            let nn: InstanceIndex = b.last().unwrap().1;
+            let inflictor = b.last().unwrap().1;
+            //let nn: u32= b.iter().map(|(n,_)| n).sum();
             let dmg_vec = vec![0.30,0.50,0.70,0.90,1.05,1.20,1.35,1.45,1.55,1.65];
-            let bleed_dmg = self.get_attack_damage(nn) * dmg_vec[n as usize] ;
-            let mastery = self.get_mastery(nn);
-            self.damage_bleed(nn,actor,bleed_dmg * (1.0 + mastery));
+            let bleed_dmg = self.get_attack_damage(inflictor) * dmg_vec[n as usize -1] ;
+            let mastery = self.get_mastery(inflictor);
+            self.damage_bleed(inflictor,actor,bleed_dmg * (1.0 + mastery));
         }
     }
 

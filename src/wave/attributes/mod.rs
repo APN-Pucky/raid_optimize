@@ -116,16 +116,29 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn get_speed(&self, actor : InstanceIndex) -> f32 {
         let mut fact = 1.0;
-        if self.effects[actor].has(Effect::SpeedUpI) {
-            fact *= 1.2;
+        debug!("{} base speed of {}", self.name(actor),self.get_hero(actor).speed);
+        indent!({
+            if self.effects[actor].has(Effect::SpeedUpI) {
+                let xfact = 1.2;
+                debug!("{} has SpeedUpI -> speed * {}", self.name(actor), xfact);
+                fact *= xfact;
+            }
+            if self.effects[actor].has(Effect::SpeedDownI) {
+                let xfact = 0.8;
+                debug!("{} has SpeedDownI -> speed * {}", self.name(actor), xfact);
+                fact *= xfact;
+            }
+            if self.effects[actor].has(Effect::SpeedDownII) {
+                let xfact = 0.6;
+                debug!("{} has SpeedDownII -> speed * {}", self.name(actor), xfact);
+                fact *= xfact;
+            }
+        });
+        let res = self.get_hero(actor).speed  * fact ;
+        if fact != 1.0 {
+            debug!("{} speed of {}", self.name(actor), res);
         }
-        if self.effects[actor].has(Effect::SpeedDownI) {
-            fact *= 0.8;
-        }
-        if self.effects[actor].has(Effect::SpeedDownII) {
-            fact *= 0.6;
-        }
-        self.get_hero(actor).speed  * fact 
+        res
     }
 
     pub fn get_effect_resistance(&self,actor : InstanceIndex) -> f32 {

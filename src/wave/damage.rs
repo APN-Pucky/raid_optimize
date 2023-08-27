@@ -12,7 +12,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         }
     }
     pub fn attack_single(&mut self, actor : InstanceIndex, target : InstanceIndex, d: f32,basic:bool ) {
-        debug!("{} attacks {} with {} attack", self.name(actor), self.name(target),d);
+        debug!("{} attacks {} to {}", self.name(actor),d, self.fmt(target));
         let mut damage = d;
         indent!({
             if basic {
