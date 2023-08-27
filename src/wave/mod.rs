@@ -49,6 +49,7 @@ pub struct Wave<'a, const LEN: usize > {
     pub turn_meter : [f32;LEN],
     pub cooldowns : [Vec<u32>;LEN],
     pub health : [f32;LEN],
+    pub bonds_counter : [u32;LEN],
     pub team_bonds : Vec<EnumMap<Faction,f32>>,
     //pub ally_player : Box<dyn Player>,
     //pub enemy_player : Box<dyn Player>,
@@ -79,6 +80,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         let mut cooldowns : [Vec<u32>;LEN] = instances.iter().map(|_| Vec::new()).collect::<Vec<_>>().try_into().unwrap();
         let shields = instances.iter().map(|_| Vec::new()).collect::<Vec<_>>().try_into().unwrap();
         let bonds  = players.iter().map(|p| EnumMap::default()).collect::<Vec<_>>().try_into().unwrap();
+        let bonds_counter = instances.iter().map(|_| 0).collect::<Vec<_>>().try_into().unwrap();
         // set the values of the cooldowns from the Instances
         for i in 0..LEN {
             for j in 0..instances[i].cooldowns.len() {
@@ -103,6 +105,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             track_statistics,
             len : instances.len(),
             team_bonds : bonds,
+            bonds_counter : bonds_counter,
         };
         w.set_bonds();
         w
@@ -117,6 +120,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             self.health[i] = self.get_max_health(i);
             self.shields[i].clear();
             self.effects[i].clear();
+            self.bonds_counter[i] = 0;
         }
     }
 

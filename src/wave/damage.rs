@@ -88,7 +88,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         indent!({
             let mut damage = damage;
             if self.get_faction(target) == Faction::DoomLegion {
-                let n = self.count_self_buffs(target).min(5) as f32;
+                let n = self.bonds_counter[target] as f32;
                 let xfact = self.team_bonds[self.teams[target]][Faction::DoomLegion];
                 let r = 1.0 - xfact*n;
                 damage = damage *r;

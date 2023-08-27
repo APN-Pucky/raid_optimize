@@ -47,6 +47,10 @@ pub enum Effect {
     None,
 }
 
+pub fn is_buff(effect : Effect) -> bool {
+    ! is_debuff(effect)
+}
+
 pub fn is_debuff(effect:Effect) -> bool {
     match effect {
         Effect::WetI => true,

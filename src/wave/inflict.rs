@@ -1,4 +1,4 @@
-use crate::{hero::effect::{Effect, is_debuff}, roll, debug, wave::stat::effect_to_stat, indent};
+use crate::{hero::{effect::{Effect, is_debuff, is_buff}, faction::Faction}, roll, debug, wave::stat::effect_to_stat, indent};
 
 use super::{ Wave, InstanceIndex};
 
@@ -15,6 +15,11 @@ impl<const LEN:usize> Wave<'_,LEN> {
         debug!("{} inflicts {} for {} turns on {}", self.name(actor), effect, turns, self.name(target));
         self.add_stat(actor, effect_to_stat(effect) , turns as f32);
         self.effects[target].push(effect, turns, actor);
+        if actor == target && self.get_faction(actor) == Faction::DoomLegion {
+            if is_buff(effect) && self.bonds_counter[actor] < 5 {
+                self.bonds_counter[actor] += 1;
+            }
+        }
     }
 
     fn inflict_hp_burning(&mut self, actor : InstanceIndex, target:InstanceIndex, turns :u32) {
