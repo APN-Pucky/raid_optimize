@@ -89,7 +89,7 @@ impl<const LEN:usize> Player<LEN> for ManualPlayer {
     fn pick_target(&self, wave : &Wave<LEN>, actor : InstanceIndex, skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex{
         println!("Pick target for {} using skill {:?}", wave.heroes[actor].name, skill);
         for (i, target) in targets.iter().enumerate() {
-            println!(" {}: {}", i, *target);
+            println!(" {}: {}", i, wave.name(*target));
         }
         loop {
             let mut s = String::new();
