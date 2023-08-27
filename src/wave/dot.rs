@@ -9,7 +9,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         // apply heal
         let n = self.effects[actor].get(Effect::Heal);
         if n> 0 {
-            let b : &Vec<(u32,InstanceIndex)> = &self.effects[actor].em[Effect::Bleed];
+            let b : &Vec<(u32,InstanceIndex)> = &self.effects[actor].em[Effect::Heal];
             let nn: InstanceIndex = b.last().unwrap().1;
             let heal = self.get_max_health(actor) * 0.05 * n as f32;
             self.heal(nn,actor,heal);

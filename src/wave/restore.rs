@@ -22,8 +22,10 @@ impl<const LEN:usize> Wave<'_,LEN> {
             return;
         }
         debug!("{} restores {} for {}", self.name(actor), self.name(target), health);
-        self.add_stat(actor, Stat::HealthRestored, health);
-        self.heal(actor,target, health)
+        indent!({
+            self.add_stat(actor, Stat::HealthRestored, health);
+            self.heal(actor,target, health)
+        });
     }
 
     pub fn restore_single(&mut self, actor : InstanceIndex, target: InstanceIndex,health:f32) {

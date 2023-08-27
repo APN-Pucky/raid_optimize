@@ -29,7 +29,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             for p in self.players.iter() {
                 info!("{}", p.get_name());
                 indent!({
-                    for a in self.get_ally_indices(p.get_team()) {
+                    for a in self.get_team_indices(p.get_team()) {
                         info!("{}", self.fmt(a));
                     }
                 })
@@ -40,7 +40,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn print_all(&self) {
         for p in self.players.iter() {
             println!("{}", p.get_name());
-            for a in self.get_ally_indices(p.get_team()) {
+            for a in self.get_team_indices(p.get_team()) {
                 println!("{}", self.fmt(a));
             }
         }

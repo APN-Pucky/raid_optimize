@@ -14,13 +14,15 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 let xfact = self.effects[actor].get(Effect::FactionHiddenWaveSkill).min(2) as f32;
                 let n = self.get_bond(actor, Faction::HiddenWave);
                 let r = xfact * n;
-                debug!("{} has FactionHiddenWaveSkill -> skill damage * {}", self.fmt(actor), xfact);
+                debug!("{} has FactionHiddenWaveSkill -> skill damage * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
 
         });
         let res = fact;
-        debug!("{} skill damage ratio of {}", self.fmt(actor), res);
+        if fact != 1.0 {
+            debug!("{} skill damage ratio of {}", self.name(actor), res);
+        }
         res
     }
 
@@ -32,53 +34,53 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 let xfact = self.effects[actor].get(Effect::FactionHiddenWaveAttack).min(2) as f32;
                 let n = self.get_bond(actor, Faction::HiddenWave);
                 let r = xfact * n;
-                debug!("{} has FactionHiddenWaveAttack -> basic attack damage * {}", self.fmt(actor), xfact);
+                debug!("{} has FactionHiddenWaveAttack -> basic attack damage * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
             if self.has_effect(actor, Effect::RippleII) {
                 let xfact = 1.40;
-                debug!("{} has RippleII -> basic attack damage * {}", self.fmt(actor), xfact);
+                debug!("{} has RippleII -> basic attack damage * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
 
         });
         let res = fact;
-        debug!("{} basic attack damage ratio of {}", self.fmt(actor), res);
+        debug!("{} basic attack damage ratio of {}", self.name(actor), res);
         res
     }
 
     pub fn get_attack(&self,actor : InstanceIndex) -> f32 {
         let mut fact = 1.0;
-        debug!("{} base attack of {}", self.fmt(actor),self.get_hero(actor).attack);
+        debug!("{} base attack of {}", self.name(actor),self.get_hero(actor).attack);
         indent!({
             if self.heroes[actor].faction == Faction::Foresters {
                 let xfact = self.get_bond(actor,Faction::Foresters);
-                debug!("{} has {} bond with Foresters -> attack * {}", self.fmt(actor), xfact, xfact);
+                debug!("{} has {} bond with Foresters -> attack * {}", self.name(actor), xfact, xfact);
                 fact *= xfact;
             }
             if self.effects[actor].has(Effect::AttackUpI) {
                 let xfact = 1.25;
-                debug!("{} has AttackUpI -> attack * {}", self.fmt(actor), xfact);
+                debug!("{} has AttackUpI -> attack * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
             if self.effects[actor].has(Effect::AttackUpII) {
                 let xfact = 1.5;
-                debug!("{} has AttackUpII -> attack * {}", self.fmt(actor), xfact);
+                debug!("{} has AttackUpII -> attack * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
             if self.effects[actor].has(Effect::AttackDownI) {
                 let xfact = 0.75;
-                debug!("{} has AttackDownI -> attack * {}", self.fmt(actor), xfact);
+                debug!("{} has AttackDownI -> attack * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
             if self.effects[actor].has(Effect::AttackDownII) {
                 let xfact = 0.5;
-                debug!("{} has AttackDownII -> attack * {}", self.fmt(actor), xfact);
+                debug!("{} has AttackDownII -> attack * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
         });
         let ret = self.get_hero(actor).attack * fact;
-        debug!("{} attack of {}", self.fmt(actor), ret);
+        debug!("{} attack of {}", self.name(actor), ret);
         ret
     }
 

@@ -310,8 +310,8 @@ impl<const LEN:usize> Sim<'_,LEN> {
             for x in 0..iter {
                 cr.add_result(&wave.run());
                 wave.reset();
-                if (x+1) % 100000 == 0 { // plus one because we start at 0 and want the score added after the iteration
-                    bar.inc(100000);
+                if (x+1) % 1000 == 0 { // plus one because we start at 0 and want the score added after the iteration
+                    bar.inc(1000);
                 }
             }
             cr

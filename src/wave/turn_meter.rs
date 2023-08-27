@@ -12,12 +12,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn increase_turn_meter(&mut self, actor : InstanceIndex, turn_meter: f32) {
-        self.turn_meter[actor] += turn_meter;
+        self.turn_meter[actor] = self.turn_meter_threshold.min( self.turn_meter[actor] + turn_meter);
+        debug!("{} turn_meter increased by {} to {}", self.name(actor), turn_meter, self.turn_meter[actor])
     }
 
     pub fn reduce_turn_meter(&mut self, actor : InstanceIndex, target: InstanceIndex, turn_meter: f32) {
         let turn_meter = turn_meter * (1.0 - self.get_turn_meter_reduction_reduction(target));
-        debug!("{} turn_meter reduced by {} from {} to {}", self.name(target),self.name(actor), turn_meter, self.turn_meter[target] - turn_meter);
+        debug!("{} turn_meter reduced by {} from {} to {}", self.name(target),self.name(actor), self.turn_meter[target], self.turn_meter[target] - turn_meter);
         self.turn_meter[target] = (self.turn_meter[target]-turn_meter).max(0.0);
     }
 
@@ -27,15 +28,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn increase_turn_meter_team(&mut self, actor : InstanceIndex, increase_ratio : f32) {
-        self.get_ally_indices(actor).iter()
-            .for_each(|&i| 
-                self.increase_turn_meter(i,increase_ratio * self.turn_meter_threshold)
-            )
-        //(0..LEN)
-        //    .filter(|i| self.teams[*i] != self.teams[actor])
-        //    .for_each(|i| 
-        //        self.increase_turn_meter(i,increase_ratio * self.turn_meter_threshold)
-        //    )
+        debug!("{} increases turn meter of team", self.name(actor));
+        indent!({
+            self.get_ally_indices(actor).iter()
+                .for_each(|&i| 
+                    self.increase_turn_meter(i,increase_ratio * self.turn_meter_threshold)
+                )
+        });
     }
 
 

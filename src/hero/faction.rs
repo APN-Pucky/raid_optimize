@@ -18,7 +18,7 @@ pub enum Faction {
     NamelessBrotherhood,
     TheForgotten,
     SwordHarborGuards,
-    // In progress
     HiddenWave,
+    // In progress
     // TODO
 }

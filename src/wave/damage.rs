@@ -153,13 +153,15 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
             let fact = mat[self.get_mark(actor)][self.get_mark(target)];
             damage = damage * fact;
-            debug!("{} has {} mark against {} -> damage * {}", self.name(actor), self.get_mark(actor), self.get_mark(target), fact);
+            if fact != 1.0 {
+                debug!("{} has {} mark against {} -> damage * {}", self.name(actor), self.get_mark(actor), self.get_mark(target), fact);
+            }
             
 
             self.add_stat(actor,Stat::DamageTaken, damage);
             self.add_stat(target,Stat::DamageDone, damage);
-            let dmg = self.shield_loose(actor,damage);
-            self.loose_health(actor,dmg);
+            let dmg = self.shield_loose(target,damage);
+            self.loose_health(target,dmg);
             if leech {
                 self.leech(actor,target,dmg);
             }
@@ -182,12 +184,17 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn reflect_damage(&mut self, actor:InstanceIndex, target:InstanceIndex,damage: f32) {
-        debug!("{} reflects {} damage to {}", self.name(actor), damage,self.name(target));
-        indent!({
-            self.add_stat(actor,Stat::DamageReflected, damage);
-            self.add_stat(target,Stat::DamageReflecteded, damage);
-            self.damage(actor,target,damage,false,false);
-        })
+        if damage > 0. {
+            debug!("{} reflects {} damage to {}", self.name(actor), damage,self.name(target));
+            indent!({
+                self.add_stat(actor,Stat::DamageReflected, damage);
+                self.add_stat(target,Stat::DamageReflecteded, damage);
+                self.damage(actor,target,damage,false,false);
+            })
+        }
+        if damage < 0. {
+            panic!("{} reflects negative damage {} to {}", self.name(actor), damage,self.name(target));
+        }
     }
 
 }

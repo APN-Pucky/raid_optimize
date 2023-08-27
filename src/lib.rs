@@ -47,7 +47,7 @@ macro_rules! debug {
     ($($arg:tt)*) => {{
         crate::LOG_STACK.with(|log_stack| {
             let log_stack = log_stack.borrow();
-            let indent = " ".repeat(*log_stack);
+            let indent = "  ".repeat(*log_stack);
             log::debug!(target: "", "{}{}", indent, format!($($arg)*));
         })
     }};
@@ -63,7 +63,7 @@ macro_rules! warn{
     ($($arg:tt)*) => {{
         crate::LOG_STACK.with(|log_stack| {
             let log_stack = log_stack.borrow();
-            let indent = " ".repeat(*log_stack);
+            let indent = "  ".repeat(*log_stack);
             log::warn!(target: "","{}{}", indent, format!($($arg)*));
         })
     }};
@@ -74,7 +74,7 @@ macro_rules! error{
     ($($arg:tt)*) => {{
         crate::LOG_STACK.with(|log_stack| {
             let log_stack = log_stack.borrow();
-            let indent = " ".repeat(*log_stack);
+            let indent = "  ".repeat(*log_stack);
             log::error!(target: "","{}{}", indent, format!($($arg)*));
         })
     }};
@@ -85,7 +85,7 @@ macro_rules! info{
     ($($arg:tt)*) => {{
         crate::LOG_STACK.with(|log_stack| {
             let log_stack = log_stack.borrow();
-            let indent = " ".repeat(*log_stack);
+            let indent = "  ".repeat(*log_stack);
             log::info!(target: "","{}{}", indent, format!($($arg)*));
         })
     }};

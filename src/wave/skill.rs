@@ -18,7 +18,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
 impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn pre_execute_skill(&mut self, actor: InstanceIndex,target: InstanceIndex, skill: &Skill) {
-        debug!("{} pre_execute_skill {:?}", self.name(actor), skill);
+        debug!("{} pre_execute_skill {}", self.name(actor), skill);
         indent!({
             if self.get_faction(actor) == Faction::HiddenWave {
                 if is_basic_attack(skill) {

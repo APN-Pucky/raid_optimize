@@ -64,7 +64,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
             let skill :&Skill = self.get_player_of_instance(actor).pick_skill(self, actor, &skills);
 
-            debug!("{} chooses {}", self.name(actor), skill);
+            debug!("{} chooses {:?}", self.name(actor), skill);
             indent!({
                 // get targets
                 match get_targets(&skill, actor, self) {

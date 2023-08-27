@@ -104,11 +104,11 @@ macro_rules! sim {
             iterations,
         );
         sim.run(threads,!no_stats);
-        if !no_results{
-            sim.print_results();
-        }
         if !no_stats {
             sim.print_statistics(bar);
+        }
+        if !no_results{
+            sim.print_results();
         }
      }
 }

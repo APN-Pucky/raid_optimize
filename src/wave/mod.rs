@@ -113,6 +113,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
 
     pub fn reset(&mut self) {
+        self.turns = 0;
         for i in 0..LEN {
             self.statistics[i].clear();
             self.cooldowns[i].iter_mut().for_each(|c| *c = 0);
@@ -122,6 +123,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             self.effects[i].clear();
             self.bonds_counter[i] = 0;
         }
+        self.set_bonds(); //  no change expecte
     }
 
     #[inline]
