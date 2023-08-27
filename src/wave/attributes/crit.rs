@@ -10,6 +10,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
         let mut fact = 1.0;
         debug!("{} base crit rate of {}", self.fmt(actor),self.get_hero(actor).crit_rate);
         indent!({
+            if self.get_faction(actor) == Faction::DragonTribe {
+                let n = self.bonds_counter[actor] as f32;
+                let xfact = self.get_bond(actor,Faction::DragonTribe);
+                let r = 1.0 +xfact * n;
+                debug!("{} has {}*{} bond with DragonTribe -> crit_rate * {}", self.fmt(actor), n,xfact, r);
+                fact *= r;
+            }
             if self.effects[actor].has(Effect::CritRateUpI) {
                 let xfact = 1.25;
                 debug!("{} has CritRateUpI -> crit_rate * {}", self.fmt(actor), xfact);

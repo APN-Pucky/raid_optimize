@@ -137,6 +137,17 @@ impl<const LEN:usize> Wave<'_,LEN> {
             .collect()
     }
 
+    pub fn revive(&mut self, actor: InstanceIndex, target: InstanceIndex, health_max_ratio: f32, health_abs : f32) {
+        debug!("{} revives {}", self.name(actor), self.name(target));
+        indent!({
+            let ratio = self.get_revive_extra_hp_ratio(target);
+            self.health[target] = self.get_max_health(target).min(ratio*(health_max_ratio * self.get_max_health(target) + health_abs ));
+            self.add_stat(actor, Stat::Revives, 1.0);
+            self.add_stat(target, Stat::Revived, 1.0);
+        })
+
+    }
+
 
     pub fn get_player_of_instance(&self, ii: InstanceIndex) -> &dyn Player<LEN> {
         &*self.players[self.teams[ii]]

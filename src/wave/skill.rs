@@ -1,4 +1,4 @@
-use crate::{hero::skill::{Skill, get_cooldown}, indent, debug};
+use crate::{hero::{skill::{Skill, get_cooldown, is_basic_attack}, faction::Faction, effect::Effect}, indent, debug};
 
 use super::{InstanceIndex, Wave};
 
@@ -17,9 +17,24 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
 
 impl<const LEN:usize> Wave<'_,LEN> {
 
+    pub fn pre_execute_skill(&mut self, actor: InstanceIndex,target: InstanceIndex, skill: &Skill) {
+        debug!("{} pre_execute_skill {:?}", self.name(actor), skill);
+        indent!({
+            if self.get_faction(actor) == Faction::HiddenWave {
+                if is_basic_attack(skill) {
+                    self.inflict_single(actor, actor, Effect::FactionHiddenWaveAttack,1.0, 2);
+                }
+                else {
+                    self.inflict_single(actor, actor, Effect::FactionHiddenWaveSkill,1.0, 2);
+                }
+            }
+
+        })
+    }
+
     pub fn cooldown_s(&mut self,actor: InstanceIndex, skill:&Skill) {
         if let Some(i) = self.heroes[actor].skills.iter().position(|s| s == skill) {
-            self.cooldowns[actor][i] = *get_cooldown(skill);
+            self.cooldowns[actor][i] = get_cooldown(skill);
         }
         else {
             panic!("Skill {:?} not found in hero {:?}", skill, self.heroes[actor]);
@@ -48,6 +63,6 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn cooldown(&mut self, actor: InstanceIndex,skill : SkillIndex) {
-        self.cooldowns[actor][skill] = *get_cooldown(&self.get_hero(actor).skills[skill]);
+        self.cooldowns[actor][skill] = get_cooldown(&self.get_hero(actor).skills[skill]);
     }
 }

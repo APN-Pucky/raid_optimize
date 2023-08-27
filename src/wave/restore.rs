@@ -3,18 +3,18 @@ use crate::{debug, wave::stat::Stat, indent, warn};
 use super::{Wave, InstanceIndex};
 
 impl<const LEN:usize> Wave<'_,LEN> {
-    pub fn heal(&mut self,actor :InstanceIndex, health:f32) {
-        if self.is_dead(actor) {
-            warn!("{} is dead, cannot heal [{},{}]", self.name(actor),self.health[actor],self.health[actor]> 0.0);
+    pub fn heal(&mut self,actor : InstanceIndex, target :InstanceIndex, health:f32) {
+        if self.is_dead(target) {
+            warn!("{} is dead, cannot heal [{},{}]", self.name(target),self.health[target],self.health[target]> 0.0);
             return;
         }
         let healing_effect = self.get_healing_effect(actor);
-        //let health = self.health[actor]; 
-        let heal = health * (1.+healing_effect); // TODO handle rounding
-        let new_health = self.get_max_health(actor).min(self.health[actor] + heal);
-        debug!("{} heals {} health (healing_effect: {})", self.name(actor), heal, healing_effect);
-        self.add_stat(actor,Stat::HealthHealed, new_health- self.health[actor] );
-        self.health[actor] = new_health;
+        let healed_effect = self.get_healed_effect(target);
+        let heal = health * (healing_effect+healed_effect); // TODO handle rounding
+        let new_health = self.get_max_health(target).min(self.health[target] + heal);
+        debug!("{} heals {} health (healing_effect: {}, healed_effect: {})", self.name(target), heal, healing_effect, healed_effect);
+        self.add_stat(target,Stat::HealthHealed, new_health- self.health[target] );
+        self.health[target] = new_health;
     }
 
     pub fn restore(&mut self, actor : InstanceIndex, target: InstanceIndex,health:f32) {
@@ -23,7 +23,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         }
         debug!("{} restores {} for {}", self.name(actor), self.name(target), health);
         self.add_stat(actor, Stat::HealthRestored, health);
-        self.heal(target, health)
+        self.heal(actor,target, health)
     }
 
     pub fn restore_single(&mut self, actor : InstanceIndex, target: InstanceIndex,health:f32) {

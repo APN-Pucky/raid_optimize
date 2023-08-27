@@ -82,7 +82,7 @@ impl Instance<'_> {
     }
 
     pub fn cooldown(&mut self, skill :usize) {
-        self.cooldowns[skill] = *get_cooldown(&self.hero.skills[skill]);//*get_cooldown(skill);
+        self.cooldowns[skill] = get_cooldown(&self.hero.skills[skill]);//*get_cooldown(skill);
         // find index of skill in hero.skills
         //if let Some(i) = self.hero.skills.iter().position(|s| s == skill) {
         //    self.cooldowns[i] = *get_cooldown(skill);
@@ -94,7 +94,7 @@ impl Instance<'_> {
 
     pub fn cooldown_s(&mut self, skill:&Skill) {
         if let Some(i) = self.hero.skills.iter().position(|s| s == skill) {
-            self.cooldowns[i] = *get_cooldown(skill);
+            self.cooldowns[i] = get_cooldown(skill);
         }
         else {
             panic!("Skill {:?} not found in hero {:?}", skill, self.hero);

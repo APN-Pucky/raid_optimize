@@ -10,6 +10,53 @@ pub enum Target {
     AllEnemies,
     AllAllies,
 }
+
+pub fn get_targets<const LEN:usize>(target : Target, actor :InstanceIndex, wave :& Wave<LEN>) -> Vec<InstanceIndex> {
+    match target {
+        Target::Everyone => {
+            // 0..LEN
+            wave.get_indices()
+        },
+        Target::SingleAlly => {
+            wave.get_ally_indices(actor)
+        },
+        Target::SingleEnemy => {
+            wave.get_enemies_indices(actor)
+        },
+        Target::AllEnemies => {
+            wave.get_enemies_indices(actor)
+        },
+        Target::AllAllies => {
+            wave.get_ally_indices(actor)
+        },
+    } 
+}
+
+pub fn merge_targets(t1 : Target,t2:Target) -> Target {
+    // test if it makes sense
+    if (Target::SingleAlly == t1 || Target::AllAllies== t1) && (Target::SingleEnemy == t2 || Target::AllEnemies == t2) {
+        panic!("Cannot merge targets {:?} and {:?}",t1,t2);
+    }
+    if (Target::SingleEnemy == t1 || Target::AllEnemies== t1) && (Target::SingleAlly == t2 || Target::AllAllies == t2) {
+        panic!("Cannot merge targets {:?} and {:?}",t1,t2);
+    }
+    // return 
+    if Target::SingleAlly == t1 || Target::SingleAlly == t2 {
+        t1
+    } else if Target::SingleEnemy == t1 || Target::SingleEnemy == t2 {
+        t1
+    } else if Target::AllEnemies == t1 || Target::AllEnemies == t2 {
+        t1
+    } else if Target::AllAllies == t1 || Target::AllAllies == t2 {
+        t1
+    } else if Target::Everyone == t1 || Target::Everyone == t2 {
+        t1
+    }
+    else {
+        panic!("Cannot merge targets {:?} and {:?}",t1,t2);
+    }
+}
+
 #[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Scale {
     AttackDamage,
@@ -47,7 +94,7 @@ fn turns_default() -> u32 {
     0
 }
 
-pub fn execute_subskill<const LEN:usize>(subskill : &SubSkill, actor :InstanceIndex, target :InstanceIndex, wave :&mut Wave<LEN>) {
+pub fn execute_subskill<const LEN:usize>(subskill : &SubSkill, actor :InstanceIndex, target :InstanceIndex, wave :&mut Wave<LEN> , basic_attack : bool) {
     let mut val= 0.0;
     let mut targets : Vec<InstanceIndex> = vec![];
     let mut effect = Effect::None;
@@ -90,7 +137,7 @@ pub fn execute_subskill<const LEN:usize>(subskill : &SubSkill, actor :InstanceIn
     match subskill.typ {
         Type::Damage => {
             for target in targets {
-                wave.attack_single(actor,target,val);
+                wave.attack_single(actor,target,val,basic_attack);
             }
         },
         Type::Restore => {

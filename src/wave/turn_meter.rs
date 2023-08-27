@@ -16,6 +16,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn reduce_turn_meter(&mut self, actor : InstanceIndex, target: InstanceIndex, turn_meter: f32) {
+        let turn_meter = turn_meter * (1.0 - self.get_turn_meter_reduction_reduction(target));
         debug!("{} turn_meter reduced by {} from {} to {}", self.name(target),self.name(actor), turn_meter, self.turn_meter[target] - turn_meter);
         self.turn_meter[target] = (self.turn_meter[target]-turn_meter).max(0.0);
     }

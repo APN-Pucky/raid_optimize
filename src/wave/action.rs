@@ -1,4 +1,4 @@
-use crate::{debug, indent, hero::{effect::Effect, skill::{Skill, get_targets, execute_skill}}};
+use crate::{debug, indent, hero::{effect::Effect, skill::{Skill, get_targets, execute_skill}, faction::Faction}};
 
 use super::{InstanceIndex, Wave};
 
@@ -30,6 +30,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn after_action(&mut self, actor :InstanceIndex) {
         debug!("after {} acts", actor);
         indent!({
+            if self.get_faction(actor) == Faction::DragonTribe && self.bonds_counter[actor] < 5 {
+                self.bonds_counter[actor] += 1;
+            }
             self.set_turn_meter(actor,0.0);
             self.effect_reduce(actor);
             self.shield_reduce(actor);
@@ -67,6 +70,8 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 match get_targets(&skill, actor, self) {
                     Some(ts) => {
                         let target : InstanceIndex = self.get_player_of_instance(actor).pick_target(self, actor, &skill, &ts);
+                        //
+                        self.pre_execute_skill(actor, target,skill );
                         // apply skill
                         execute_skill(skill, actor, target, self);
                     },

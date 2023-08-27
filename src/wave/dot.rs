@@ -9,8 +9,10 @@ impl<const LEN:usize> Wave<'_,LEN> {
         // apply heal
         let n = self.effects[actor].get(Effect::Heal);
         if n> 0 {
+            let b : &Vec<(u32,InstanceIndex)> = &self.effects[actor].em[Effect::Bleed];
+            let nn: InstanceIndex = b.last().unwrap().1;
             let heal = self.get_max_health(actor) * 0.05 * n as f32;
-            self.heal(actor,heal);
+            self.heal(nn,actor,heal);
         }
     }
 
@@ -24,7 +26,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             let dmg_vec = vec![0.30,0.50,0.70,0.90,1.05,1.20,1.35,1.45,1.55,1.65];
             let bleed_dmg = self.get_attack_damage(nn) * dmg_vec[n as usize] ;
             let mastery = self.get_mastery(nn);
-            self.damage_bleed(actor,nn,bleed_dmg * (1.0 + mastery));
+            self.damage_bleed(nn,actor,bleed_dmg * (1.0 + mastery));
         }
     }
 
@@ -43,7 +45,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 debug!("{} HP burning damage capped at {}", self.name(actor), max);
                 hp_burn_dmg = max;
             }
-            self.damage_hp_burning(actor,inflictor,hp_burn_dmg);
+            self.damage_hp_burning(inflictor,actor,hp_burn_dmg);
         }
     }
 }

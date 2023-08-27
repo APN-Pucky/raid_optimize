@@ -44,6 +44,9 @@ pub enum Effect {
     CritDamageDownII,
     CritDamageUpI,
     CritDamageUpII,
+
+    FactionHiddenWaveAttack, // Counter for faction hidden wave
+    FactionHiddenWaveSkill, // Counter for faction hidden wave
     None,
 }
 

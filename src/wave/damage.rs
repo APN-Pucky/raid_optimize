@@ -6,19 +6,26 @@ use crate::{debug, wave::stat::Stat, indent, hero::{faction::Faction, mark::Mark
 use super::{Wave, InstanceIndex};
 
 impl<const LEN:usize> Wave<'_,LEN> {
-    pub fn attack_enemy_team(&mut self, actor : InstanceIndex, damage : f32) {
+    pub fn attack_enemy_team(&mut self, actor : InstanceIndex, damage : f32,basic:bool) {
         for a in self.get_enemies_indices(actor){
-            self.attack_single(actor,a,damage)
+            self.attack_single(actor,a,damage,basic)
         }
     }
-    pub fn attack_single(&mut self, actor : InstanceIndex, target : InstanceIndex, damage : f32) {
-        debug!("{} attacks {} with {} attack", self.name(actor), self.name(target),damage);
+    pub fn attack_single(&mut self, actor : InstanceIndex, target : InstanceIndex, d: f32,basic:bool ) {
+        debug!("{} attacks {} with {} attack", self.name(actor), self.name(target),d);
+        let mut damage = d;
         indent!({
+            if basic {
+                damage *= self.get_basic_attack_damage_ratio(actor);
+            } else {
+                damage *= self.get_skill_damage_ratio(actor);
+            }
             self.add_stat(actor,Stat::Attacks, 1.0);
             self.add_stat(target,Stat::Defends, 1.0);
             let mut rng = rand::thread_rng();
             let crit = rng.gen::<f32>() < self.get_crit_rate(actor);
             let mut attack = damage;
+            let mut p = self.get_piercing(actor);
             indent!({
             if crit {
                 self.add_stat(actor,Stat::CriticalStrikes, 1.0);
@@ -35,13 +42,19 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 self.add_stat(actor,Stat::LostToTenacity, attack  * tenacity );
                 attack = (attack * crit_rate);
                 debug!("{} critical attacks {} ({}%={}%-{}%)", self.name(actor),self.name(target),crit_rate*100.,crit*100.,tenacity*100.);
+                if self.get_faction(actor) == Faction::NamelessBrotherhood {
+                    if rng.gen::<f32>() < 0.5 {
+                        p += self.get_bond(actor,Faction::NamelessBrotherhood);
+                        debug!("{} has {} bond with NamelessBrotherhood -> piercing + {}", self.name(actor), self.get_bond(actor,Faction::NamelessBrotherhood), self.get_bond(actor,Faction::NamelessBrotherhood));
+                    }
+                }
             }
             });
+
             self.add_stat(actor,Stat::Attack, attack);
             self.add_stat(target,Stat::Attacked, attack);
             let mut def = self.get_defense(target);
     
-            let p = self.get_piercing(actor);
             let pierce = (def  * p); // TODO handle rounding
             self.add_stat(actor,Stat::Piercing, pierce);
             self.add_stat(target,Stat::Pierced, pierce);
@@ -89,11 +102,33 @@ impl<const LEN:usize> Wave<'_,LEN> {
             let mut damage = damage;
             if self.get_faction(target) == Faction::DoomLegion {
                 let n = self.bonds_counter[target] as f32;
-                let xfact = self.team_bonds[self.teams[target]][Faction::DoomLegion];
+                let xfact = self.get_bond(target,Faction::DoomLegion);
                 let r = 1.0 - xfact*n;
                 damage = damage *r;
                 debug!("{} has {}*{} DoomLegion buffs -> damage * {}", self.name(target), n,xfact, r);
             }
+            if self.get_faction(actor) == Faction::EternalSect {
+                if self.has_debuff(target) {
+                    let xfact = self.get_bond(actor,Faction::EternalSect);
+                    damage = damage * xfact;
+                    debug!("{} has {} bond with EternalSect and {} has debuff -> damage * {}", self.name(actor), xfact, self.name(target), xfact);
+                }
+            }
+            if self.get_faction(actor) == Faction::SwordHarborGuards {
+                if self.health[actor] > 0.5 * self.get_max_health(actor) {
+                    let xfact = 1.0 + self.get_bond(actor,Faction::SwordHarborGuards);
+                    damage = damage * xfact;
+                    debug!("{} has {} bond with SwordHarborGuards and health > 50% -> damage * {}", self.name(actor), xfact, xfact);
+                }
+            }
+            if self.get_faction(target) == Faction::SwordHarborGuards {
+                if self.health[target] < 0.5 * self.get_max_health(target) {
+                    let xfact = 1.0 - self.get_bond(target,Faction::SwordHarborGuards);
+                    damage = damage * xfact;
+                    debug!("{} has {} bond with SwordHarborGuards and health < 50% -> damage * {}", self.name(target), xfact, xfact);
+                }
+            }
+
             let mut mat :EnumMap<Mark,EnumMap<Mark,f32>> =   EnumMap::default(); 
 
             mat[Mark::Red][Mark::Red]   = 1.00;
@@ -141,7 +176,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             indent!({
                 self.add_stat(actor,Stat::Leeched, leech);
                 self.add_stat(target,Stat::LeechedOf, leech);
-                self.heal(actor,leech);
+                self.heal(actor,actor,leech);
             })
         }
     }

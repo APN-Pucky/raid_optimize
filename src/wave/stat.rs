@@ -31,6 +31,8 @@ pub enum Stat {
     DamageReflecteded,
     Blocked,
     BlockedBy,
+    Revives,
+    Revived,
 }
 
 pub fn effect_to_stat(e:Effect) -> Stat {

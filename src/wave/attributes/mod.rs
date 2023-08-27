@@ -6,8 +6,26 @@ pub mod crit;
 pub mod heal;
 pub mod attack;
 pub mod defense;
+pub mod mastery;
 
 impl<const LEN:usize> Wave<'_,LEN> {
+
+    pub fn get_turn_meter_reduction_reduction(&self,actor: InstanceIndex) -> f32 {
+        let base = 0.0;
+        if self.get_faction(actor) == Faction::TheForgotten {
+            let nfact = self.get_bond(actor,Faction::TheForgotten);
+            if nfact> 0.0 {
+                let fact = 0.05 + (nfact-1.0)*0.025;
+                debug!("{} has {} bond with TheForgotten -> turn_meter_reduction_reduction + {}", self.fmt(actor), nfact, fact);
+                return base + fact;
+            }
+            base
+        }
+        else {
+            base
+        }
+    }
+
 
     pub fn get_faction(&self, actor : InstanceIndex) -> Faction {
         self.heroes[actor].faction
@@ -18,12 +36,20 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn get_leech(&self, actor : InstanceIndex) -> f32 {
-        self.heroes[actor].leech
+        let mut fact = 1.0;
+        debug!("{} base leech of {}", self.fmt(actor),self.get_hero(actor).leech);
+        indent!({
+            if self.get_faction(actor) == Faction::SunsetSages{
+                let xfact = self.get_bond(actor,Faction::SunsetSages);
+                debug!("{} has {} bond with SunsetSages -> leech * {}", self.fmt(actor), xfact, xfact);
+                fact *= xfact;
+
+            }
+        });
+        debug!("{} leech of {}", self.fmt(actor), self.get_hero(actor).leech * fact);
+        self.heroes[actor].leech *fact
     }
 
-    pub fn get_mastery(&self,actor : InstanceIndex) -> f32 {
-        self.heroes[actor].mastery
-    }
 
     pub fn get_damage_reflect(&self,actor : InstanceIndex) -> f32 {
         self.heroes[actor].damage_reflection
@@ -37,7 +63,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         debug!("{} base effect hit of {}", self.fmt(actor),self.get_hero(actor).effect_hit);
         indent!({
             if self.heroes[actor].faction == Faction::WizardsEye {
-                let xfact = self.team_bonds[self.teams[actor]][Faction::WizardsEye];
+                let xfact = self.get_bond(actor,Faction::WizardsEye);
                 debug!("{} has {} bond with WizardsEye -> effect_hit * {}", self.fmt(actor), xfact, xfact);
                 fact *= xfact;
             }
@@ -129,14 +155,6 @@ impl<const LEN:usize> Wave<'_,LEN> {
         res
     }
 
-    pub fn get_basic_attack_damage(&self,actor : InstanceIndex) -> f32 {
-        if self.has_effect(actor,Effect::RippleII) {
-            self.get_attack(actor) * 1.40
-        }
-        else {
-            self.get_attack(actor)
-        }
-    }
 
     
     pub fn get_attack_damage(&self,actor : InstanceIndex) -> f32 {

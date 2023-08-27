@@ -1,10 +1,19 @@
-use crate::{wave::stat::Stat, debug, indent, hero::{instance::Instance, effect::Effect}};
+use crate::{wave::stat::Stat, debug, indent, hero::{instance::Instance, effect::{Effect, is_debuff}}};
 
 use super::{Wave, InstanceIndex};
 
 impl<const LEN:usize> Wave<'_,LEN> {
     pub fn has_effect(&self, actor: InstanceIndex, effect : Effect) -> bool {
         self.effects[actor].has(effect)
+    }
+
+    pub fn has_debuff(&self, actor: InstanceIndex) -> bool {
+        for (key,value) in self.effects[actor].em.iter() {
+            if is_debuff(key) && !value.is_empty() {
+                return true;
+            }
+        }
+        false
     }
 
     pub fn effect_reduce(&mut self, actor: InstanceIndex) {
