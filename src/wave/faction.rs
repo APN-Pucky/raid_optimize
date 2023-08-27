@@ -32,6 +32,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
         }
     }
 
+    pub fn bond_foresters(&self, ti: TeamIndex) -> f32 {
+        let scale = vec![1.0,1.0,1.06,1.09,1.12,1.15];
+        let xfact = scale[self.count_faction(ti,Faction::Foresters)];
+        debug!("team {} has {} Foresters allies -> atk/def * {}", ti, self.count_faction(ti,Faction::Foresters), xfact);
+        xfact
+    }
+
     pub fn bond_wizardseye(&self, ti: TeamIndex) -> f32 {
         let scale = vec![1.0,1.0,1.06,1.09,1.12,1.15];
         let xfact = scale[self.count_faction(ti,Faction::WizardsEye)];

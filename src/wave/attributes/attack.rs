@@ -8,6 +8,11 @@ impl<const LEN:usize> Wave<'_,LEN> {
         let mut fact = 1.0;
         debug!("{} base attack of {}", self.fmt(actor),self.get_hero(actor).attack);
         indent!({
+            if self.heroes[actor].faction == Faction::Foresters {
+                let xfact = self.team_bonds[self.teams[actor]][Faction::Foresters];
+                debug!("{} has {} bond with Foresters -> attack * {}", self.fmt(actor), xfact, xfact);
+                fact *= xfact;
+            }
             if self.effects[actor].has(Effect::AttackUpI) {
                 let xfact = 1.25;
                 debug!("{} has AttackUpI -> attack * {}", self.fmt(actor), xfact);

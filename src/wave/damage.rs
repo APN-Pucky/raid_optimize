@@ -1,6 +1,7 @@
+use enum_map::EnumMap;
 use rand::Rng;
 
-use crate::{debug, wave::stat::Stat, indent, hero::faction::Faction};
+use crate::{debug, wave::stat::Stat, indent, hero::{faction::Faction, mark::Mark}};
 
 use super::{Wave, InstanceIndex};
 
@@ -86,13 +87,39 @@ impl<const LEN:usize> Wave<'_,LEN> {
         debug!("{} takes {} damage from {}", self.name(target), damage,self.name(actor));
         indent!({
             let mut damage = damage;
-            if self.heroes[target].faction == Faction::DoomLegion {
+            if self.get_faction(target) == Faction::DoomLegion {
                 let n = self.count_self_buffs(target).min(5) as f32;
                 let xfact = self.team_bonds[self.teams[target]][Faction::DoomLegion];
                 let r = 1.0 - xfact*n;
                 damage = damage *r;
                 debug!("{} has {}*{} DoomLegion buffs -> damage * {}", self.name(target), n,xfact, r);
             }
+            let mut mat :EnumMap<Mark,EnumMap<Mark,f32>> =   EnumMap::default(); 
+
+            mat[Mark::Red][Mark::Red]   = 1.00;
+            mat[Mark::Red][Mark::Blue]  = 1.25;
+            mat[Mark::Red][Mark::Green] = 0.75;
+            mat[Mark::Red][Mark::Force] = 1.00;
+
+            mat[Mark::Blue][Mark::Red]   = 0.75;
+            mat[Mark::Blue][Mark::Blue]  = 1.00;
+            mat[Mark::Blue][Mark::Green] = 1.25;
+            mat[Mark::Blue][Mark::Force] = 1.00;
+
+            mat[Mark::Green][Mark::Red]   = 1.25;
+            mat[Mark::Green][Mark::Blue]  = 0.75;
+            mat[Mark::Green][Mark::Green] = 1.00;
+            mat[Mark::Green][Mark::Force] = 1.00;
+
+            mat[Mark::Force][Mark::Red]   = 1.00;
+            mat[Mark::Force][Mark::Blue]  = 1.00;
+            mat[Mark::Force][Mark::Green] = 1.00;
+            mat[Mark::Force][Mark::Force] = 1.00;
+
+            let fact = mat[self.get_mark(actor)][self.get_mark(target)];
+            damage = damage * fact;
+            debug!("{} has {} mark against {} -> damage * {}", self.name(actor), self.get_mark(actor), self.get_mark(target), fact);
+            
 
             self.add_stat(actor,Stat::DamageTaken, damage);
             self.add_stat(target,Stat::DamageDone, damage);
