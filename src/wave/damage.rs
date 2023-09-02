@@ -1,21 +1,21 @@
 use enum_map::EnumMap;
 use rand::Rng;
 
-use crate::{debug, wave::stat::Stat, indent, hero::{faction::Faction, mark::Mark}};
+use crate::{debug, wave::stat::Stat, indent, hero::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack}, effect::Effect}};
 
 use super::{Wave, InstanceIndex};
 
 impl<const LEN:usize> Wave<'_,LEN> {
-    pub fn attack_enemy_team(&mut self, actor : InstanceIndex, damage : f32,basic:bool) {
+    pub fn attack_enemy_team(&mut self, actor : InstanceIndex, damage : f32,skill:&Skill) {
         for a in self.get_enemies_indices(actor){
-            self.attack_single(actor,a,damage,basic)
+            self.attack_single(actor,a,damage,skill)
         }
     }
-    pub fn attack_single(&mut self, actor : InstanceIndex, target : InstanceIndex, d: f32,basic:bool ) {
+    pub fn attack_single(&mut self, actor : InstanceIndex, target : InstanceIndex, d: f32,skill:&Skill) {
         debug!("{} attacks {} to {}", self.name(actor),d, self.fmt(target));
         let mut damage = d;
         indent!({
-            if basic {
+            if is_basic_attack(skill){
                 damage *= self.get_basic_attack_damage_ratio(actor);
             } else {
                 damage *= self.get_skill_damage_ratio(actor);
@@ -27,28 +27,37 @@ impl<const LEN:usize> Wave<'_,LEN> {
             let mut attack = damage;
             let mut p = self.get_piercing(actor);
             indent!({
-            if crit {
-                self.add_stat(actor,Stat::CriticalStrikes, 1.0);
-                self.add_stat(target,Stat::CriticalStriked, 1.0);
-                let crit = self.get_crit_damage(actor);
-                let mut tenacity = self.get_tenacity(target);
-                if tenacity > crit {
-                    tenacity = crit;
-                }
-                let crit_rate = crit - tenacity;
-                self.add_stat(actor, Stat::CriticalDamage, attack  * crit_rate  );
-                self.add_stat(target, Stat::CriticalDamaged, attack  * crit_rate  );
-                self.add_stat(target,Stat::SavedByTenacity, attack  * tenacity );
-                self.add_stat(actor,Stat::LostToTenacity, attack  * tenacity );
-                attack = (attack * crit_rate);
-                debug!("{} critical attacks {} ({}%={}%-{}%)", self.name(actor),self.name(target),crit_rate*100.,crit*100.,tenacity*100.);
-                if self.get_faction(actor) == Faction::NamelessBrotherhood {
-                    if rng.gen::<f32>() < 0.5 {
-                        p += self.get_bond(actor,Faction::NamelessBrotherhood);
-                        debug!("{} has {} bond with NamelessBrotherhood -> piercing + {}", self.name(actor), self.get_bond(actor,Faction::NamelessBrotherhood), self.get_bond(actor,Faction::NamelessBrotherhood));
+                if crit {
+                    match skill {
+                        Skill::ScarletSlash{..} => {
+                            self.inflict_buff_single(actor, actor, Effect::ScarletSakura, 999)
+                        }
+                        Skill::ScaletMultiStrike {.. } => {
+                            self.inflict_buff_single(actor, actor, Effect::ScarletSakura, 999)
+                        }
+                        _ => {}
+                    }
+                    self.add_stat(actor,Stat::CriticalStrikes, 1.0);
+                    self.add_stat(target,Stat::CriticalStriked, 1.0);
+                    let crit = self.get_crit_damage(actor);
+                    let mut tenacity = self.get_tenacity(target);
+                    if tenacity > crit {
+                        tenacity = crit;
+                    }
+                    let crit_rate = crit - tenacity;
+                    self.add_stat(actor, Stat::CriticalDamage, attack  * crit_rate  );
+                    self.add_stat(target, Stat::CriticalDamaged, attack  * crit_rate  );
+                    self.add_stat(target,Stat::SavedByTenacity, attack  * tenacity );
+                    self.add_stat(actor,Stat::LostToTenacity, attack  * tenacity );
+                    attack = (attack * crit_rate);
+                    debug!("{} critical attacks {} ({}%={}%-{}%)", self.name(actor),self.name(target),crit_rate*100.,crit*100.,tenacity*100.);
+                    if self.get_faction(actor) == Faction::NamelessBrotherhood {
+                        if rng.gen::<f32>() < 0.5 {
+                            p += self.get_bond(actor,Faction::NamelessBrotherhood);
+                            debug!("{} has {} bond with NamelessBrotherhood -> piercing + {}", self.name(actor), self.get_bond(actor,Faction::NamelessBrotherhood), self.get_bond(actor,Faction::NamelessBrotherhood));
+                        }
                     }
                 }
-            }
             });
 
             self.add_stat(actor,Stat::Attack, attack);

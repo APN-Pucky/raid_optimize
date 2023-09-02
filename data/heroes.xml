@@ -198,4 +198,47 @@
             </FissionOfLife>
         </skill>
     </hero>
+    <hero>
+        <id>4</id>
+        <name>Tifya</name>
+        <rarity>Legendary</rarity>
+        <mark>Red</mark>
+        <class>Attack</class>
+        <faction>Foresters</faction>
+        <health>198881</health>
+        <attack>18889</attack>
+        <defense>15110</defense>
+        <speed>1363</speed>
+        <crit_rate>0.525</crit_rate>
+        <crit_damage>1.834</crit_damage>
+        <effect_hit>0.097</effect_hit>
+        <effect_resistance>0.094</effect_resistance>
+        <mastery>0.288</mastery>
+        <healing_effect>0.038</healing_effect>
+        <leech>0.10</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <passive>
+            <SharpInstinct />
+        </passive>
+        <skill>
+            <ScarletSlash>
+                <cooldown>0</cooldown>
+                <attack_damage_ratio>1.20</attack_damage_ratio>
+            </ScarletSlash>
+        </skill>
+        <skill>
+            <LeavesStorm>
+                <cooldown>3</cooldown>
+                <attack_damage_ratio>1.85</attack_damage_ratio>
+            </LeavesStorm>
+        </skill>
+        <skill>
+            <ScaletMultiStrike>
+                <cooldown>4</cooldown>
+                <attack_damage_ratio>1.4</attack_damage_ratio>
+            </ScaletMultiStrike>
+        </skill>
+    </hero>
 </heroes>

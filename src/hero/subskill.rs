@@ -1,6 +1,6 @@
 use crate::wave::{Wave, InstanceIndex};
 
-use super::effect::Effect;
+use super::{effect::Effect, skill::Skill};
 
 #[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Target {
@@ -94,7 +94,7 @@ fn turns_default() -> u32 {
     0
 }
 
-pub fn execute_subskill<const LEN:usize>(subskill : &SubSkill, actor :InstanceIndex, target :InstanceIndex, wave :&mut Wave<LEN> , basic_attack : bool) {
+pub fn execute_subskill<const LEN:usize>(subskill : &SubSkill, actor :InstanceIndex, target :InstanceIndex, wave :&mut Wave<LEN> , skill: &Skill) {
     let mut val= 0.0;
     let mut targets : Vec<InstanceIndex> = vec![];
     let mut effect = Effect::None;
@@ -137,7 +137,7 @@ pub fn execute_subskill<const LEN:usize>(subskill : &SubSkill, actor :InstanceIn
     match subskill.typ {
         Type::Damage => {
             for target in targets {
-                wave.attack_single(actor,target,val,basic_attack);
+                wave.attack_single(actor,target,val,skill);
             }
         },
         Type::Restore => {

@@ -45,14 +45,14 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn inflict_single(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, chance: f32, turns :u32) {
         indent!({
             if !is_debuff(effect) {
-                self.inflict_buff_single(actor, target, effect, chance, turns);
+                self.inflict_buff_single(actor, target, effect, turns);
             }
             else {
                 self.inflict_debuff_single(actor, target, effect, chance, turns);
             }
         });
     }
-    pub fn inflict_buff_single(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, chance: f32, turns :u32) {
+    pub fn inflict_buff_single(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, turns :u32) {
         // no rolling here
         self.inflict(actor, target, effect, turns);
     }

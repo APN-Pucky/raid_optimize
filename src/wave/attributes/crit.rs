@@ -51,6 +51,11 @@ impl<const LEN:usize> Wave<'_,LEN> {
         let mut fact = 1.0;
         debug!("{} base crit damage of {}", self.name(actor),self.get_hero(actor).crit_damage);
         indent!({
+            if self.effects[actor].has(Effect::ScarletSakura) {
+                let xfact = 1.0 + 0.04 * self.effects[actor].get(Effect::ScarletSakura).min(20) as f32;
+                debug!("{} has ScarletSakura -> crit_damage * {}", self.name(actor), xfact);
+                fact *= xfact;
+            }
             if self.effects[actor].has(Effect::CritDamageUpI) {
                 let xfact = 1.25;
                 debug!("{} has CritDamageUpI -> crit_damage * {}", self.name(actor), xfact);
