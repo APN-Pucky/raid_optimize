@@ -172,7 +172,7 @@ pub enum Skill {
         cooldown: u32,
         #[serde(default="false_default")]
         basic_attack : bool,
-        counter_attack_turns : u32,
+        counterattack_turns : u32,
         damage_immunity_turns : u32,
         control_immunity_turns : u32,
     },
@@ -180,7 +180,9 @@ pub enum Skill {
         cooldown: u32,
         #[serde(default="true_default")]
         basic_attack : bool,
-        attack_damage_ratio : f32
+        attack_damage_ratio : f32,
+        crit_rate_turns : u32,
+        crit_damage_turns : u32,
     },
     //Geeliman
     BurstingKnowledge {
@@ -219,6 +221,8 @@ pub fn get_targets<const LEN:usize>(skill : &Skill, actor :InstanceIndex, wave :
         Skill::DarknightStrike { ..} => get_alive_enemies(actor,wave),
         Skill::EyeForAnEye { .. } => Some(vec![actor]),
         Skill::DarknightArbitrament { .. } => get_alive_enemies(actor, wave),
+        //Geeliman
+        Skill::BurstingKnowledge { .. } => get_alive_enemies(actor, wave),
         //
         Skill::BasicAttack{..} => get_alive_enemies(actor,wave),
         Skill::Generic{ subskills ,..} => Some(subskill::get_targets(get_generic_targets(subskills),actor,wave)),
@@ -257,6 +261,9 @@ pub fn is_basic_attack(skill :&Skill) -> bool {
         Skill::ScaletMultiStrike { cooldown, basic_attack, attack_damage_ratio } => *basic_attack,
         Skill::BasicAttack{basic_attack,..} => *basic_attack,
         Skill::DarknightStrike{basic_attack,..} => *basic_attack,
+        Skill::EyeForAnEye{basic_attack,..} => *basic_attack,
+        Skill::DarknightArbitrament{basic_attack,..} => *basic_attack,
+        Skill::BurstingKnowledge{basic_attack,..} => *basic_attack,
     }
 }
 
@@ -282,9 +289,14 @@ pub fn get_cooldown(skill: &Skill) ->u32 {
         Skill::ScarletSlash { cooldown, ..} => *cooldown,
         Skill::LeavesStorm { cooldown, ..} => *cooldown,
         Skill::ScaletMultiStrike { cooldown, ..} => *cooldown,
+        //Hazier
+        Skill::DarknightStrike { cooldown,..} => *cooldown,
+        Skill::EyeForAnEye { cooldown, basic_attack, counterattack_turns: counter_attack_turns, damage_immunity_turns, control_immunity_turns } => *cooldown,
+        Skill::DarknightArbitrament { cooldown, ..} => *cooldown,
+        //Geeliman
+        Skill::BurstingKnowledge { cooldown, ..} => *cooldown,
         //
         Skill::BasicAttack{cooldown,..} => *cooldown,
-        Skill::DarknightStrike { cooldown,..} => *cooldown,
         Skill::Generic{ cooldown, ..} => *cooldown,
     }
 }

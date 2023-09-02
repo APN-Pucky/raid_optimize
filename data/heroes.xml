@@ -263,7 +263,7 @@
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
         <passive>
-            <BloodloostStrike leech="0.16" damage_reduction_buffs="0.18" damage_reduction_nobuffs="0.25" />
+            <BloodlustStrike leech="0.16" damage_reduction_buffs="0.18" damage_reduction_nobuffs="0.25" />
         </passive>
         <skill>
             <DarknightStrike>
@@ -283,6 +283,8 @@
             <DarknightArbitrament>
                 <cooldown>5</cooldown>
                 <attack_damage_ratio>5.0</attack_damage_ratio>
+                <crit_rate_turns>2</crit_rate_turns>
+                <crit_damage_turns>2</crit_damage_turns>
             </DarknightArbitrament>
         </skill>
     </hero>
@@ -336,6 +338,7 @@
             </Generic>
         </skill>
     </hero>
+    <!--
     <hero>
         <id>7</id>
         <name>Marville</name>
@@ -359,7 +362,10 @@
         <damage_reflection>0</damage_reflection>
         <passive>
         </passive>
+        <skill>
+        </skill>
     </hero>
+    -->
     <hero>
         <id>8</id>
         <name>Margarita</name>

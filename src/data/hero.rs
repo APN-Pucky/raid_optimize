@@ -100,6 +100,7 @@ mod tests {
                 <skill>
                     <Generic>
                         <cooldown>3</cooldown>
+                        <name>test</name>
                         <subskill target="SingleEnemy" type="Damage" ratio="2.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
                     </Generic>
                 </skill>
