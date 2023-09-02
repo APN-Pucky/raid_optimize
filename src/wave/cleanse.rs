@@ -1,11 +1,13 @@
 use crate::{hero::effect::Effect, roll, debug, wave::stat::effect_to_stat, indent};
 
 use super::{ Wave, InstanceIndex};
+use rand::thread_rng;
+use rand::seq::SliceRandom;
 
-impl Wave<'_> {
+impl<const LEN:usize> Wave<'_,LEN> {
     // TODO this is broken
-    pub fn cleanse<F>(&mut self, effect_closure:&F, layers: u32) where F : Fn(Effect) -> bool {
-        for (k,v) in self.effects.em.iter_mut() {
+    pub fn cleanse<F>(&mut self,  actor :InstanceIndex, effect_closure:&F, layers: u32) where F : Fn(Effect) -> bool {
+        for (k,v) in self.effects[actor].em.iter_mut() {
             if effect_closure(k) {
                 // drop `layers` randomly of v
                 if v.len() > layers as usize {
@@ -22,15 +24,12 @@ impl Wave<'_> {
                 }
             }
         }
-        self.effects.remove_empty();
+        self.effects[actor].remove_empty();
     }
 
-    pub fn cleanse_team<F>(&mut self, actor : &InstanceRef, effect_closure: &F ,layers:u32) where F : Fn(Effect) -> bool {
-        if actor.team {
-            self.allies.iter_mut().for_each(|a| a.cleanse(effect_closure,layers));
-        }
-        else {
-            self.enemies.iter_mut().for_each(|a| a.cleanse(effect_closure,layers));
+    pub fn cleanse_team<F>(&mut self, actor : InstanceIndex, effect_closure: &F ,layers:u32) where F : Fn(Effect) -> bool {
+        for i in self.get_ally_indices(actor) {
+            self.cleanse(i,effect_closure,layers);
         }
     }
 }

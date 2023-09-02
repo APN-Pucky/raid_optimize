@@ -59,7 +59,11 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 debug!("{}: {}", self.get_skill(actor,i), c);
             }
         })
-
+    }
+    
+    pub fn reset_all_cooldowns(&mut self,actor: InstanceIndex) {
+        debug!("Resetting cooldowns for {} ({}):", self.name(actor), self.cooldowns[actor].len());
+        self.cooldowns[actor].iter_mut().for_each(|c| *c = 0);
     }
 
     pub fn cooldown(&mut self, actor: InstanceIndex,skill : SkillIndex) {

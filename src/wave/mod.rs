@@ -13,11 +13,12 @@ pub mod stat;
 pub mod begin;
 pub mod attributes;
 pub mod skill;
-pub mod passive;
+pub mod passives;
 pub mod effect;
 pub mod dot;
 pub mod faction;
 pub mod print;
+pub mod cleanse;
 
 use crate::hero::Hero;
 use crate::hero::effect::Effect;
@@ -53,6 +54,7 @@ pub struct Wave<'a, const LEN: usize > {
     pub team_bonds : Vec<EnumMap<Faction,f32>>,
     //pub ally_player : Box<dyn Player>,
     //pub enemy_player : Box<dyn Player>,
+    pub team_acted : Vec<bool>,
     turns: u32,
     turn_limit: u32,
     turn_meter_threshold : f32,
@@ -87,6 +89,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 cooldowns[i].push(instances[i].cooldowns[j]);
             }
         }
+        let team_acted = vec![false;players.len()];
         // transform instances into ECS
         let mut w = Wave {
             heroes,
@@ -103,6 +106,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             turn_limit: 300,
             turn_meter_threshold:  1000.0 ,
             track_statistics,
+            team_acted,
             len : instances.len(),
             team_bonds : bonds,
             bonds_counter : bonds_counter,
@@ -114,6 +118,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn reset(&mut self) {
         self.turns = 0;
+        for i in 0..self.players.len() {
+            self.team_acted[i] = false;
+        }
         for i in 0..LEN {
             self.statistics[i].clear();
             self.cooldowns[i].iter_mut().for_each(|c| *c = 0);

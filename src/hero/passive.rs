@@ -13,5 +13,7 @@ pub enum Passive {
     Resplendence {
         turn_meter_ratio: f32,
     },
+    //Tifya
+    SharpInstinct,
     //...
 }

@@ -1,4 +1,4 @@
-use crate::{debug, indent, hero::{effect::Effect, skill::{Skill, get_targets, execute_skill}, faction::Faction}};
+use crate::{debug, indent, hero::{effect::{Effect, is_debuff}, skill::{Skill, get_targets, execute_skill}, faction::Faction, passive::Passive}};
 
 use super::{InstanceIndex, Wave};
 
@@ -30,12 +30,14 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn after_action(&mut self, actor :InstanceIndex) {
         debug!("after {} acts", actor);
         indent!({
+            self.after_action_sharp_instinct(actor);
             if self.get_faction(actor) == Faction::DragonTribe && self.bonds_counter[actor] < 5 {
                 self.bonds_counter[actor] += 1;
             }
             self.set_turn_meter(actor,0.0);
             self.effect_reduce(actor);
             self.shield_reduce(actor);
+            self.team_acted[self.teams[actor]] = true;
         })
     }
 
