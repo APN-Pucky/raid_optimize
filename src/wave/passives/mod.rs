@@ -1,4 +1,4 @@
-use crate::hero::passive::Passive;
+use crate::data::passive::Passive;
 
 use super::{InstanceIndex, Wave};
 

@@ -1,4 +1,4 @@
-use crate::{debug, indent, hero::{effect::{Effect, is_debuff}, skill::{Skill, get_targets, execute_skill}, faction::Faction, passive::Passive}};
+use crate::{debug, indent, data::{effect::{Effect, is_debuff}, skill::{Skill, get_targets}, faction::Faction, passive::Passive}};
 
 use super::{InstanceIndex, Wave};
 
@@ -75,7 +75,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
                         //
                         self.pre_execute_skill(actor, target,skill );
                         // apply skill
-                        execute_skill(skill, actor, target, self);
+                        self.execute_skill(skill, actor, target);
                     },
                     None => {
                         // TODO maybe not even provide this option as active skill

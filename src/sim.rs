@@ -8,8 +8,8 @@ use prettytable::Table;
 use prettytable::Cell;
 use prettytable::Row;
 
-use crate::hero::Hero;
-use crate::hero::instance::Instance;
+use crate::data::hero::Hero;
+use crate::data::instance::Instance;
 use crate::player::ManualPlayer;
 use crate::player::Player;
 use crate::player::RandomPlayer;

@@ -1,6 +1,8 @@
 use enum_map::EnumMap;
 
-use crate::{hero::effect::Effect, wave::InstanceIndex};
+use crate::{wave::InstanceIndex};
+
+use super::effect::Effect;
 
 #[derive(Debug)]
 pub struct Effects {

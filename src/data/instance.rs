@@ -6,15 +6,13 @@ use rand::seq::SliceRandom;
 use rand::Rng;
 
 
-use crate::hero::Hero;
 use crate::{roll, indent, debug, warn, info, error};
 use crate::wave::{  InstanceIndex, TeamIndex};
-use crate::hero::skill::Skill;
-use crate::hero::effect::Effect;
 
 use super::effects::Effects;
+use super::hero::Hero;
 use super::passive::Passive;
-use super::skill::get_cooldown;
+use super::skill::{get_cooldown, Skill};
 
 
 //TODO make instance so irrelevant that it can be removed since it only wraps hero
@@ -291,7 +289,7 @@ impl Instance<'_> {
 
 #[cfg(test)]
 mod tests {
-    use crate::hero::{mark::Mark, class::Class, faction::Faction, rarity::Rarity};
+    use crate::data::{mark::Mark, class::Class, faction::Faction, rarity::Rarity, hero::Hero};
 
     use super::*;
 

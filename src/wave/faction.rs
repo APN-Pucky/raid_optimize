@@ -1,7 +1,7 @@
 use enum_map::EnumMap;
 use strum::EnumProperty;
 
-use crate::{debug, indent, hero::{effect::Effect, skill::{Skill, get_targets, execute_skill}, Hero, instance::Instance, faction::Faction}};
+use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_targets,}, instance::Instance, faction::Faction}};
 
 use super::{InstanceIndex, Wave, TeamIndex};
 

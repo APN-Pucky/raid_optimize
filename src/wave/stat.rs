@@ -1,6 +1,8 @@
 use enum_map::{Enum, EnumMap};
 
-use super::{Effect, Wave, InstanceIndex};
+use crate::data::effect::Effect;
+
+use super::{ Wave, InstanceIndex};
 
 #[derive(Debug,Enum, PartialEq, Eq, strum_macros::Display,Copy,Clone)]
 pub enum Stat {

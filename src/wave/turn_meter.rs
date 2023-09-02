@@ -1,4 +1,4 @@
-use crate::{indent,debug, hero::effect::Effect};
+use crate::{indent,debug, data::effect::Effect};
 
 use super::{Wave, InstanceIndex};
 

@@ -5,10 +5,10 @@ use argparse::{ArgumentParser, StoreTrue, Store};
 use log::info;
 use log::warn;
 
-use raid_optimize::hero::Heroes;
+use raid_optimize::data::hero::get_hero_by_string;
+use raid_optimize::data::heroes::Heroes;
 use raid_optimize::sim;
 use raid_optimize::sim::Sim;
-use raid_optimize::hero::get_hero_by_string;
 
 pub fn main() {
     env_logger::init();

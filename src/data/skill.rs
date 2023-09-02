@@ -1,8 +1,6 @@
 
-use crate::hero::subskill::execute_subskill;
 use crate::wave::InstanceIndex;
 use crate::wave::Wave;
-use crate::hero::effect::Effect;
 
 use super::effect::is_dot;
 use super::subskill;
@@ -169,116 +167,6 @@ pub enum Skill {
         basic_attack : bool,
         attack_damage_ratio : f32
     },
-}
-
-pub fn execute_skill<const LEN:usize>(skill : &Skill, actor :InstanceIndex, target :InstanceIndex, wave :&mut Wave<LEN>) {
-    let attacker = actor;
-    let defender = target;
-    match skill {
-        Skill::Generic{ basic_attack,cooldown, subskills ,..} => {
-            for ss in subskills {
-                execute_subskill(ss, actor, target, wave,skill);
-            }
-        },
-        Skill::ScarletSlash { basic_attack, attack_damage_ratio, .. } => {
-            wave.attack_single(attacker, defender,  wave.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-            wave.attack_single(attacker, defender,  wave.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-        },
-        Skill::LeavesStorm { basic_attack, attack_damage_ratio, .. } => {
-            wave.attack_enemy_team(attacker,   wave.get_attack_damage(attacker)  *attack_damage_ratio * (1. + 0.02 *wave.effects[actor].get(Effect::ScarletSakura).min(20) as f32) , skill);
-        },
-        Skill::ScaletMultiStrike{ basic_attack, attack_damage_ratio, .. } => {
-            wave.attack_single(attacker, defender,  wave.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-            wave.attack_single(attacker, defender,  wave.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-            wave.attack_single(attacker, defender,  wave.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-            wave.attack_single(attacker, defender,  wave.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-            wave.attack_single(attacker, defender,  wave.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-        },
-        Skill::Resurrection { shield_max_hp_ratio, shield_turns, cleanse_dot_debuffs, restore_max_hp_ratio ,..} => {
-            let max_hp = wave.get_max_health(actor);
-            wave.restore_max_hp_ratio_own_team(actor,*restore_max_hp_ratio);
-            wave.shield_ally_team(actor,shield_max_hp_ratio * max_hp  ,*shield_turns);
-            //TODO
-            //wave.cleanse_ally_team(actor,&is_dot,*cleanse_dot_debuffs);
-        },
-        Skill::BloodthirstyScythe {  basic_attack,attack_damage_ratio, bleed_chance, bleed_turns ,..} =>{
-            let damage = wave.get_attack_damage(actor) * attack_damage_ratio;
-            wave.attack_enemy_team(actor, damage ,skill);
-            wave.inflict_enemy_team(actor, Effect::Bleed,* bleed_chance,* bleed_turns);
-        },
-        Skill::EnergyBurst {basic_attack,  attack_damage_ratio, bleed_turns, reduce_effect_resistance_chance,  reduce_effect_resistance_turns ,..}=> {
-            let damage = wave.get_attack_damage(actor) * attack_damage_ratio;
-            wave.attack_enemy_team(actor, damage ,skill);
-            wave.inflict_enemy_team(actor, Effect::Bleed, 1.0, *bleed_turns);
-            wave.inflict_enemy_team(actor, Effect::EffectResistanceDownII, *reduce_effect_resistance_chance, *reduce_effect_resistance_turns);
-        },
-        Skill::DeepSeaPower {  max_hp_shield_ratio, shield_turns, tenacity_increase_turns ,..} => {
-            let max_hp = wave.get_max_health(actor);
-            wave.shield_ally_team(actor,max_hp_shield_ratio * max_hp  ,*shield_turns);
-            wave.inflict_ally_team(actor, Effect::TenacityUpII, 1.0, *tenacity_increase_turns);
-        },
-        Skill::CrystalOfLife {  max_hp_restore_ratio, ripple_turns , attack_up_turns ,..} =>{
-            let rest_hp = (wave.get_max_health(actor)  * max_hp_restore_ratio) ;
-            wave.restore_ally_team(actor,rest_hp);
-            wave.inflict_ally_team(actor, Effect::RippleII, 1.0, *ripple_turns);
-            wave.inflict_ally_team(actor, Effect::AttackUpII, 1.0,* attack_up_turns);
-        },
-        Skill::FissionOfLife {  restore_max_hp_ratio, heal_turns, increase_turn_meter_ratio ,..} => {
-            wave.restore_max_hp_ratio_own_team(actor, *restore_max_hp_ratio);
-            wave.inflict_ally_team(actor, Effect::Heal, 1.0, *heal_turns);
-            wave.increase_turn_meter_team(actor, *increase_turn_meter_ratio);
-
-        }
-        Skill::FireHeal{heal_attack_ratio,heal_max_hp_ratio,block_debuff_turns,..} => {
-            let heal = wave.get_attack_damage(actor)*heal_attack_ratio ;
-            let max_hp_heal = wave.get_max_health(actor)*heal_max_hp_ratio ;
-            wave.restore(actor,target, heal + max_hp_heal);
-            wave.inflict_single(actor,target,Effect::BlockDebuf, 1.0,*block_debuff_turns);
-        }
-        Skill::ScorchedSoul{basic_attack,attack_damage_ratio,hp_burning_chance, hp_burning_turns ,..} => {
-            wave.attack_single(attacker, defender,  wave.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-            wave.inflict_single(attacker,defender,Effect::HPBurning, *hp_burning_chance, *hp_burning_turns);
-            //wave.inflict_hp_burning(attacker,defender, *hp_burning_chance, *hp_burning_turns);
-        }
-        Skill::Tricks{basic_attack,attack_damage_ratio,turn_meter_reduction_ratio: turn_meter_reduction,..} => {
-            wave.attack_single(attacker,defender, (wave.get_attack_damage(attacker) * attack_damage_ratio), skill);
-            wave.reduce_turn_meter(attacker,defender, *turn_meter_reduction);
-        }
-        Skill::BasicAttack{basic_attack,attack_damage_ratio,..} => {
-            wave.attack_single(attacker,defender, (wave.get_attack_damage(attacker) * attack_damage_ratio), skill);
-        }
-        Skill::ScytheStrike {basic_attack, attack_damage_ratio, bleed_chance,bleed_turns,.. } => {
-            wave.attack_single(attacker,defender, (wave.get_attack_damage(attacker) * attack_damage_ratio), skill);
-            wave.inflict_single(attacker,defender,Effect::Bleed,*bleed_chance,*bleed_turns);
-        }
-        Skill::DarknightStrike {basic_attack, attack_damage_ratio,.. }  => {
-            wave.attack_single(attacker,defender, (wave.get_attack_damage(attacker) * attack_damage_ratio), skill);
-            wave.attack_single(attacker,defender, (wave.get_attack_damage(attacker) * attack_damage_ratio), skill);
-        }
-        Skill::TideBigHit {basic_attack, max_hp_damage_ratio, suffocated_chance, suffocated_turns,.. } => {
-            log::debug!("{} uses Tide Big Hit on {}", attacker, defender);
-            let mut chance = *suffocated_chance;
-            wave.attack_single(attacker,defender, (wave.get_max_health(attacker) * max_hp_damage_ratio), skill);
-            if wave.has_effect(defender,Effect::WetI) 
-            || wave.has_effect(defender,Effect::WetII) 
-            || wave.has_effect(defender,Effect::ColdI) 
-            || wave.has_effect(defender,Effect::ColdII){
-                log::debug!("{} is wet or cold +15% suffocation chance", defender);
-                chance += 0.15;
-            }
-            wave.inflict_single(attacker,defender,Effect::Suffocated, chance,*suffocated_turns);
-        },
-        Skill::Nightmare { basic_attack,  attack_damage_ratio, reduce_speed_chance, reduce_speed_turns, increase_speed_turns ,..} => {
-            wave.attack_single(attacker,defender, (wave.get_attack_damage(attacker) * attack_damage_ratio),skill);
-            wave.inflict_single(attacker,defender,Effect::SpeedDownII, *reduce_speed_chance, *reduce_speed_turns);
-            wave.inflict_ally_team(actor, Effect::SpeedUpI, 1.0, *increase_speed_turns);
-            //TODO target make no sense here
-            //attacker.inflict(defender,Effect::SpeedUpI, 1.0, increase_speed_turns);
-
-        }
-        //_ => panic!("Skill not implemented"),
-    }
-    wave.cooldown_s(attacker,skill);
 }
 
 pub fn get_targets<const LEN:usize>(skill : &Skill, actor :InstanceIndex, wave :&Wave<LEN>) -> Option<Vec<InstanceIndex>> {

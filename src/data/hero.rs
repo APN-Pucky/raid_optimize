@@ -1,25 +1,8 @@
 use std::fmt;
 
-pub mod instance;
-pub mod skill;
-pub mod effect;
-pub mod subskill;
-pub mod effects;
-pub mod passive;
-pub mod class;
-pub mod faction;
-pub mod rarity;
-pub mod mark;
+use super::{mark::Mark, class::Class, faction::Faction, rarity::Rarity, skill::Skill, passive::Passive, heroes::Heroes};
 
-use crate::hero::skill::Skill;
 
-use self::{passive::Passive, faction::Faction, rarity::Rarity, class::Class, mark::Mark};
-
-#[derive(Deserialize, Debug)]
-pub struct Heroes {
-    #[serde(rename="hero")]
-    pub heroes: Vec<Hero>,
-}
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct Hero {

@@ -1,4 +1,4 @@
-use crate::{hero::effect::Effect, roll, debug, wave::stat::effect_to_stat, indent};
+use crate::{data::effect::Effect, roll, debug, wave::stat::effect_to_stat, indent};
 
 use super::{ Wave, InstanceIndex};
 use rand::thread_rng;

@@ -1,4 +1,4 @@
-use crate::{wave::stat::Stat, debug, indent, hero::{instance::Instance, effect::Effect}, info};
+use crate::{wave::stat::Stat, debug, indent, data::{instance::Instance, effect::Effect}, info};
 
 use super::{Wave, InstanceIndex};
 

@@ -7,7 +7,7 @@ extern crate log;
 extern crate enum_map;
 extern crate enum_map_derive;
 
-pub mod hero;
+pub mod data;
 pub mod sim;
 pub mod wave;
 pub mod player;

@@ -1,7 +1,7 @@
 use rand::Rng;
 use std::io;
 
-use crate::{wave::{Wave, TeamIndex, InstanceIndex}, hero::skill::Skill};
+use crate::{wave::{Wave, TeamIndex, InstanceIndex}, data::skill::Skill};
 
 
 pub trait Player<const LEN:usize> {

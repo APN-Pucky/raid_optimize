@@ -1,4 +1,4 @@
-use crate::{hero::{effect::{Effect, is_debuff, is_buff}, faction::Faction}, roll, debug, wave::stat::effect_to_stat, indent};
+use crate::{data::{effect::{Effect, is_debuff, is_buff}, faction::Faction}, roll, debug, wave::stat::effect_to_stat, indent};
 
 use super::{ Wave, InstanceIndex};
 

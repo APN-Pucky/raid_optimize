@@ -1,4 +1,4 @@
-use crate::{indent, debug, hero::passive::Passive};
+use crate::{indent, debug, data::passive::Passive};
 
 use super::Wave;
 
