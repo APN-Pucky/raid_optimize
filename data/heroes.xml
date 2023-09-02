@@ -241,4 +241,179 @@
             </ScaletMultiStrike>
         </skill>
     </hero>
+    <hero>
+        <id>5</id>
+        <name>Hazier</name>
+        <rarity>Epic</rarity>
+        <mark>Green</mark>
+        <class>Attack</class>
+        <faction>DoomLegion</faction>
+        <health>103899</health>
+        <attack>11522</attack>
+        <defense>9117</defense>
+        <speed>1285</speed>
+        <crit_rate>0.278</crit_rate>
+        <crit_damage>1.526</crit_damage>
+        <effect_hit>0.080</effect_hit>
+        <effect_resistance>0.126</effect_resistance>
+        <mastery>0.280</mastery>
+        <healing_effect>0.000</healing_effect>
+        <leech>0.10</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <passive>
+            <BloodloostStrike leech="0.16" damage_reduction_buffs="0.18" damage_reduction_nobuffs="0.25" />
+        </passive>
+        <skill>
+            <DarknightStrike>
+                <cooldown>0</cooldown>
+                <attack_damage_ratio>0.80</attack_damage_ratio>
+            </DarknightStrike>
+        </skill>
+        <skill>
+            <EyeForAnEye>
+                <cooldown>6</cooldown>
+                <counterattack_turns>3</counterattack_turns>
+                <damage_immunity_turns>2</damage_immunity_turns>
+                <control_immunity_turns>2</control_immunity_turns>
+            </EyeForAnEye>
+        </skill>
+        <skill>
+            <DarknightArbitrament>
+                <cooldown>5</cooldown>
+                <attack_damage_ratio>5.0</attack_damage_ratio>
+            </DarknightArbitrament>
+        </skill>
+    </hero>
+    <hero>
+        <id>6</id>
+        <name>Geeliman</name>
+        <rarity>Legendary</rarity>
+        <mark>Blue</mark>
+        <class>Support</class>
+        <faction>WizardsEye</faction>
+        <health>69650</health>
+        <attack>7640</attack>
+        <defense>6327</defense>
+        <speed>1093</speed>
+        <crit_rate>0.060</crit_rate>
+        <crit_damage>1.520</crit_damage>
+        <effect_hit>0.420</effect_hit>
+        <effect_resistance>0.031</effect_resistance>
+        <mastery>0.000</mastery>
+        <healing_effect>0.000</healing_effect>
+        <leech>0.00</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <passive>
+            <IncessantChatter />
+        </passive>
+        <skill>
+            <Generic>
+                <name>PowerOfKnowledge</name>
+                <cooldown>0</cooldown>
+                <subskill target="SingleEnemy" type="Damage" ratio="2.2" scale="AttackDamage"  />
+                <subskill target="SingleEnemy" type="Inflict" effect="BlockBuff" chance="0.6" turns="1" />
+                <subskill target="SingleSelf"  type="Inflict" effect="Arcane" turns="999"/>
+            </Generic>
+        </skill>
+        <skill>
+            <BurstingKnowledge>
+                <cooldown>4</cooldown>
+                <attack_damage_ratio>1.2</attack_damage_ratio>
+                <wisdom_runestones>4</wisdom_runestones>
+                <piercing_rate>0.0</piercing_rate>
+            </BurstingKnowledge>
+        </skill>
+        <skill>
+            <Generic>
+                <name>IntelectualPrison</name>
+                <cooldown>5</cooldown>
+                <subskill target="AllEnemies" type="Damage" ratio="2.0" scale="AttackDamage" effect="SpeedDownII" chance="0.5" turns="2" />
+                <subskill target="AllEnemies" type="RemoveBuffs" />
+            </Generic>
+        </skill>
+    </hero>
+    <hero>
+        <id>7</id>
+        <name>Marville</name>
+        <rarity>Legendary</rarity>
+        <mark>Blue</mark>
+        <class>Support</class>
+        <faction>HiddenWave</faction>
+        <health>65877</health>
+        <attack>7118</attack>
+        <defense>6475</defense>
+        <speed>1326</speed>
+        <crit_rate>0.050</crit_rate>
+        <crit_damage>1.500</crit_damage>
+        <effect_hit>0.020</effect_hit>
+        <effect_resistance>0.016</effect_resistance>
+        <mastery>0.000</mastery>
+        <healing_effect>0.000</healing_effect>
+        <leech>0.00</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <passive>
+        </passive>
+    </hero>
+    <hero>
+        <id>8</id>
+        <name>Margarita</name>
+        <rarity>Legendary</rarity>
+        <mark>Blue</mark>
+        <class>Attack</class>
+        <faction>DoomLegion</faction>
+        <health>94581</health>
+        <attack>11699</attack>
+        <defense>8112</defense>
+        <speed>1204</speed>
+        <crit_rate>0.220</crit_rate>
+        <crit_damage>1.686</crit_damage>
+        <effect_hit>0.070</effect_hit>
+        <effect_resistance>0.000</effect_resistance>
+        <mastery>0.124</mastery>
+        <healing_effect>0.060</healing_effect>
+        <leech>0.00</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <passive>
+            <CounterattackCommand blades="4" crit_damage_turns="1" attack_damage_ratio="2.3" />
+        </passive>
+        <skill>
+            <Generic>
+                <name>SwordAssault</name>
+                <cooldown>0</cooldown>
+                <subskill target="SingleEnemy" type="Damage" ratio="1.4" scale="AttackDamage"  />
+                <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
+            </Generic>
+        </skill>
+        <skill>
+            <Generic>
+                <name>BladeStriker</name>
+                <cooldown>3</cooldown>
+                <subskill target="SingleEnemy" type="Damage" ratio="5.4" scale="AttackDamage"  />
+                <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
+                <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
+            </Generic>
+        </skill>
+        <skill>
+            <Generic>
+                <name>BladeDance</name>
+                <cooldown>4</cooldown>
+                <subskill target="AllEnemies" type="Damage" ratio="1.3" scale="AttackDamage"  />
+                <subskill target="AllEnemies" type="Damage" ratio="1.3" scale="AttackDamage"  />
+                <subskill target="AllEnemies" type="Damage" ratio="1.3" scale="AttackDamage"  />
+                <subskill target="AllEnemies" type="Damage" ratio="1.3" scale="AttackDamage"  />
+                <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
+                <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
+                <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
+                <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
+            </Generic>
+        </skill>
+    </hero>
 </heroes>

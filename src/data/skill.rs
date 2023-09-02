@@ -27,11 +27,18 @@ fn true_default() -> bool{
 #[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Clone )]
 pub enum Skill {
     Generic {
+        name : String,
         cooldown: u32,
         #[serde(default="false_default")]
         basic_attack : bool,
         #[serde(rename="subskill")]
         subskills : Vec<SubSkill>,
+    },
+    BasicAttack {
+        cooldown: u32,
+        #[serde(default="true_default")]
+        basic_attack : bool,
+        attack_damage_ratio : f32,
     },
     //Liz
     ScorchedSoul {
@@ -154,18 +161,35 @@ pub enum Skill {
         basic_attack : bool,
         attack_damage_ratio : f32,
     },
-    //
-    BasicAttack { 
-        cooldown: u32,
-        #[serde(default="true_default")]
-        basic_attack : bool,
-        attack_damage_ratio : f32
-    },
+    //Hazier
     DarknightStrike {
         cooldown: u32,
         #[serde(default="true_default")]
         basic_attack : bool,
         attack_damage_ratio : f32
+    },
+    EyeForAnEye {
+        cooldown: u32,
+        #[serde(default="false_default")]
+        basic_attack : bool,
+        counter_attack_turns : u32,
+        damage_immunity_turns : u32,
+        control_immunity_turns : u32,
+    },
+    DarknightArbitrament {
+        cooldown: u32,
+        #[serde(default="true_default")]
+        basic_attack : bool,
+        attack_damage_ratio : f32
+    },
+    //Geeliman
+    BurstingKnowledge {
+        cooldown: u32,
+        #[serde(default="true_default")]
+        basic_attack : bool,
+        attack_damage_ratio : f32,
+        wisdom_runestones : u32,
+        piercing_rate: f32,
     },
 }
 
@@ -191,9 +215,12 @@ pub fn get_targets<const LEN:usize>(skill : &Skill, actor :InstanceIndex, wave :
         Skill::ScarletSlash { .. } => get_alive_enemies(actor,wave),
         Skill::LeavesStorm { .. } => get_alive_enemies(actor,wave),
         Skill::ScaletMultiStrike { .. } => get_alive_enemies(actor,wave),
+        //Hazier
+        Skill::DarknightStrike { ..} => get_alive_enemies(actor,wave),
+        Skill::EyeForAnEye { .. } => Some(vec![actor]),
+        Skill::DarknightArbitrament { .. } => get_alive_enemies(actor, wave),
         //
         Skill::BasicAttack{..} => get_alive_enemies(actor,wave),
-        Skill::DarknightStrike { ..} => get_alive_enemies(actor,wave),
         Skill::Generic{ subskills ,..} => Some(subskill::get_targets(get_generic_targets(subskills),actor,wave)),
     }
 }

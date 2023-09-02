@@ -11,7 +11,7 @@ pub enum Effect {
     Heal,
     HPBurning,
     Suffocated,
-    BlockDebuf,
+    BlockDebuff,
     EffectResistanceUpI,
     EffectResistanceUpII,
     EffectResistanceDownI,
@@ -44,13 +44,35 @@ pub enum Effect {
     CritDamageDownII,
     CritDamageUpI,
     CritDamageUpII,
-    ScarletSakura,
 
+    //Debuff
+    BlockBuff,
+    //Buff
     Stealth,
+    CounterAttack,
+    DamageImmunity,
+    ControlImmunity, // Needs implementation
+    //Unique
+    ScarletSakura,
+    Arcane,
+    Blade,
 
+    //Faction
     FactionHiddenWaveAttack, // Counter for faction hidden wave
     FactionHiddenWaveSkill, // Counter for faction hidden wave
     None,
+}
+
+pub fn get_max(effect:Effect) -> u32 {
+    match effect {
+        Effect::ScarletSakura => 20,
+        Effect::Arcane => 5,
+        Effect::Bleed => 10,
+        Effect::HPBurning => 5,
+        Effect::FactionHiddenWaveAttack => 2,
+        Effect::FactionHiddenWaveSkill => 2,
+        _ => 999999
+    }
 }
 
 pub fn is_buff(effect : Effect) -> bool {
@@ -96,7 +118,7 @@ pub fn is_dot(effect : Effect) -> bool {
         Effect::Bleed => true,
         Effect::HPBurning => true,
         Effect::Suffocated => false,
-        Effect::BlockDebuf => false,
+        Effect::BlockDebuff => false,
         Effect::EffectResistanceDownII => false,
         Effect::RippleII => false,
         Effect::AttackUpII => false,

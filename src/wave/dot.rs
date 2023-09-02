@@ -18,7 +18,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn dot_bleed(&mut self, actor : InstanceIndex) {
         // apply bleed
-        let n = self.effects[actor].get(Effect::Bleed).min(10);
+        let n = self.effects[actor].get(Effect::Bleed);
         if n > 0 {
             let b : &Vec<(u32,InstanceIndex)> = &self.effects[actor].em[Effect::Bleed];
             // get inflictor

@@ -19,6 +19,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             Scale::MaxHealth => {
                 val= wave.get_max_health(actor) * subskill.ratio;
             },
+            Scale::None => {},
         }
         match subskill.effect {
             Effect::None => {},
@@ -45,6 +46,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
             Target::AllAllies => {
                 targets = wave.get_ally_indices(actor);
             },
+            Target::SingleSelf => {
+                targets = vec![actor];
+            },
         } 
         match subskill.typ {
             Type::Damage => {
@@ -59,10 +63,14 @@ impl<const LEN:usize> Wave<'_,LEN> {
             },
             Type::Inflict => {
                 for target in targets {
-                    // FIXME
-                    //wave.inflict_any(actor,target,effect,chance,turns);
+                    wave.inflict_single(actor,target,effect,chance,turns);
                 }
             },
+            Type::RemoveBuffs => {
+                for target in targets {
+                    wave.remove_buffs_single(actor,target);
+                }
+            }
         }
     }
 }

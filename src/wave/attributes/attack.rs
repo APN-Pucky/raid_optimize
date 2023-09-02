@@ -84,7 +84,19 @@ impl<const LEN:usize> Wave<'_,LEN> {
         ret
     }
 
-    pub fn get_piercing(&self, actor : InstanceIndex) -> f32 {
-        self.get_hero(actor).piercing
+    pub fn get_piercing(&self, actor : InstanceIndex , skill : &Skill) -> f32 {
+        let mut fact = 1.0;
+        indent!({
+        match skill {
+            Skill::BurstingKnowledge { piercing_rate ,.. } =>  {
+                fact = fact + piercing_rate;
+                debug!("{} uses BurstingKnowledge -> piercing * {}", self.name(actor), piercing_rate)
+            },
+            _ =>  {}
+        }
+        });
+        let ret = self.get_hero(actor).piercing * fact;
+        debug!("{} piercing of {}", self.name(actor), ret);
+        ret
     }
 }

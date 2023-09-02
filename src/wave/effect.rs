@@ -1,4 +1,4 @@
-use crate::{wave::stat::Stat, debug, indent, data::{instance::Instance, effect::{Effect, is_debuff}}};
+use crate::{wave::stat::Stat, debug, indent, data::{instance::Instance, effect::{Effect, is_debuff, is_buff}}};
 
 use super::{Wave, InstanceIndex};
 
@@ -10,6 +10,15 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn has_debuff(&self, actor: InstanceIndex) -> bool {
         for (key,value) in self.effects[actor].em.iter() {
             if is_debuff(key) && !value.is_empty() {
+                return true;
+            }
+        }
+        false
+    }
+
+    pub fn has_buff(&self, actor: InstanceIndex) -> bool {
+        for (key,value) in self.effects[actor].em.iter() {
+            if is_buff(key) && !value.is_empty() {
                 return true;
             }
         }

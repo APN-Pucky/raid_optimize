@@ -1,4 +1,4 @@
-use crate::{data::{effect::{Effect, is_debuff, is_buff}, faction::Faction}, roll, debug, wave::stat::effect_to_stat, indent};
+use crate::{data::{effect::{Effect, is_debuff, is_buff, get_max}, faction::Faction}, roll, debug, wave::stat::effect_to_stat, indent};
 
 use super::{ Wave, InstanceIndex};
 
@@ -7,39 +7,44 @@ impl<const LEN:usize> Wave<'_,LEN> {
         match effect {
             Effect::HPBurning => self.inflict_hp_burning(actor, target, turns),
             Effect::Bleed => self.inflict_bleed(actor, target, turns),
-            _ => self.inflict_any(actor, target, effect, turns),
+            _ => {self.inflict_any(actor, target, effect, turns);} ,
         }
     }
 
-    fn inflict_any(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, turns :u32) {
+    fn inflict_any(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, turns :u32) -> bool {
         debug!("{} inflicts {} for {} turns on {}", self.name(actor), effect, turns, self.name(target));
-        self.add_stat(actor, effect_to_stat(effect) , turns as f32);
-        self.effects[target].push(effect, turns, actor);
-        if actor == target && self.get_faction(actor) == Faction::DoomLegion {
-            if is_buff(effect) && self.bonds_counter[actor] < 5 {
-                self.bonds_counter[actor] += 1;
+        indent!({
+            if self.has_effect(target,Effect::BlockBuff) && is_buff(effect) {
+                debug!("{} has BlockBuff, {} is blocked", self.name(target), effect);
+                return false;
             }
-        }
+            if self.effects[target].get(effect) >= get_max(effect) {
+                debug!("{} already has max {}", self.name(target), effect);
+                return false;
+            }
+            self.add_stat(actor, effect_to_stat(effect) , turns as f32);
+            self.effects[target].push(effect, turns, actor);
+            self.on_inflicted_margarita( target, effect);
+            if actor == target && self.get_faction(actor) == Faction::DoomLegion {
+                if is_buff(effect) && self.bonds_counter[actor] < 5 {
+                    self.bonds_counter[actor] += 1;
+                }
+            }
+            true
+        });
+        true
     }
 
     fn inflict_hp_burning(&mut self, actor : InstanceIndex, target:InstanceIndex, turns :u32) {
-        if self.effects[target].get(Effect::HPBurning) >= 5 {
-            debug!("{} already has max HpBurning", self.name(target));
-            return;
-        }
         self.inflict_any(actor, target, Effect::HPBurning, turns);
     }
 
     fn inflict_bleed(&mut self, actor : InstanceIndex, target:InstanceIndex, turns :u32) {
-        let n = self.effects[target].get(Effect::Bleed);
-        if n >= 10 {
-            debug!("{} already has max Bleed", self.name(target) );
-            return;
+        if self.inflict_any(actor, target, Effect::Bleed, turns) {
+            let dmg_vec = vec![0.14,0.18,0.22,0.26,0.30,0.30,0.30,0.30,0.30,0.30];
+            let bleed_dmg = self.get_attack_damage(actor) * dmg_vec[(self.effects[target].get(Effect::Bleed)) as usize];
+            self.damage_bleed(actor,target,bleed_dmg);
         }
-        self.inflict_any(actor, target, Effect::Bleed, turns);
-        let dmg_vec = vec![0.14,0.18,0.22,0.26,0.30,0.30,0.30,0.30,0.30,0.30];
-        let bleed_dmg = self.get_attack_damage(actor) * dmg_vec[(n) as usize];
-        self.damage_bleed(actor,target,bleed_dmg);
     }
 
     pub fn inflict_single(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, chance: f32, turns :u32) {

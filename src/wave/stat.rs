@@ -47,7 +47,7 @@ pub fn effect_to_stat(e:Effect) -> Stat {
         Effect::Bleed => Stat::EffectInflicted,
         Effect::HPBurning => Stat::EffectInflicted,
         Effect::Suffocated => Stat::EffectInflicted,
-        Effect::BlockDebuf => Stat::EffectInflicted,
+        Effect::BlockDebuff => Stat::EffectInflicted,
         Effect::EffectResistanceDownII => Stat::EffectInflicted,
         Effect::RippleII => Stat::EffectInflicted,
         Effect::AttackUpII => Stat::EffectInflicted,

@@ -9,6 +9,7 @@ pub enum Target {
     SingleEnemy,
     AllEnemies,
     AllAllies,
+    SingleSelf,
 }
 
 pub fn get_targets<const LEN:usize>(target : Target, actor :InstanceIndex, wave :& Wave<LEN>) -> Vec<InstanceIndex> {
@@ -28,6 +29,9 @@ pub fn get_targets<const LEN:usize>(target : Target, actor :InstanceIndex, wave 
         },
         Target::AllAllies => {
             wave.get_ally_indices(actor)
+        },
+        Target::SingleSelf => {
+            vec![actor]
         },
     } 
 }
@@ -61,12 +65,14 @@ pub fn merge_targets(t1 : Target,t2:Target) -> Target {
 pub enum Scale {
     AttackDamage,
     MaxHealth,
+    None,
 }
 #[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Type {
     Damage,
     Restore,
-    Inflict
+    Inflict,
+    RemoveBuffs,
 }
 
 #[derive(Deserialize, Debug, Clone, Copy, PartialEq)]
@@ -76,12 +82,20 @@ pub struct SubSkill {
     pub ratio : f32,
     #[serde(rename="type")]
     pub typ : Type,
+    #[serde(default="scale_default")]
     pub scale : Scale,
+    #[serde(default="effect_default")]
     pub effect : Effect,
     #[serde(default="chance_default")]
     pub chance : f32,
     #[serde(default="turns_default")]
     pub turns : u32,
+}
+fn scale_default() -> Scale{
+    Scale::None
+}
+fn effect_default() -> Effect{
+    Effect::None
 }
 
 fn ratio_default() -> f32 {
@@ -94,64 +108,6 @@ fn turns_default() -> u32 {
     0
 }
 
-pub fn execute_subskill<const LEN:usize>(subskill : &SubSkill, actor :InstanceIndex, target :InstanceIndex, wave :&mut Wave<LEN> , skill: &Skill) {
-    let mut val= 0.0;
-    let mut targets : Vec<InstanceIndex> = vec![];
-    let mut effect = Effect::None;
-    let mut chance = 0.0;
-    let mut turns = 0;
-    match subskill.scale {
-        Scale::AttackDamage => {
-            val= wave.get_attack_damage(actor) * subskill.ratio;
-        },
-        Scale::MaxHealth => {
-            val= wave.get_max_health(actor) * subskill.ratio;
-        },
-    }
-    match subskill.effect {
-        Effect::None => {},
-        _ => {
-            effect = subskill.effect;
-            chance = subskill.chance;
-            turns = subskill.turns;
-        },
-    }
-    match subskill.target {
-        Target::Everyone => {
-            // 0..LEN
-            targets = wave.get_indices();
-        },
-        Target::SingleAlly => {
-            targets  = vec![target];
-        },
-        Target::SingleEnemy => {
-            targets  = vec![target];
-        },
-        Target::AllEnemies => {
-            targets = wave.get_enemies_indices(actor);
-        },
-        Target::AllAllies => {
-            targets = wave.get_ally_indices(actor);
-        },
-    } 
-    match subskill.typ {
-        Type::Damage => {
-            for target in targets {
-                wave.attack_single(actor,target,val,skill);
-            }
-        },
-        Type::Restore => {
-            for target in targets {
-                wave.restore_single(actor,target,val);
-            }
-        },
-        Type::Inflict => {
-            for target in targets {
-                wave.inflict_single(actor,target,effect,chance,turns);
-            }
-        },
-    }
-}
 
 #[cfg(test)]
 mod tests {

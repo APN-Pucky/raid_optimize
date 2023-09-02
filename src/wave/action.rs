@@ -30,7 +30,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn after_action(&mut self, actor :InstanceIndex) {
         debug!("after {} acts", actor);
         indent!({
-            self.after_action_sharp_instinct(actor);
+            self.after_action_tifya(actor);
             if self.get_faction(actor) == Faction::DragonTribe && self.bonds_counter[actor] < 5 {
                 self.bonds_counter[actor] += 1;
             }

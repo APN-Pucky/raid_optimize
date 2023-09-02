@@ -1,3 +1,4 @@
+use crate::data::effect::is_buff;
 use crate::{data::effect::Effect, roll, debug, wave::stat::effect_to_stat, indent};
 
 use super::{ Wave, InstanceIndex};
@@ -31,5 +32,15 @@ impl<const LEN:usize> Wave<'_,LEN> {
         for i in self.get_ally_indices(actor) {
             self.cleanse(i,effect_closure,layers);
         }
+    }
+
+    pub fn remove_buffs_single(&mut self, actor : InstanceIndex, target : InstanceIndex) {
+        for (k,v) in self.effects[target].em.iter_mut() {
+            if is_buff(k) {
+                // empty v
+                v.clear();
+            }
+        }
+        self.effects[target].remove_empty();
     }
 }

@@ -1,7 +1,7 @@
 use enum_map::EnumMap;
 use rand::Rng;
 
-use crate::{debug, wave::stat::Stat, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack}, effect::Effect}};
+use crate::{debug, wave::stat::Stat, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack}, effect::Effect, passive::Passive}};
 
 use super::{Wave, InstanceIndex};
 
@@ -25,18 +25,10 @@ impl<const LEN:usize> Wave<'_,LEN> {
             let mut rng = rand::thread_rng();
             let crit = rng.gen::<f32>() < self.get_crit_rate(actor);
             let mut attack = damage;
-            let mut p = self.get_piercing(actor);
+            let mut p = self.get_piercing(actor,skill);
             indent!({
                 if crit {
-                    match skill {
-                        Skill::ScarletSlash{..} => {
-                            self.inflict_buff_single(actor, actor, Effect::ScarletSakura, 999)
-                        }
-                        Skill::ScaletMultiStrike {.. } => {
-                            self.inflict_buff_single(actor, actor, Effect::ScarletSakura, 999)
-                        }
-                        _ => {}
-                    }
+
                     self.add_stat(actor,Stat::CriticalStrikes, 1.0);
                     self.add_stat(target,Stat::CriticalStriked, 1.0);
                     let crit = self.get_crit_damage(actor);
@@ -57,6 +49,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
                             debug!("{} has {} bond with NamelessBrotherhood -> piercing + {}", self.name(actor), self.get_bond(actor,Faction::NamelessBrotherhood), self.get_bond(actor,Faction::NamelessBrotherhood));
                         }
                     }
+                    self.on_critical_strike_tifya(actor,skill);
                 }
             });
 
@@ -71,7 +64,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             def -= pierce;
              
             if attack -def > 0. {
-                self.damage(actor,target, (attack - def),true,true);
+                self.damage(actor,target, (attack - def),true,true,crit);
             }
             else {
                 self.add_stat(actor,Stat::Blocked, attack);
@@ -84,13 +77,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn damage_hp_burning(&mut self,actor : InstanceIndex,target:InstanceIndex, dmg: f32) {
         debug!("{} takes {} damage from hp_burning from {}", self.name(target), dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,dmg,false,false);
+        self.damage(actor,target,dmg,false,false,false);
     }
 
     pub fn damage_bleed(&mut self,actor : InstanceIndex,target:InstanceIndex, bleed_dmg: f32) {
         debug!("{} takes {} damage from bleed from {}", self.name(target), bleed_dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,bleed_dmg,false,false);
+        self.damage(actor,target,bleed_dmg,false,false,false);
     }
 
     pub fn loose_health(&mut self, actor:InstanceIndex, damage: f32) {
@@ -105,9 +98,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
         debug!("{} looses {} health to {}",self.name(actor), damage, self.health[actor]);
     }
 
-    pub fn damage(&mut self, actor:InstanceIndex, target:InstanceIndex,damage: f32, reflect:bool,leech: bool) {
+    pub fn damage(&mut self, actor:InstanceIndex, target:InstanceIndex,damage: f32, reflect:bool,leech: bool,crit:bool) {
         debug!("{} takes {} damage from {}", self.name(target), damage,self.name(actor));
         indent!({
+            if self.has_effect(target, Effect::DamageImmunity) {
+                debug!("{} has DamageImmunity -> damage * 0", self.name(target));
+                return;
+            }
             let mut damage = damage;
             if self.get_faction(target) == Faction::DoomLegion {
                 let n = self.bonds_counter[target] as f32;
@@ -135,6 +132,19 @@ impl<const LEN:usize> Wave<'_,LEN> {
                     let xfact = 1.0 - self.get_bond(target,Faction::SwordHarborGuards);
                     damage = damage * xfact;
                     debug!("{} has {} bond with SwordHarborGuards and health < 50% -> damage * {}", self.name(target), xfact, xfact);
+                }
+            }
+            for p in &self.heroes[actor].passives {
+                match p {
+                    Passive::BloodlustStrike {damage_reduction_buffs,damage_reduction_nobuffs,..} => {
+                        if self.has_buff(target) {
+                            damage = damage * ( 1.0 - damage_reduction_buffs);
+                        }
+                        else {
+                            damage = damage * ( 1.0 - damage_reduction_nobuffs);
+                        }
+                    }
+                    _ => {}
                 }
             }
 
@@ -172,16 +182,30 @@ impl<const LEN:usize> Wave<'_,LEN> {
             let dmg = self.shield_loose(target,damage);
             self.loose_health(target,dmg);
             if leech {
-                self.leech(actor,target,dmg);
+                self.leech(actor,target,dmg,crit);
             }
             if reflect {
                 self.reflect_damage(target,actor,dmg * self.get_damage_reflect(target));
             }
+            if self.has_effect(target,Effect::CounterAttack) {
+                self.attack_single(target,actor,self.get_attack_damage(target), &Skill::BasicAttack { cooldown: 0, basic_attack: true, attack_damage_ratio: 1.0 });
+            }
         })
     }
 
-    pub fn leech(&mut self, actor:InstanceIndex, target:InstanceIndex,dmg: f32) {
-        let leech = dmg * self.get_leech(actor);
+    pub fn leech(&mut self, actor:InstanceIndex, target:InstanceIndex,dmg: f32,crit:bool) {
+        let mut fleech = self.get_leech(actor);
+        if crit {
+            for p in &self.heroes[actor].passives {
+                match p {
+                    Passive::BloodlustStrike {leech,..} => {
+                        fleech += leech;
+                    }
+                    _ => {}
+                }
+            }
+        }
+        let leech = dmg * fleech;
         if leech > 0.0 {
             debug!("{} leeches {} health from {}", self.name(actor), leech,self.name(target));
             indent!({
@@ -198,7 +222,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             indent!({
                 self.add_stat(actor,Stat::DamageReflected, damage);
                 self.add_stat(target,Stat::DamageReflecteded, damage);
-                self.damage(actor,target,damage,false,false);
+                self.damage(actor,target,damage,false,false,false);
             })
         }
         if damage < 0. {

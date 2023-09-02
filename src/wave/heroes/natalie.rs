@@ -2,7 +2,7 @@ use crate::{wave::{Wave, InstanceIndex}, data::{skill::Skill, effect::Effect}};
 
 
 impl<'a,const LEN:usize> Wave<'a,LEN> {
-    pub fn execute_skill_space(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
+    pub fn execute_skill_natalie(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
         let attacker = actor;
         let defender = target;
         match skill {

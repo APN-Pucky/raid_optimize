@@ -13,12 +13,12 @@ pub mod stat;
 pub mod begin;
 pub mod attributes;
 pub mod skills;
-pub mod passives;
 pub mod effect;
 pub mod dot;
 pub mod faction;
 pub mod print;
 pub mod cleanse;
+pub mod heroes;
 
 use crate::data::hero::Hero;
 use crate::data::effect::Effect;
@@ -137,6 +137,10 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn get_indices(&self) -> Vec<InstanceIndex>
     {
         (0..LEN).collect::<Vec<_>>()
+    }
+
+    pub fn has_passive(&self, actor:InstanceIndex, passive: Passive) -> bool {
+        self.heroes[actor].passives.iter().any(|p| *p == passive)
     }
 
     pub fn get_statistics(&self) -> Vec<EnumMap<Stat,f32>> {

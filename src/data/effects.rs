@@ -29,6 +29,10 @@ impl Effects {
         }
     }
 
+    pub fn clear_single(&mut self, key: Effect) {
+        self.em[key].clear();
+    }
+
     pub fn has(&self, key: Effect) -> bool {
         !self.em[key].is_empty()
     }
