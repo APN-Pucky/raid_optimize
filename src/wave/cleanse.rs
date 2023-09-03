@@ -33,6 +33,4 @@ impl<const LEN:usize> Wave<'_,LEN> {
             self.cleanse(i,effect_closure,layers);
         }
     }
-
-
 }
