@@ -10,7 +10,6 @@ use crate::{roll, indent, debug, warn, info, error};
 use crate::wave::{  InstanceIndex, TeamIndex};
 
 use super::hero::Hero;
-use super::passive::Passive;
 use super::skill::{get_cooldown, Skill};
 
 

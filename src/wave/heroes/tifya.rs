@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_debuff}, passive::Passive }};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_debuff} }};
 
 impl<const LEN:usize> Wave<'_,LEN> {
     pub fn execute_skill_tifya(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {

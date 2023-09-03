@@ -1,6 +1,6 @@
 use std::fmt;
 
-use super::{mark::Mark, class::Class, faction::Faction, rarity::Rarity, skill::Skill, passive::Passive, heroes::Heroes};
+use super::{mark::Mark, class::Class, faction::Faction, rarity::Rarity, skill::Skill, heroes::Heroes};
 
 
 

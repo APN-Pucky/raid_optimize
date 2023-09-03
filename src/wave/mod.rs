@@ -26,7 +26,6 @@ use crate::data::hero::Hero;
 use crate::data::effect::Effect;
 use crate::data::faction::Faction;
 use crate::data::instance::Instance;
-use crate::data::passive::Passive;
 use crate::data::skill::{Skill, get_selection, is_passive};
 use crate::player::Player;
 use crate::{debug, indent, info};

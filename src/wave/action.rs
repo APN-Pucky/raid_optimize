@@ -1,4 +1,4 @@
-use crate::{debug, indent, data::{effect::{Effect, is_debuff}, skill::{Skill, get_selection}, faction::Faction, passive::Passive}};
+use crate::{debug, indent, data::{effect::{Effect, is_debuff}, skill::{Skill, get_selection}, faction::Faction}};
 
 use super::{InstanceIndex, Wave};
 

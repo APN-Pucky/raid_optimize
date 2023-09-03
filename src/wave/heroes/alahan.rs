@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex, attributes::attack}, data::{skill::{Skill, SkillData}, effect::{Effect, is_buff, is_attribute_debuff}, passive::Passive}, indent, debug};
+use crate::{wave::{Wave, InstanceIndex, attributes::attack}, data::{skill::{Skill, SkillData}, effect::{Effect, is_buff, is_attribute_debuff}}, indent, debug};
 
 
 impl<'a,const LEN:usize> Wave<'a,LEN> {
