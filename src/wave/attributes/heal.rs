@@ -1,5 +1,5 @@
 
-use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_targets, },  instance::Instance, faction::Faction}};
+use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_selection, SkillData, },  instance::Instance, faction::Faction}};
 
 use super::{InstanceIndex, Wave};
 
@@ -23,7 +23,6 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn get_healing_effect(&self, actor: InstanceIndex) -> f32 {
-        // TODO handle healing buff/debuff
         let mut fact = 1.0;
         debug!("{} base healing effect of {}", self.name(actor),self.get_hero(actor).healing_effect);
         indent!({
@@ -32,6 +31,12 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 debug!("{} has {} bond with HolyLightParliament -> healing_effect * {}", self.name(actor), xfact, xfact);
                 fact *= xfact;
             }        
+            if let [ Skill { data : SkillData::ForceOfMercy { healing_effect, .. } , .. }, ..] = self.heroes[actor].skills[..] {
+                if self.health[actor] < 0.5* self.get_max_health(actor) {
+                    debug!("{} has ForceOfMercy -> healing_effect * {}", self.name(actor), healing_effect);
+                    fact *= healing_effect;
+                }
+            }
         });
         let res = self.get_hero(actor).healing_effect* fact;
         if fact != 1.0 {

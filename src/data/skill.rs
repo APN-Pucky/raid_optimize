@@ -7,7 +7,6 @@ use super::effect::is_dot;
 use super::subskill;
 use super::subskill::SubSkill;
 use super::subskill::Target;
-use super::subskill::get_subskill_targets;
 use super::subskill::merge_targets;
 
 type SkillRef = usize;
@@ -36,8 +35,8 @@ pub fn cooldown_default() -> u32 {
     0
 }
 
-pub fn target_default() -> Target {
-    Target::None
+pub fn select_default() -> Select {
+    Select::None
 }
 
 pub fn typ_default() -> SkillType {
@@ -47,14 +46,27 @@ pub fn typ_default() -> SkillType {
 pub fn data_default() -> SkillData {
     SkillData::None
 }
+
+#[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]
+pub enum Select {
+    Everyone,
+    SingleAlly,
+    SingleEnemy,
+    AllEnemies,
+    AllAllies,
+    SingleSelf,
+    None,
+}
+
+
 #[derive(Debug, PartialEq, Deserialize, Clone )]
 pub struct Skill {
     #[serde(default="cooldown_default")]
     pub cooldown : u32,
     #[serde(default="typ_default")]
     pub typ : SkillType,
-    #[serde(default="target_default")]
-    pub target : Target,
+    #[serde(default="select_default")]
+    pub select: Select,
     pub data : SkillData,
 }
 
@@ -67,14 +79,14 @@ impl fmt::Display for Skill{
 pub const NONE_SKILL: Skill = Skill {
     cooldown : 0,
     typ : SkillType::None,
-    target : Target::None,
+    select : Select::None,
     data : SkillData::None,
 };
 
 pub const BASIC_ATTACK: Skill = Skill {
     cooldown : 0,
     typ : SkillType::Basic,
-    target : Target::SingleEnemy,
+    select : Select::SingleEnemy,
     data : SkillData::BasicAttack {
         attack_damage_ratio : 1.0,
     },
@@ -252,14 +264,30 @@ pub enum SkillData {
         increase_atk_turns : u32,
         rose_per_poison : u32,
         poison_turns : u32
-
+    },
+    // Maya
+    LightOfPurifying {
+        heal_allies : u32,
+        max_hp_restore_ratio : f32,
+        heal_turns : u32,
+        cleanse_dot_layers: u32,
+    },
+    ForceOfMercy {
+        max_hp_restore_ratio : f32,
+        healing_effect : f32,
+    },
+    SacredLight {
+        max_hp_restore_ratio : f32,
+        loose_hp_ratio : f32,
+        consolidation_turns : u32,
+        shield_turns : u32,
+        shield_max_hp_ratio : f32,
+        block_debuff_turns : u32,
     },
 
 
     //Natalie
     BloodthirstyDesire,
-    //Maya
-    ForceOfMercy,
     //Seth
     DeepSeaBloodline,
     //Space
@@ -281,52 +309,69 @@ pub enum SkillData {
     },
 }
 
-pub fn get_targets<const LEN:usize>(skill : &Skill, actor :InstanceIndex, wave :&Wave<LEN>) -> Vec<InstanceIndex> {
-    return get_subskill_targets(skill.target, actor, wave);
-    //match skill {
-    //    //Liz
-    //    Skill::ScorchedSoul{..} => get_alive_enemies(actor,wave),
-    //    Skill::FireHeal{..} => get_alive_allies(actor,wave),
-    //    Skill::Resurrection { .. } => get_alive_allies(actor,wave),
-    //    //Natalie
-    //    Skill::ScytheStrike { .. } => get_alive_enemies(actor,wave),
-    //    Skill::BloodthirstyScythe { .. } => get_alive_enemies(actor,wave),
-    //    Skill::EnergyBurst { .. } => get_alive_enemies(actor,wave),
-    //    //Seth
-    //    Skill::TideBigHit { ..} => get_alive_enemies(actor,wave),
-    //    Skill::DeepSeaPower { .. } => get_alive_allies(actor, wave),
-    //    Skill::CrystalOfLife { .. } => get_alive_allies(actor, wave),
-    //    //Space
-    //    Skill::Tricks{..} => get_alive_enemies(actor,wave),
-    //    Skill::Nightmare { .. } => get_alive_enemies(actor,wave),
-    //    Skill::FissionOfLife { .. } => get_alive_allies(actor, wave),
-    //    //Tifya
-    //    Skill::ScarletSlash { .. } => get_alive_enemies(actor,wave),
-    //    Skill::LeavesStorm { .. } => get_alive_enemies(actor,wave),
-    //    Skill::ScaletMultiStrike { .. } => get_alive_enemies(actor,wave),
-    //    //Hazier
-    //    Skill::DarknightStrike { ..} => get_alive_enemies(actor,wave),
-    //    Skill::EyeForAnEye { .. } => Some(vec![actor]),
-    //    Skill::DarknightArbitrament { .. } => get_alive_enemies(actor, wave),
-    //    //Geeliman
-    //    Skill::BurstingKnowledge { .. } => get_alive_enemies(actor, wave),
-    //    //
-    //    Skill::BasicAttack{..} => get_alive_enemies(actor,wave),
-    //    Skill::Generic{ subskills ,..} => Some(subskill::get_subskill_targets(get_generic_targets(subskills),actor,wave)),
-    //}
+pub fn get_selection<const LEN:usize>(select: Select, actor :InstanceIndex, wave :& Wave<LEN>) -> Vec<InstanceIndex> {
+    match select{
+        Select::Everyone => {
+            // 0..LEN
+            wave.get_indices()
+        },
+        Select::SingleAlly => {
+            wave.get_ally_indices(actor)
+        },
+        Select::SingleEnemy => {
+            wave.get_enemies_indices(actor)
+        },
+        Select::AllEnemies => {
+            wave.get_enemies_indices(actor)
+        },
+        Select::AllAllies => {
+            wave.get_ally_indices(actor)
+        },
+        Select::SingleSelf => {
+            vec![actor]
+        },
+        Select::None => {
+            vec![]
+        }
+    } 
 }
 
-pub fn get_generic_targets(subskills : &Vec<SubSkill> ) -> Target {
-    let mut targets = Vec::new();
-    for ss in subskills {
-        targets.push(ss.target)
-    }
-    let mut target = targets[0];
-    for t in targets {
-        target = merge_targets(target,t);
-    }
-    target
-}
+
+
+//pub fn get_selection<const LEN:usize>(skill : &Skill, actor :InstanceIndex, wave :&Wave<LEN>) -> Vec<InstanceIndex> {
+//    return get_subskill_targets(skill.select, actor, wave);
+//    //match skill {
+//    //    //Liz
+//    //    Skill::ScorchedSoul{..} => get_alive_enemies(actor,wave),
+//    //    Skill::FireHeal{..} => get_alive_allies(actor,wave),
+//    //    Skill::Resurrection { .. } => get_alive_allies(actor,wave),
+//    //    //Natalie
+//    //    Skill::ScytheStrike { .. } => get_alive_enemies(actor,wave),
+//    //    Skill::BloodthirstyScythe { .. } => get_alive_enemies(actor,wave),
+//    //    Skill::EnergyBurst { .. } => get_alive_enemies(actor,wave),
+//    //    //Seth
+//    //    Skill::TideBigHit { ..} => get_alive_enemies(actor,wave),
+//    //    Skill::DeepSeaPower { .. } => get_alive_allies(actor, wave),
+//    //    Skill::CrystalOfLife { .. } => get_alive_allies(actor, wave),
+//    //    //Space
+//    //    Skill::Tricks{..} => get_alive_enemies(actor,wave),
+//    //    Skill::Nightmare { .. } => get_alive_enemies(actor,wave),
+//    //    Skill::FissionOfLife { .. } => get_alive_allies(actor, wave),
+//    //    //Tifya
+//    //    Skill::ScarletSlash { .. } => get_alive_enemies(actor,wave),
+//    //    Skill::LeavesStorm { .. } => get_alive_enemies(actor,wave),
+//    //    Skill::ScaletMultiStrike { .. } => get_alive_enemies(actor,wave),
+//    //    //Hazier
+//    //    Skill::DarknightStrike { ..} => get_alive_enemies(actor,wave),
+//    //    Skill::EyeForAnEye { .. } => Some(vec![actor]),
+//    //    Skill::DarknightArbitrament { .. } => get_alive_enemies(actor, wave),
+//    //    //Geeliman
+//    //    Skill::BurstingKnowledge { .. } => get_alive_enemies(actor, wave),
+//    //    //
+//    //    Skill::BasicAttack{..} => get_alive_enemies(actor,wave),
+//    //    Skill::Generic{ subskills ,..} => Some(subskill::get_subskill_targets(get_generic_targets(subskills),actor,wave)),
+//    //}
+//}
 
 pub fn is_passive(skill : &Skill) -> bool {
     return skill.typ == SkillType::Passive;

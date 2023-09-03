@@ -18,7 +18,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
                  &Skill{
                     cooldown : skill.cooldown,
                     typ : skill.typ,
-                    target : skill.target,
+                    select: skill.select,
                     data : SkillData::SpiritCall { 
                         attack_damage_ratio: attack_damage_ratio, 
                         restore_hp_damage_ratio:restore_hp_damage_ratio + 0.2 * n as f32, 

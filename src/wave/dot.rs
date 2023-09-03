@@ -1,4 +1,4 @@
-use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_targets, }}};
+use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_selection, }}};
 
 use super::{InstanceIndex, Wave};
 

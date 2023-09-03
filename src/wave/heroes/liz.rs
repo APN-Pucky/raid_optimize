@@ -23,7 +23,6 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
                 //self.inflict_hp_burning(attacker,defender, hp_burning_chance, hp_burning_turns);
             }
             _ => {}
-
         }
     }
 }

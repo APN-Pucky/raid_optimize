@@ -18,9 +18,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     pub fn restore(&mut self, actor : InstanceIndex, target: InstanceIndex,health:f32) {
-        if self.is_dead(target) {
-            return;
-        }
+        //if self.is_dead(target) {
+        //    return;
+        //}
         debug!("{} restores {} for {}", self.name(actor), self.name(target), health);
         indent!({
             self.add_stat(actor, Stat::HealthRestored, health);

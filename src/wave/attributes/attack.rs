@@ -1,5 +1,5 @@
 
-use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_targets, SkillData, },  instance::Instance, faction::Faction}};
+use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_selection, SkillData, },  instance::Instance, faction::Faction}};
 
 use super::{InstanceIndex, Wave};
 

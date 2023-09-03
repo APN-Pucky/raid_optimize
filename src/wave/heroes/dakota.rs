@@ -6,7 +6,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
         let attacker = actor;
         let defender = target;
         match skill.data {
-            SkillData::SoulSurge {toxic_swamp_turns, rose_poison_chance, speed_up_turns } => {
+            SkillData::SoulSurge {toxic_swamp_turns,  speed_up_turns ,..} => {
                 self.inflict_enemy_team(actor, Effect::ToxicSwamp, 1.0, toxic_swamp_turns);
                 self.inflict_ally_team(actor, Effect::SpeedUpII, 1.0, speed_up_turns);
             },

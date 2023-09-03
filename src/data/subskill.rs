@@ -10,35 +10,39 @@ pub enum Target {
     AllEnemies,
     AllAllies,
     SingleSelf,
+    LowestHealthAlly,
     None,
 }
 
-pub fn get_subskill_targets<const LEN:usize>(target : Target, actor :InstanceIndex, wave :& Wave<LEN>) -> Vec<InstanceIndex> {
-    match target {
-        Target::Everyone => {
-            // 0..LEN
-            wave.get_indices()
-        },
-        Target::SingleAlly => {
-            wave.get_ally_indices(actor)
-        },
-        Target::SingleEnemy => {
-            wave.get_enemies_indices(actor)
-        },
-        Target::AllEnemies => {
-            wave.get_enemies_indices(actor)
-        },
-        Target::AllAllies => {
-            wave.get_ally_indices(actor)
-        },
-        Target::SingleSelf => {
-            vec![actor]
-        },
-        Target::None => {
-            vec![]
-        }
-    } 
-}
+//pub fn get_subskill_targets<const LEN:usize>(target : Target, actor :InstanceIndex, wave :& Wave<LEN>) -> Vec<InstanceIndex> {
+//    match target {
+//        Target::Everyone => {
+//            // 0..LEN
+//            wave.get_indices()
+//        },
+//        Target::SingleAlly => {
+//            wave.get_ally_indices(actor)
+//        },
+//        Target::SingleEnemy => {
+//            wave.get_enemies_indices(actor)
+//        },
+//        Target::AllEnemies => {
+//            wave.get_enemies_indices(actor)
+//        },
+//        Target::AllAllies => {
+//            wave.get_ally_indices(actor)
+//        },
+//        Target::SingleSelf => {
+//            vec![actor]
+//        },
+//        Target::None => {
+//            vec![]
+//        }
+//        Target::LowestHealthAlly => {
+//            vec![wave.get_lowest_health_ally(actor)]
+//        }
+//    } 
+//}
 
 pub fn merge_targets(t1 : Target,t2:Target) -> Target {
     // test if it makes sense
@@ -69,6 +73,7 @@ pub fn merge_targets(t1 : Target,t2:Target) -> Target {
 pub enum Scale {
     AttackDamage,
     MaxHealth,
+    TargetMaxHealth,
     None,
 }
 #[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]

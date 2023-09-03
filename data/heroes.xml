@@ -23,7 +23,7 @@
         <skill>
             <cooldown>0</cooldown>
             <type>Basic</type>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <data>
             <ScytheStrike>
                 <attack_damage_ratio>1.4</attack_damage_ratio>
@@ -35,7 +35,7 @@
         <skill>
             <cooldown>4</cooldown>
             <type>Active</type>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <data>
             <BloodthirstyScythe>
                 <attack_damage_ratio>1.4</attack_damage_ratio>
@@ -47,7 +47,7 @@
         <skill>
             <cooldown>4</cooldown>
             <type>Active</type>
-            <target>AllEnemies</target>
+            <select>AllEnemies</select>
             <data>
             <EnergyBurst>
                 <attack_damage_ratio>1.4</attack_damage_ratio>
@@ -245,7 +245,7 @@
         <damage_reflection>0</damage_reflection>
         <skill>
             <cooldown>0</cooldown>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <type>Basic</type>
             <data>
             <ScarletSlash>
@@ -255,7 +255,7 @@
         </skill>
         <skill>
             <cooldown>3</cooldown>
-            <target>AllEnemies</target>
+            <select>AllEnemies</select>
             <type>Active</type>
             <data>
             <LeavesStorm>
@@ -270,7 +270,7 @@
         </skill>
         <skill>
             <cooldown>4</cooldown>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <type>Active</type>
             <data>
             <ScaletMultiStrike>
@@ -303,7 +303,7 @@
         <skill>
             <cooldown>0</cooldown>
             <type>Basic</type>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <data>
             <DarknightStrike>
                 <attack_damage_ratio>0.80</attack_damage_ratio>
@@ -312,7 +312,7 @@
         </skill>
         <skill>
             <cooldown>6</cooldown>
-            <target>SingleSelf</target>
+            <select>SingleSelf</select>
             <type>Active</type>
             <data>
             <EyeForAnEye>
@@ -330,7 +330,7 @@
         </skill>
         <skill>
             <cooldown>5</cooldown>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <type>Active</type>
             <data>
             <DarknightArbitrament>
@@ -364,7 +364,7 @@
         <damage_reflection>0</damage_reflection>
         <skill>
             <cooldown>0</cooldown>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <type>Basic</type>
             <data>
             <Generic>
@@ -377,7 +377,7 @@
         </skill>
         <skill>
             <cooldown>4</cooldown>
-            <target>AllEnemies</target>
+            <select>AllEnemies</select>
             <type>Active</type>
             <data>
             <BurstingKnowledge>
@@ -395,7 +395,7 @@
         </skill>
         <skill>
             <cooldown>5</cooldown>
-            <target>AllEnemies</target>
+            <select>AllEnemies</select>
             <type>Active</type>
             <data>
             <Generic>
@@ -429,7 +429,7 @@
         <damage_reflection>0</damage_reflection>
         <skill>
             <cooldown>0</cooldown>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <type>Basic</type>
             <data>
                 <FishWaterball>
@@ -440,7 +440,7 @@
         </skill>
         <skill>
             <cooldown>4</cooldown>
-            <target>AllAllies</target>
+            <select>AllAllies</select>
             <type>Active</type>
             <data>
                 <CleanOcean>
@@ -463,7 +463,7 @@
         </skill>
         <skill>
             <type>Active</type>
-            <target>AllAllies</target>
+            <select>AllAllies</select>
             <cooldown>4</cooldown>
             <data>
                 <FishDive>
@@ -495,7 +495,7 @@
         <damage_reflection>0</damage_reflection>
         <skill>
             <cooldown>0</cooldown>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <type>Basic</type>
             <data>
             <Generic>
@@ -508,7 +508,7 @@
         <skill>
             <cooldown>3</cooldown>
             <type>Active</type>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <data>
             <Generic>
                 <name>BladeStriker</name>
@@ -528,7 +528,7 @@
         <skill>
             <cooldown>4</cooldown>
             <type>Active</type>
-            <target>AllEnemies</target>
+            <select>AllEnemies</select>
             <data>
             <Generic>
                 <name>BladeDance</name>
@@ -568,7 +568,7 @@
         <skill>
             <cooldown>0</cooldown>
             <type>Basic</type>
-            <target>SingleEnemy</target>
+            <select>SingleEnemy</select>
             <data>
             <SpiritCall>
                 <attack_damage_ratio>1.8</attack_damage_ratio>
@@ -582,7 +582,7 @@
         <skill>
             <cooldown>3</cooldown>
             <type>Active</type>
-            <target>AllAllies</target>
+            <select>AllAllies</select>
             <data>
             <SpiritFountain>
                 <heal_turns>2</heal_turns>
@@ -600,7 +600,7 @@
         <skill>
             <cooldown>4</cooldown>
             <type>Active</type>
-            <target>AllEnemies</target>
+            <select>AllEnemies</select>
             <data>
             <Detach>
                 <attack_damage_ratio>1.6</attack_damage_ratio>
@@ -637,7 +637,7 @@
         <skill>
             <cooldown>0</cooldown>
             <type>Basic</type>
-            <target>AllEnemies</target>
+            <select>AllEnemies</select>
             <data>
             <Generic>
                 <name>SoulWave</name>
@@ -649,7 +649,7 @@
         <skill>
             <cooldown>3</cooldown>
             <type>Active</type>
-            <target>AllAllies</target>
+            <select>AllAllies</select>
             <data>
                 <SoulSurge>
                     <toxic_swamp_turns>3</toxic_swamp_turns>
@@ -672,7 +672,7 @@
         <skill>
             <cooldown>3</cooldown>
             <type>Active</type>
-            <target>AllEnemies</target>
+            <select>AllEnemies</select>
             <data>
                 <SoulSeal>
                     <attack_damage_ratio>4.0</attack_damage_ratio>
@@ -684,5 +684,75 @@
             </data>
         </skill>
     </hero>
-
+    <hero>
+        <id>11</id>
+        <name>Maya</name>
+        <rarity>Epic</rarity>
+        <mark>Blue</mark>
+        <class>Support</class>
+        <faction>HolyLightParliament</faction>
+        <health>65124</health>
+        <attack>7017</attack>
+        <defense>5715</defense>
+        <speed>1083</speed>
+        <crit_rate>0.100</crit_rate>
+        <crit_damage>1.500</crit_damage>
+        <effect_hit>0.020</effect_hit>
+        <effect_resistance>0.000</effect_resistance>
+        <mastery>0.000</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0.00</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <skill>
+            <cooldown>0</cooldown>
+            <type>Basic</type>
+            <select>SingleEnemy</select>
+            <data>
+            <Generic>
+                <name>LightOfHealing</name>
+                <subskill target="SingleEnemy" type="Damage" ratio="1.2" scale="AttackDamage"  />
+                <subskill target="LowestHealthAlly" type="Restore" ratio="0.05" scale="TargetMaxHealth"/>
+            </Generic>
+            </data>
+        </skill>
+        <skill>
+            <cooldown>3</cooldown>
+            <type>Active</type>
+            <select>SingleAlly</select>
+            <data>
+                <LightOfPurifying>
+                    <max_hp_restore_ratio>0.15</max_hp_restore_ratio>
+                    <heal_allies>2</heal_allies>
+                    <heal_turns>2</heal_turns>
+                    <cleanse_dot_layers>3</cleanse_dot_layers>
+                </LightOfPurifying>
+            </data>
+        </skill>
+        <skill>
+            <type>Passive</type>
+            <data>
+                <ForceOfMercy>
+                    <max_hp_restore_ratio>0.018</max_hp_restore_ratio>
+                    <healing_effect>0.30</healing_effect>
+                </ForceOfMercy>
+            </data>
+        </skill>
+        <skill>
+            <cooldown>4</cooldown>
+            <type>Active</type>
+            <select>AllAllies</select>
+            <data>
+                <SacredLight>
+                    <max_hp_restore_ratio>0.095</max_hp_restore_ratio>
+                    <loose_hp_ratio>0.35</loose_hp_ratio>
+                    <consolidation_turns>2</consolidation_turns>
+                    <shield_turns>2</shield_turns>
+                    <shield_max_hp_ratio>0.15</shield_max_hp_ratio>
+                    <block_debuff_turns>1</block_debuff_turns>
+                </SacredLight>
+            </data>
+        </skill>
+    </hero>
 </heroes>

@@ -61,7 +61,8 @@ pub enum Effect {
     CounterAttack,
     DamageImmunity,
     ControlImmunity, // Needs implementation
-    //AttrbiuteBuff
+    //AttributeBuff
+    ConsolidationI,
     ConsolidationII,
     //Unique
     ScarletSakura,
@@ -72,6 +73,7 @@ pub enum Effect {
 
     // Skill
     ToxicSwamp,
+    ForceOfMercy,
 
     //Faction
     FactionHiddenWaveAttack, // Counter for faction hidden wave

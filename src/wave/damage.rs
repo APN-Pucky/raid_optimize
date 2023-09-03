@@ -28,7 +28,6 @@ impl<const LEN:usize> Wave<'_,LEN> {
             let mut p = self.get_piercing(actor,skill);
             indent!({
                 if crit {
-
                     self.add_stat(actor,Stat::CriticalStrikes, 1.0);
                     self.add_stat(target,Stat::CriticalStriked, 1.0);
                     let crit = self.get_crit_damage(actor);
@@ -90,6 +89,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         if self.health[actor] < damage {
             self.add_stat(actor,Stat::HealthLost, self.health[actor]);
             self.health[actor] = 0.0;
+            self.on_fatal_damage_maya(actor);
         }
         else {
             self.add_stat(actor,Stat::HealthLost, damage);
@@ -106,8 +106,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 return;
             }
             let mut damage = damage;
+            if self.has_effect(target, Effect::ConsolidationI) {
+                    let xfact = 0.80;
+                    damage = damage * xfact;
+                    debug!("{} has ConsolidationII -> damage * {}", self.name(target), xfact);
+            }
             if self.has_effect(target, Effect::ConsolidationII) {
-                    let xfact = 0.40;
+                    let xfact = 0.60;
                     damage = damage * xfact;
                     debug!("{} has ConsolidationII -> damage * {}", self.name(target), xfact);
             }
@@ -211,6 +216,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn on_damage_dealt(&mut self, actor:InstanceIndex, target:InstanceIndex,dmg: f32,skill:&Skill,reflect : bool, leech : bool, crit:bool) {
         self.on_damage_dealt_alahan(actor,target,dmg,skill);
+        self.on_damage_dealt_maya(actor,target,dmg,skill);
         if leech {
             self.leech(actor,target,dmg,crit);
         }

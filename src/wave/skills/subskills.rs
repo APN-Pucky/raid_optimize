@@ -19,6 +19,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
             Scale::MaxHealth => {
                 val= wave.get_max_health(actor) * subskill.ratio;
             },
+            Scale::TargetMaxHealth => {
+                val= wave.get_max_health(target) * subskill.ratio;
+            },
             Scale::None => {},
         }
         match subskill.effect {
@@ -52,6 +55,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
             Target:: None => {
                 targets = vec![];
             },
+            Target::LowestHealthAlly => {
+                targets = vec![wave.get_lowest_health_ally(actor)];
+            }
         } 
         match subskill.typ {
             Type::Damage => {
