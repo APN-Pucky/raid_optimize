@@ -1,4 +1,4 @@
-use crate::{data::{skill::{Skill, get_cooldown, is_basic_attack, SkillData, is_passive}, faction::Faction, effect::Effect}, indent, debug};
+use crate::{data::{skill::{Skill, get_cooldown, is_basic_attack, SkillData, is_passive, is_reducable}, faction::Faction, effect::Effect}, indent, debug};
 
 use super::{InstanceIndex, Wave};
 
@@ -42,6 +42,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
  
     }
 
+
     pub fn get_skill_index(&self,actor: InstanceIndex, skill: &Skill) -> SkillIndex{
         self.get_hero(actor).skills.iter().position(|s| s == skill).unwrap()
     }
@@ -51,9 +52,19 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
     
-    pub fn reduce_cooldowns(&mut self,actor: InstanceIndex) {
+    pub fn turn_reduce_cooldowns(&mut self,actor: InstanceIndex) {
         debug!("Reducing cooldowns for {} ({}):", self.name(actor), self.cooldowns[actor].len());
         self.cooldowns[actor].iter_mut().for_each(|c| *c = c.saturating_sub(1));
+        indent!({
+            for (i,c) in self.cooldowns[actor].iter().enumerate() {
+                debug!("{}: {}", self.get_skill(actor,i), c);
+            }
+        })
+    }
+
+    pub fn reduce_cooldowns(&mut self,actor: InstanceIndex) {
+        debug!("Reducing cooldowns for {} ({}):", self.name(actor), self.cooldowns[actor].len());
+        self.cooldowns[actor].iter_mut().filter(|i| is_reducable(&self.heroes[actor].skills[**i as SkillIndex] )).for_each(|c| *c = c.saturating_sub(1));
         indent!({
             for (i,c) in self.cooldowns[actor].iter().enumerate() {
                 debug!("{}: {}", self.get_skill(actor,i), c);

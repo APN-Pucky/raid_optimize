@@ -49,4 +49,15 @@ impl<const LEN:usize> Wave<'_,LEN> {
             }
         })
     }
+
+    pub fn restore_to_highest_ally_health_percentage(&mut self, actor:InstanceIndex) {
+        debug!("{} restores own team to highest ally health percentage", self.name(actor));
+        indent!({
+            let a = self.get_highest_health_percentage_ally(actor);
+            let hp = self.health[a] / self.get_max_health(a);
+            for a in self.get_ally_indices(actor) {
+                self.heal(actor,a, self.get_max_health(a)* hp - self.health[a]);
+            }
+        })
+    }
 }

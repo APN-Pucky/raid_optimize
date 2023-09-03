@@ -15,6 +15,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         //    };
         debug!("before {} acts", self.name(actor));
         indent!({
+            self.on_turn_start_marville(actor);
             // apply effects 
             // apply heal
             self.dot_heal(actor);
@@ -23,7 +24,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             // apply HP burning
             self.dot_hp_burning(actor);
 
-            self.reduce_cooldowns(actor);
+            self.turn_reduce_cooldowns(actor);
         })
     }
 

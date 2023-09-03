@@ -1,5 +1,7 @@
 use enum_map::Enum;
 
+
+
 #[derive(Debug,Enum, PartialEq, Eq ,strum_macros::Display,Copy,Clone,Deserialize, )]
 pub enum Effect {
     WetI,
@@ -53,14 +55,18 @@ pub enum Effect {
     Poison,
     Burn,
     //Buff
+    BlockRemoval,
     Stealth,
     CounterAttack,
     DamageImmunity,
     ControlImmunity, // Needs implementation
+    //AttrbiuteBuff
+    ConsolidationII,
     //Unique
     ScarletSakura,
     Arcane,
     Blade,
+    FishShoal,
 
     //Faction
     FactionHiddenWaveAttack, // Counter for faction hidden wave
@@ -76,6 +82,7 @@ pub fn get_max(effect:Effect) -> u32 {
         Effect::HPBurning => 5,
         Effect::FactionHiddenWaveAttack => 2,
         Effect::FactionHiddenWaveSkill => 2,
+        Effect::FishShoal => 3,
         _ => 999999
     }
 }

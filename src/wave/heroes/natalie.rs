@@ -22,7 +22,6 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
                 self.inflict_single(attacker,defender,Effect::Bleed,bleed_chance,bleed_turns);
             }
             _ => {}
-
         }
     }
 }

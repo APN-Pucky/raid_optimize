@@ -19,10 +19,11 @@ pub mod faction;
 pub mod print;
 pub mod cleanse;
 pub mod heroes;
+pub mod remove;
+pub mod refresh;
 
 use crate::data::hero::Hero;
 use crate::data::effect::Effect;
-use crate::data::effects::Effects;
 use crate::data::faction::Faction;
 use crate::data::instance::Instance;
 use crate::data::passive::Passive;
@@ -30,6 +31,7 @@ use crate::data::skill::{Skill, get_targets, is_passive};
 use crate::player::Player;
 use crate::{debug, indent, info};
 
+use self::effect::Effects;
 use self::stat::{Stat, Statistics};
 
 

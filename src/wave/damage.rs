@@ -106,6 +106,29 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 return;
             }
             let mut damage = damage;
+            if self.has_effect(target, Effect::ConsolidationII) {
+                    let xfact = 0.40;
+                    damage = damage * xfact;
+                    debug!("{} has ConsolidationII -> damage * {}", self.name(target), xfact);
+            }
+            if self.has_effect(target, Effect::FishShoal) {
+                    // find hero with FishGuardian skill
+                    let mut red = 0.0;
+                    for i in self.get_ally_indices(target) {
+                        match self.heroes[i].skills[..] {
+                            [Skill {data : SkillData::FishGuardian {max_hp_restore_ratio , damage_reduction,.. },..},..] => {
+                                red = damage_reduction;
+                                self.heal(target,i,self.get_max_health(target)* max_hp_restore_ratio);
+                                self.effects[i].remove_layer(Effect::FishShoal);
+                                break;
+                            },
+                            _ => {}
+                        }
+                    }
+                    let xfact = 1.0-red;
+                    damage = damage * xfact;
+                    debug!("{} has FishShoal -> damage * {}", self.name(target), xfact);
+            }
             if self.get_faction(target) == Faction::DoomLegion {
                 let n = self.bonds_counter[target] as f32;
                 let xfact = self.get_bond(target,Faction::DoomLegion);

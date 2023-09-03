@@ -406,7 +406,6 @@
             </data>
         </skill>
     </hero>
-    <!--
     <hero>
         <id>7</id>
         <name>Marville</name>
@@ -429,9 +428,50 @@
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
         <skill>
+            <cooldown>0</cooldown>
+            <target>SingleEnemy</target>
+            <type>Basic</type>
+            <data>
+                <FishWaterball>
+                    <attack_damage_ratio>2.8</attack_damage_ratio>
+                    <act_chance>0.15</act_chance>
+                </FishWaterball>
+            </data>
+        </skill>
+        <skill>
+            <cooldown>4</cooldown>
+            <target>AllAllies</target>
+            <type>Active</type>
+            <data>
+                <CleanOcean>
+                    <restore_max_hp_ratio>0.14</restore_max_hp_ratio>
+                    <cleanse_dot_layers>5</cleanse_dot_layers>
+                    <block_removal_turns>2</block_removal_turns>
+                    <consolidation_turns>2</consolidation_turns>
+                </CleanOcean>
+            </data>
+        </skill>
+        <skill>
+            <type>Passive</type>
+            <data>
+                <FishGuardian>
+                    <restore_fish_shoal>3</restore_fish_shoal>
+                    <max_hp_restore_ratio>0.48</max_hp_restore_ratio>
+                    <damage_reduction>0.10 </damage_reduction>
+                </FishGuardian>
+            </data>
+        </skill>
+        <skill>
+            <type>Active</type>
+            <target>AllAllies</target>
+            <cooldown>4</cooldown>
+            <data>
+                <FishDive>
+                    <restore_fish_shoal>3</restore_fish_shoal>
+                </FishDive>
+            </data>
         </skill>
     </hero>
-    -->
     <hero>
         <id>8</id>
         <name>Margarita</name>

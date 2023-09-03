@@ -156,6 +156,9 @@ pub enum SkillData {
         reduce_speed_turns : u32,
         increase_speed_turns : u32,
     },
+    Resplendence {
+        turn_meter_ratio: f32,
+    },
     FissionOfLife {
         restore_max_hp_ratio : f32,
         heal_turns : u32,
@@ -203,6 +206,10 @@ pub enum SkillData {
         heal_turns: u32,
         cleanse_attribute_debuffs: bool,
     },
+    Commendation {
+        max_hp_restore_ratio: f32,
+        attack_up_turns : u32,
+    },
     Detach {
         attack_damage_ratio : f32,
         stun_chance: f32,
@@ -211,11 +218,26 @@ pub enum SkillData {
         shield_max_hp_ratio: f32,
         shield_turns: u32,
     },
-    //Alahan
-    Commendation {
-        max_hp_restore_ratio: f32,
-        attack_up_turns : u32,
+    //Marville
+    FishWaterball {
+        attack_damage_ratio : f32,
+        act_chance: f32,
     },
+    CleanOcean {
+        restore_max_hp_ratio : f32,
+        cleanse_dot_layers : u32,
+        consolidation_turns : u32,
+        block_removal_turns  : u32,
+    },
+    FishGuardian {
+        restore_fish_shoal: u32,
+        max_hp_restore_ratio : f32,
+        damage_reduction : f32
+    },
+    FishDive {
+        restore_fish_shoal: u32,
+    },
+
     //Natalie
     BloodthirstyDesire,
     //Maya
@@ -223,9 +245,7 @@ pub enum SkillData {
     //Seth
     DeepSeaBloodline,
     //Space
-    Resplendence {
-        turn_meter_ratio: f32,
-    },
+
     //Tifya
     SharpInstinct,
     //Hazier
@@ -292,6 +312,13 @@ pub fn get_generic_targets(subskills : &Vec<SubSkill> ) -> Target {
 
 pub fn is_passive(skill : &Skill) -> bool {
     return skill.typ == SkillType::Passive;
+}
+
+pub fn is_reducable(skill : &Skill) -> bool {
+    match skill {
+        Skill { data: SkillData::FishDive {..},..} => false,
+        _ => true,
+    }
 }
 
 pub fn is_basic_attack(skill :&Skill) -> bool {

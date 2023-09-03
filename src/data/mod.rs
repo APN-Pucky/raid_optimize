@@ -4,7 +4,6 @@ pub mod instance;
 pub mod skill;
 pub mod effect;
 pub mod subskill;
-pub mod effects;
 pub mod passive;
 pub mod class;
 pub mod faction;

@@ -30,11 +30,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
 
             },
             SkillData::SpiritFountain { heal_turns, cleanse_attribute_debuffs } => {
-                let a = self.get_highest_health_percentage_ally(actor);
-                let hp = self.health[a] / self.get_max_health(a);
-                for a in self.get_ally_indices(actor) {
-                    self.heal(actor,a, self.get_max_health(a)* hp - self.health[a]);
-                }
+                self.restore_to_highest_ally_health_percentage(actor);
                 if cleanse_attribute_debuffs {
                     self.cleanse_team(actor, &is_attribute_debuff, 999)
                 }
