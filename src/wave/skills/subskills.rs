@@ -66,9 +66,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
                     wave.inflict_single(actor,target,effect,chance,turns);
                 }
             },
-            Type::RemoveBuffs => {
+            Type::RemoveAllBuffs => {
                 for target in targets {
-                    wave.remove_buffs_single(actor,target);
+                    wave.remove_all_buffs_single(actor,target);
                 }
             }
         }

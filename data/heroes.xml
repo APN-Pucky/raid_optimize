@@ -334,7 +334,7 @@
                 <name>IntelectualPrison</name>
                 <cooldown>5</cooldown>
                 <subskill target="AllEnemies" type="Damage" ratio="2.0" scale="AttackDamage" effect="SpeedDownII" chance="0.5" turns="2" />
-                <subskill target="AllEnemies" type="RemoveBuffs" />
+                <subskill target="AllEnemies" type="RemoveAllBuffs" />
             </Generic>
         </skill>
     </hero>
@@ -420,6 +420,59 @@
                 <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
                 <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
             </Generic>
+        </skill>
+    </hero>
+    <hero>
+        <id>9</id>
+        <name>Alahan</name>
+        <rarity>Legendary</rarity>
+        <mark>Force</mark>
+        <class>Attack</class>
+        <faction>SunsetSages</faction>
+        <health>76482</health>
+        <attack>6998</attack>
+        <defense>5661</defense>
+        <speed>1084</speed>
+        <crit_rate>0.072</crit_rate>
+        <crit_damage>1.500</crit_damage>
+        <effect_hit>0.020</effect_hit>
+        <effect_resistance>0.000</effect_resistance>
+        <mastery>0.021</mastery>
+        <healing_effect>0.060</healing_effect>
+        <leech>0.00</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <passive>
+            <Commendation max_hp_restore_ratio="0.10"  />
+        </passive>
+        <skill>
+            <SpiritCall>
+                <cooldown>0</cooldown>
+                <attack_damage_ratio>1.8</attack_damage_ratio>
+                <restore_max_hp_damage_ratio>0.6</restore_max_hp_damage_ratio>
+                <remove_all_buffs>true</remove_all_buffs>
+                <increase_hp>true</increase_hp>
+                <heal_lowest_ally>true</heal_lowest_ally>
+            </SpiritCall>
+        </skill>
+        <skill>
+            <SpiritFountain>
+                <cooldown>3</cooldown>
+                <heal_turns>2</heal_turns>
+                <cleanse_attribute_debuffs>true</cleanse_attribute_debuffs>
+            </SpiritFountain>
+        </skill>
+        <skill>
+            <Detach>
+                <cooldown>4</cooldown>
+                <attack_damage_ratio>1.6</attack_damage_ratio>
+                <stun_chance>0.4</stun_chance>
+                <stun_turns>1</stun_turns>
+                <steal_shield>true</steal_shield>
+                <shield_max_hp_ratio>0.2</shield_max_hp_ratio>
+                <shield_turns>2</shield_turns>
+            </Detach>
         </skill>
     </hero>
 </heroes>

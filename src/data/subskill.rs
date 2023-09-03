@@ -72,7 +72,7 @@ pub enum Type {
     Damage,
     Restore,
     Inflict,
-    RemoveBuffs,
+    RemoveAllBuffs,
 }
 
 #[derive(Deserialize, Debug, Clone, Copy, PartialEq)]

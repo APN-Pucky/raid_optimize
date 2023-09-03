@@ -34,7 +34,17 @@ impl<const LEN:usize> Wave<'_,LEN> {
         }
     }
 
-    pub fn remove_buffs_single(&mut self, actor : InstanceIndex, target : InstanceIndex) {
+    pub fn get_number_of_buff_layers(&self, actor : InstanceIndex) -> u32 {
+        let mut n = 0;
+        for (k,v) in self.effects[actor].em.iter() {
+            if is_buff(k) {
+                n += v.len() as u32;
+            }
+        }
+        n
+    }
+
+    pub fn remove_all_buffs_single(&mut self, actor : InstanceIndex, target : InstanceIndex) {
         for (k,v) in self.effects[target].em.iter_mut() {
             if is_buff(k) {
                 // empty v

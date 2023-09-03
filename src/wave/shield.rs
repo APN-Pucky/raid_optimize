@@ -46,6 +46,17 @@ impl<const LEN:usize> Wave<'_,LEN> {
         }
     }
 
+    pub fn clear_shield(&mut self, actor: InstanceIndex,target : InstanceIndex) {
+        debug!("{} clears shield from {}", self.name(actor), self.name(target));
+        self.shields[target].clear();
+    }
+
+    pub fn steal_shield(&mut self, actor: InstanceIndex,target : InstanceIndex) {
+        debug!("{} steals shield from {}", self.name(actor), self.name(target));
+        self.shields[actor].extend(self.shields[target].clone());
+        self.clear_shield(actor, target);
+    }
+
     pub fn shield_subtract(&mut self,actor : InstanceIndex, var:f32) {
         self.add_stat(actor,Stat::ShieldBlocked, var);
         let shield = &mut self.shields[actor];
@@ -72,11 +83,11 @@ impl<const LEN:usize> Wave<'_,LEN> {
     }
 
 
-    pub fn shield_loose(&mut self,actor : InstanceIndex, damage: f32) -> f32 {
-        let current_shield = self.get_shield(actor);
+    pub fn shield_loose(&mut self,actor : InstanceIndex,target : InstanceIndex, damage: f32) -> f32 {
+        let current_shield = self.get_shield(target);
         if current_shield > damage {
             debug!("{} looses {} shield", self.name(actor), damage);
-            self.shield_subtract(actor,damage);
+            self.shield_subtract(target,damage);
             0.0
         }
         else if current_shield == 0.0 {
@@ -84,8 +95,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
         }
         else { // damage > shield
             debug!("{} looses all {} shield", self.name(actor), current_shield);
-            self.add_stat(actor,Stat::ShieldBlocked, current_shield);
-            self.shields[actor] = Vec::new();
+            self.add_stat(target,Stat::ShieldBlocked, current_shield);
+            self.shields[target] = Vec::new();
+            self.on_destroys_shield_alahan(actor,target);
             damage - current_shield
         }
     }

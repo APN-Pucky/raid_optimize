@@ -64,7 +64,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             def -= pierce;
              
             if attack -def > 0. {
-                self.damage(actor,target, (attack - def),true,true,crit);
+                self.damage(actor,target, (attack - def),skill,true,true,crit);
             }
             else {
                 self.add_stat(actor,Stat::Blocked, attack);
@@ -77,13 +77,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn damage_hp_burning(&mut self,actor : InstanceIndex,target:InstanceIndex, dmg: f32) {
         debug!("{} takes {} damage from hp_burning from {}", self.name(target), dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,dmg,false,false,false);
+        self.damage(actor,target,dmg,&Skill::None,false,false,false);
     }
 
     pub fn damage_bleed(&mut self,actor : InstanceIndex,target:InstanceIndex, bleed_dmg: f32) {
         debug!("{} takes {} damage from bleed from {}", self.name(target), bleed_dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,bleed_dmg,false,false,false);
+        self.damage(actor,target,bleed_dmg,&Skill::None,false,false,false);
     }
 
     pub fn loose_health(&mut self, actor:InstanceIndex, damage: f32) {
@@ -98,7 +98,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         debug!("{} looses {} health to {}",self.name(actor), damage, self.health[actor]);
     }
 
-    pub fn damage(&mut self, actor:InstanceIndex, target:InstanceIndex,damage: f32, reflect:bool,leech: bool,crit:bool) {
+    pub fn damage(&mut self, actor:InstanceIndex, target:InstanceIndex,damage: f32, skill : &Skill, reflect:bool,leech: bool,crit:bool) {
         debug!("{} takes {} damage from {}", self.name(target), damage,self.name(actor));
         indent!({
             if self.has_effect(target, Effect::DamageImmunity) {
@@ -179,18 +179,24 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
             self.add_stat(actor,Stat::DamageTaken, damage);
             self.add_stat(target,Stat::DamageDone, damage);
-            let dmg = self.shield_loose(target,damage);
+            let dmg = self.shield_loose(actor,target,damage);
             self.loose_health(target,dmg);
-            if leech {
-                self.leech(actor,target,dmg,crit);
-            }
-            if reflect {
-                self.reflect_damage(target,actor,dmg * self.get_damage_reflect(target));
-            }
-            if self.has_effect(target,Effect::CounterAttack) {
-                self.attack_single(target,actor,self.get_attack_damage(target), &Skill::BasicAttack { cooldown: 0, basic_attack: true, attack_damage_ratio: 1.0 });
-            }
+            self.on_damage_dealt(actor,target,dmg,skill,reflect,leech,crit);
+            
         })
+    }
+
+    pub fn on_damage_dealt(&mut self, actor:InstanceIndex, target:InstanceIndex,dmg: f32,skill:&Skill,reflect : bool, leech : bool, crit:bool) {
+        self.on_damage_dealt_alahan(actor,target,dmg,skill);
+        if leech {
+            self.leech(actor,target,dmg,crit);
+        }
+        if reflect {
+            self.reflect_damage(target,actor,dmg * self.get_damage_reflect(target));
+        }
+        if self.has_effect(target,Effect::CounterAttack) {
+            self.attack_single(target,actor,self.get_attack_damage(target), &Skill::BasicAttack { cooldown: 0, basic_attack: true, attack_damage_ratio: 1.0 });
+        }
     }
 
     pub fn leech(&mut self, actor:InstanceIndex, target:InstanceIndex,dmg: f32,crit:bool) {
@@ -222,7 +228,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             indent!({
                 self.add_stat(actor,Stat::DamageReflected, damage);
                 self.add_stat(target,Stat::DamageReflecteded, damage);
-                self.damage(actor,target,damage,false,false,false);
+                self.damage(actor,target,damage,&Skill::None,false,false,false);
             })
         }
         if damage < 0. {

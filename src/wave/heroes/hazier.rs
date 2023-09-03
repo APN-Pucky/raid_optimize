@@ -23,6 +23,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
                 // copy buffs from defender to self
                 debug!("Copying buffs from {:?} to {:?}",self.name(defender),self.name(actor));
                 indent!({
+                    //cloned loop to allow copying of buffs from self to self, which should never happen
                     for effect in self.effects[defender].em.iter().map(|(effect,_)| effect).filter(|effect| is_buff(*effect)).collect::<Vec<_>>() {
                         let cloned_vec: Vec<_> = self.effects[defender].em[effect].iter().cloned().collect();
                         self.effects[actor].em[effect].extend(cloned_vec);

@@ -88,6 +88,8 @@ impl<const LEN:usize> Wave<'_,LEN> {
         self.execute_skill_natalie(skill, actor, target);
         self.execute_skill_hazier(skill, actor, target);
         self.execute_skill_geeliman(skill, actor, target);
+        //self.execute_skill_margarita(skill, actor, target);
+        self.execute_skill_alahan(skill, actor, target);
 
 
         self.cooldown_s(actor,skill);

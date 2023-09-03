@@ -21,30 +21,51 @@ fn false_default() -> bool{
 fn true_default() -> bool{
     true
 }
+#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Clone )]
+pub enum Type {
+    BasicAttack,
+    PassiveSkill,
+    ActiveSkill,
+}
 
+pub fn basic_default() -> Type {
+    Type::BasicAttack
+}
+
+pub fn passive_default() -> Type {
+    Type::PassiveSkill
+}
+
+pub fn active_default() -> Type {
+    Type::ActiveSkill
+}
 
 
 #[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Clone )]
 pub enum Skill {
+    None,
+    // Stabilized
+    // Tested
+    // Prototyped
     Generic {
         name : String,
         cooldown: u32,
-        #[serde(default="false_default")]
-        basic_attack : bool,
+        #[serde(default="basic_default")]
+        typ: Type,
         #[serde(rename="subskill")]
         subskills : Vec<SubSkill>,
     },
     BasicAttack {
         cooldown: u32,
-        #[serde(default="true_default")]
-        basic_attack : bool,
+        #[serde(default="basic_default")]
+        typ: Type,
         attack_damage_ratio : f32,
     },
     //Liz
     ScorchedSoul {
         cooldown: u32,
-        #[serde(default="true_default")]
-        basic_attack : bool,
+        #[serde(default="basic_default")]
+        typ: Type,
         attack_damage_ratio : f32,
         hp_burning_chance: f32,
         hp_burning_turns: u32
@@ -178,7 +199,7 @@ pub enum Skill {
     },
     DarknightArbitrament {
         cooldown: u32,
-        #[serde(default="true_default")]
+        #[serde(default="false_default")]
         basic_attack : bool,
         attack_damage_ratio : f32,
         crit_rate_turns : u32,
@@ -187,12 +208,42 @@ pub enum Skill {
     //Geeliman
     BurstingKnowledge {
         cooldown: u32,
-        #[serde(default="true_default")]
+        #[serde(default="false_default")]
         basic_attack : bool,
         attack_damage_ratio : f32,
         wisdom_runestones : u32,
         piercing_rate: f32,
     },
+    //Alahan
+    SpiritCall {
+        cooldown: u32,
+        #[serde(default="true_default")]
+        basic_attack : bool,
+        attack_damage_ratio: f32,
+        restore_hp_damage_ratio: f32,
+        remove_all_buffs: bool,
+        heal_lowest_ally : bool,
+        increase_hp : bool,
+    },
+    SpiritFountain {
+        cooldown: u32,
+        #[serde(default="false_default")]
+        basic_attack : bool,
+        heal_turns: u32,
+        cleanse_attrubute_debuffs: bool,
+    },
+    Detach {
+        cooldown: u32,
+        #[serde(default="false_default")]
+        basic_attack : bool,
+        attack_damage_ratio : f32,
+        stun_chance: f32,
+        stun_turns: u32,
+        steal_shield: bool,
+        shield_max_hp_ratio: f32,
+        shield_turns: u32,
+    },
+
 }
 
 pub fn get_targets<const LEN:usize>(skill : &Skill, actor :InstanceIndex, wave :&Wave<LEN>) -> Option<Vec<InstanceIndex>> {

@@ -27,6 +27,11 @@ pub enum Passive {
         blades : u32,
         crit_damage_turns : u32,
         attack_damage_ratio : f32,
+    },
+    //Alahan
+    Commendation {
+        max_hp_ratio: f32,
+        attack_up_turns : u32,
     }
     //...
 }

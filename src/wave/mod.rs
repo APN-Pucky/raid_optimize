@@ -161,6 +161,26 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     }
 
+    pub fn get_lowest_health_ally(&self, actor: InstanceIndex) -> InstanceIndex {
+        let mut lowest = self.get_ally_indices(actor)[0];
+        for i in self.get_ally_indices(actor) {
+            if self.is_alive(i) && self.health[i] < self.health[lowest] {
+                lowest = i;
+            }
+        }
+        lowest
+    }
+
+    pub fn get_highest_health_percentage_ally(&self,actor:InstanceIndex) -> InstanceIndex {
+        let mut highest = self.get_ally_indices(actor)[0];
+        for i in self.get_ally_indices(actor) {
+            if self.is_alive(i) && self.health[i]/self.get_max_health(i) > self.health[highest]/self.get_max_health(highest) {
+                highest = i;
+            }
+        }
+        highest
+    }
+
 
     pub fn get_player_of_instance(&self, ii: InstanceIndex) -> &dyn Player<LEN> {
         &*self.players[self.teams[ii]]
