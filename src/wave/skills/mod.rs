@@ -1,4 +1,4 @@
-use crate::{data::{skill::{Skill, get_cooldown, is_basic_attack}, faction::Faction, effect::Effect}, indent, debug};
+use crate::{data::{skill::{Skill, get_cooldown, is_basic_attack, SkillData, is_passive}, faction::Faction, effect::Effect}, indent, debug};
 
 use super::{InstanceIndex, Wave};
 
@@ -11,7 +11,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
     pub fn get_active_skills(&self, actor: InstanceIndex) -> Vec<&'a Skill> {
         self.heroes[actor].skills.iter()
             .zip(self.cooldowns[actor].iter())
-            .filter_map(|(s,c)| if *c == 0 {Some(s)} else {None})
+            .filter_map(|(s,c)| if *c == 0 && !is_passive(s) {Some(s)} else {None})
             .collect()
     }
 }
@@ -70,11 +70,18 @@ impl<const LEN:usize> Wave<'_,LEN> {
         self.cooldowns[actor][skill] = get_cooldown(&self.get_hero(actor).skills[skill]);
     }
 
+    pub fn is_ready(&mut self, actor: InstanceIndex,skill:SkillIndex) -> bool{
+        self.cooldowns[actor][skill] == 0
+    }
+
     pub fn execute_generic_skill(&mut self, skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
-        if let Skill::Generic{ basic_attack,cooldown, subskills ,..} = skill {
-            for ss in subskills {
-                self.execute_subskill(ss, actor, target,skill);
-            }
+        match &skill.data {
+            SkillData::Generic{ subskills ,..} => {
+                for ss in subskills {
+                    self.execute_subskill(&ss, actor, target,skill);
+                }
+            },
+            _ => {}
         }
     }
 

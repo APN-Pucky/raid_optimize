@@ -28,8 +28,8 @@ pub struct Hero {
     pub damage_reflection : f32,
     #[serde(rename="skill")]
     pub skills: Vec<Skill>,
-    #[serde(rename="passive")]
-    pub passives : Vec<Passive>,
+    //#[serde(rename="passive")]
+    //pub passives : Vec<Passive>,
 }
 
 pub fn get_hero_by_string<'a>(heroes: &'a Heroes, name: &'a str) -> Option<&'a Hero> {
@@ -86,23 +86,29 @@ mod tests {
                 <piercing>0.15</piercing>
                 <tenacity>0.15</tenacity>
                 <damage_reflection>0.15</damage_reflection>
-                <passive>
-                    <BloodthirstyDesire />
-                </passive>
                 <skill>
+                    <data>
+                        <BloodthirstyDesire />
+                    </data>
+                </skill>
+                <skill>
+                    <cooldown>3</cooldown>
+                    <data>
                     <ScorchedSoul>
-                        <cooldown>3</cooldown>
                         <attack_damage_ratio>1.0</attack_damage_ratio>
                         <hp_burning_chance>0.5</hp_burning_chance>
                         <hp_burning_turns>2</hp_burning_turns>
                     </ScorchedSoul>
+                    </data>
                 </skill>
                 <skill>
+                    <cooldown>3</cooldown>
+                    <data>
                     <Generic>
-                        <cooldown>3</cooldown>
                         <name>test</name>
                         <subskill target="SingleEnemy" type="Damage" ratio="2.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
                     </Generic>
+                    </data>
                 </skill>
             </hero>
             "#,

@@ -10,9 +10,10 @@ pub enum Target {
     AllEnemies,
     AllAllies,
     SingleSelf,
+    None,
 }
 
-pub fn get_targets<const LEN:usize>(target : Target, actor :InstanceIndex, wave :& Wave<LEN>) -> Vec<InstanceIndex> {
+pub fn get_subskill_targets<const LEN:usize>(target : Target, actor :InstanceIndex, wave :& Wave<LEN>) -> Vec<InstanceIndex> {
     match target {
         Target::Everyone => {
             // 0..LEN
@@ -33,6 +34,9 @@ pub fn get_targets<const LEN:usize>(target : Target, actor :InstanceIndex, wave 
         Target::SingleSelf => {
             vec![actor]
         },
+        Target::None => {
+            vec![]
+        }
     } 
 }
 

@@ -26,7 +26,7 @@ use crate::data::effects::Effects;
 use crate::data::faction::Faction;
 use crate::data::instance::Instance;
 use crate::data::passive::Passive;
-use crate::data::skill::{Skill, get_targets};
+use crate::data::skill::{Skill, get_targets, is_passive};
 use crate::player::Player;
 use crate::{debug, indent, info};
 
@@ -139,9 +139,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
         (0..LEN).collect::<Vec<_>>()
     }
 
-    pub fn has_passive(&self, actor:InstanceIndex, passive: Passive) -> bool {
-        self.heroes[actor].passives.iter().any(|p| *p == passive)
-    }
+    //pub fn has_passive(&self, actor:InstanceIndex, passive: Passive) -> bool {
+    //    self.heroes[actor].skills.iter().any(|p| *p == passive)
+    //}
 
     pub fn get_statistics(&self) -> Vec<EnumMap<Stat,f32>> {
         //self.allies.iter().chain(self.enemies.iter()).map(|i| i.statistics).collect()
@@ -217,6 +217,10 @@ impl<const LEN:usize> Wave<'_,LEN> {
             // get instance with highest speed
             //.reduce( |a, b| if a.get_speed() > b.get_speed() {a} else {b})
             .max_by(|a,b| self.get_speed(*a).partial_cmp(&self.get_speed(*b)).unwrap())
+    }
+
+    pub fn get_non_passive_skills(&self, actor: InstanceIndex) -> Vec<&Skill> {
+        self.heroes[actor].skills.iter().filter(|s| !is_passive(s)).collect::<Vec<_>>()
     }
 
     pub fn run(& mut self) -> Result {

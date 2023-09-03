@@ -1,5 +1,5 @@
 
-use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_targets, },  instance::Instance, faction::Faction}};
+use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_targets, SkillData, },  instance::Instance, faction::Faction}};
 
 use super::{InstanceIndex, Wave};
 
@@ -87,8 +87,8 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn get_piercing(&self, actor : InstanceIndex , skill : &Skill) -> f32 {
         let mut fact = 1.0;
         indent!({
-        match skill {
-            Skill::BurstingKnowledge { piercing_rate ,.. } =>  {
+        match skill.data {
+            SkillData::BurstingKnowledge { piercing_rate ,.. } =>  {
                 fact = fact + piercing_rate;
                 debug!("{} uses BurstingKnowledge -> piercing * {}", self.name(actor), piercing_rate)
             },

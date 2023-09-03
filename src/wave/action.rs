@@ -64,24 +64,23 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 }
             });
 
-            let skill :&Skill = self.get_player_of_instance(actor).pick_skill(self, actor, &skills);
+            let skill :&Skill = self.get_player_of_instance(actor).pick_skill(self, actor,&skills);
 
             debug!("{} chooses {:?}", self.name(actor), skill);
             indent!({
                 // get targets
-                match get_targets(&skill, actor, self) {
-                    Some(ts) => {
-                        let target : InstanceIndex = self.get_player_of_instance(actor).pick_target(self, actor, &skill, &ts);
-                        //
-                        self.pre_execute_skill(actor, target,skill );
-                        // apply skill
-                        self.execute_skill(skill, actor, target);
-                    },
-                    None => {
+                let ts = get_targets(&skill, actor, self); 
+                if !ts.is_empty() {
+                    let target : InstanceIndex = self.get_player_of_instance(actor).pick_target(self, actor, &skill, &ts);
+                    //
+                    self.pre_execute_skill(actor, target,skill );
+                    // apply skill
+                    self.execute_skill(skill, actor, target);
+                }
+                else {
                         // TODO maybe not even provide this option as active skill
                         debug!("{} has no valid targets for {}", self.fmt(actor), skill);
                         return;
-                    },
                 }
             });
             // finish

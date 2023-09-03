@@ -1,7 +1,7 @@
 use enum_map::EnumMap;
 use rand::Rng;
 
-use crate::{debug, wave::stat::Stat, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack}, effect::Effect, passive::Passive}};
+use crate::{debug, wave::stat::Stat, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack, NONE_SKILL, SkillData, BASIC_ATTACK}, effect::Effect, passive::Passive}};
 
 use super::{Wave, InstanceIndex};
 
@@ -77,13 +77,13 @@ impl<const LEN:usize> Wave<'_,LEN> {
     pub fn damage_hp_burning(&mut self,actor : InstanceIndex,target:InstanceIndex, dmg: f32) {
         debug!("{} takes {} damage from hp_burning from {}", self.name(target), dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,dmg,&Skill::None,false,false,false);
+        self.damage(actor,target,dmg,&NONE_SKILL,false,false,false);
     }
 
     pub fn damage_bleed(&mut self,actor : InstanceIndex,target:InstanceIndex, bleed_dmg: f32) {
         debug!("{} takes {} damage from bleed from {}", self.name(target), bleed_dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,bleed_dmg,&Skill::None,false,false,false);
+        self.damage(actor,target,bleed_dmg,&NONE_SKILL,false,false,false);
     }
 
     pub fn loose_health(&mut self, actor:InstanceIndex, damage: f32) {
@@ -134,9 +134,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
                     debug!("{} has {} bond with SwordHarborGuards and health < 50% -> damage * {}", self.name(target), xfact, xfact);
                 }
             }
-            for p in &self.heroes[actor].passives {
-                match p {
-                    Passive::BloodlustStrike {damage_reduction_buffs,damage_reduction_nobuffs,..} => {
+            for p in &self.heroes[actor].skills {
+                match p.data {
+                    SkillData::BloodlustStrike {damage_reduction_buffs,damage_reduction_nobuffs,..} => {
                         if self.has_buff(target) {
                             damage = damage * ( 1.0 - damage_reduction_buffs);
                         }
@@ -195,16 +195,16 @@ impl<const LEN:usize> Wave<'_,LEN> {
             self.reflect_damage(target,actor,dmg * self.get_damage_reflect(target));
         }
         if self.has_effect(target,Effect::CounterAttack) {
-            self.attack_single(target,actor,self.get_attack_damage(target), &Skill::BasicAttack { cooldown: 0, basic_attack: true, attack_damage_ratio: 1.0 });
+            self.attack_single(target,actor,self.get_attack_damage(target), &BASIC_ATTACK);
         }
     }
 
     pub fn leech(&mut self, actor:InstanceIndex, target:InstanceIndex,dmg: f32,crit:bool) {
         let mut fleech = self.get_leech(actor);
         if crit {
-            for p in &self.heroes[actor].passives {
-                match p {
-                    Passive::BloodlustStrike {leech,..} => {
+            for p in &self.heroes[actor].skills {
+                match p.data {
+                    SkillData::BloodlustStrike {leech,..} => {
                         fleech += leech;
                     }
                     _ => {}
@@ -228,7 +228,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             indent!({
                 self.add_stat(actor,Stat::DamageReflected, damage);
                 self.add_stat(target,Stat::DamageReflecteded, damage);
-                self.damage(actor,target,damage,&Skill::None,false,false,false);
+                self.damage(actor,target,damage,&NONE_SKILL,false,false,false);
             })
         }
         if damage < 0. {

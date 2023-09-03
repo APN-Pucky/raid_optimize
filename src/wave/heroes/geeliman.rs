@@ -1,12 +1,12 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::Skill, effect::Effect}};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::Effect}};
 
 
 impl<'a,const LEN:usize> Wave<'a,LEN> {
     pub fn execute_skill_geeliman(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
         let attacker = actor;
         let defender = target;
-        match skill {
-            Skill::BurstingKnowledge{ attack_damage_ratio, wisdom_runestones, cooldown, basic_attack, piercing_rate } => {
+        match skill.data {
+            SkillData::BurstingKnowledge{ attack_damage_ratio, wisdom_runestones,   piercing_rate } => {
                 // counter number of effects arcane
                 let mut n = wisdom_runestones + self.effects[actor].get(Effect::Arcane);
 

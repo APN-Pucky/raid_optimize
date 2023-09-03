@@ -49,6 +49,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
             Target::SingleSelf => {
                 targets = vec![actor];
             },
+            Target:: None => {
+                targets = vec![];
+            },
         } 
         match subskill.typ {
             Type::Damage => {

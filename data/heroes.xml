@@ -20,33 +20,42 @@
         <piercing>0</piercing>
         <tenacity>0.0</tenacity>
         <damage_reflection>0.0</damage_reflection>
-        <passive>
-            <None />
-        </passive>
         <skill>
+            <cooldown>0</cooldown>
+            <type>Basic</type>
+            <target>SingleEnemy</target>
+            <data>
             <ScytheStrike>
-                <cooldown>0</cooldown>
                 <attack_damage_ratio>1.4</attack_damage_ratio>
                 <bleed_chance>0.4</bleed_chance>
                 <bleed_turns>2</bleed_turns>
             </ScytheStrike>
+            </data>
         </skill>
         <skill>
+            <cooldown>4</cooldown>
+            <type>Active</type>
+            <target>SingleEnemy</target>
+            <data>
             <BloodthirstyScythe>
-                <cooldown>4</cooldown>
                 <attack_damage_ratio>1.4</attack_damage_ratio>
                 <bleed_chance>0.5</bleed_chance>
                 <bleed_turns>2</bleed_turns>
             </BloodthirstyScythe>
+            </data>
         </skill>
         <skill>
+            <cooldown>4</cooldown>
+            <type>Active</type>
+            <target>AllEnemies</target>
+            <data>
             <EnergyBurst>
-                <cooldown>5</cooldown>
                 <attack_damage_ratio>1.4</attack_damage_ratio>
                 <bleed_turns>2</bleed_turns>
                 <reduce_effect_resistance_chance>0.3</reduce_effect_resistance_chance>
                 <reduce_effect_resistance_turns>2</reduce_effect_resistance_turns>
             </EnergyBurst>
+            </data>
         </skill>
     </hero>
     <hero>
@@ -70,33 +79,35 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <passive>
-            <None />
-        </passive>
         <skill>
+            <cooldown>0</cooldown>
+            <data>
             <TideBigHit>
-                <cooldown>0</cooldown>
                 <max_hp_damage_ratio>0.18</max_hp_damage_ratio>
                 <suffocated_chance>0.1</suffocated_chance>
                 <suffocated_turns>1</suffocated_turns>
             </TideBigHit>
+            </data>
         </skill>
         <skill>
+            <cooldown>5</cooldown>
+            <data>
             <DeepSeaPower>
-                <cooldown>5</cooldown>
                 <max_hp_shield_ratio>0.25</max_hp_shield_ratio>
                 <shield_turns>2</shield_turns>
                 <tenacity_increase_turns>2</tenacity_increase_turns>
-
             </DeepSeaPower>
+            </data>
         </skill>
         <skill>
+            <cooldown>5</cooldown>
+            <data>
             <CrystalOfLife>
-                <cooldown>5</cooldown>
                 <max_hp_restore_ratio>0.22</max_hp_restore_ratio>
                 <ripple_turns>2</ripple_turns>
                 <attack_up_turns>2</attack_up_turns>
             </CrystalOfLife>
+            </data>
         </skill>
     </hero>
     <hero>
@@ -120,33 +131,36 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <passive>
-            <None />
-        </passive>
         <skill>
+            <cooldown>0</cooldown>
+            <data>
             <ScorchedSoul>
-                <cooldown>0</cooldown>
                 <attack_damage_ratio>1.80</attack_damage_ratio>
                 <hp_burning_chance>0.3</hp_burning_chance>
                 <hp_burning_turns>2</hp_burning_turns>
             </ScorchedSoul>
+            </data>
         </skill>
         <skill>
+            <cooldown>4</cooldown>
+            <data>
             <FireHeal>
-                <cooldown>4</cooldown>
                 <heal_attack_ratio>0.8</heal_attack_ratio>
                 <heal_max_hp_ratio>0.06</heal_max_hp_ratio>
                 <block_debuff_turns>2</block_debuff_turns>
             </FireHeal>
+            </data>
         </skill>
         <skill>
+            <cooldown>5</cooldown>
+            <data>
             <Resurrection>
-                <cooldown>5</cooldown>
                 <restore_max_hp_ratio>0.1</restore_max_hp_ratio>
                 <cleanse_dot_debuffs>3</cleanse_dot_debuffs>
                 <shield_max_hp_ratio>0.2</shield_max_hp_ratio>
                 <shield_turns>2</shield_turns>
             </Resurrection>
+            </data>
         </skill>
     </hero>
     <hero>
@@ -170,32 +184,42 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <passive>
-            <Resplendence turn_meter_ratio="0.15" />
-        </passive>
         <skill>
+            <cooldown>0</cooldown>
+            <data>
             <Tricks>
-                <cooldown>0</cooldown>
                 <attack_damage_ratio>1.60</attack_damage_ratio>
                 <turn_meter_reduction_ratio>0.15</turn_meter_reduction_ratio>
             </Tricks>
+            </data>
         </skill>
         <skill>
+            <cooldown>4</cooldown>
+            <data>
             <Nightmare>
-                <cooldown>4</cooldown>
                 <attack_damage_ratio>2.0</attack_damage_ratio>
                 <reduce_speed_chance>0.6</reduce_speed_chance>
                 <reduce_speed_turns>2</reduce_speed_turns>
                 <increase_speed_turns>2</increase_speed_turns>
             </Nightmare>
+            </data>
         </skill>
         <skill>
+            <cooldown>0</cooldown>
+            <type>Passive</type>
+            <data>
+                <Resplendence turn_meter_ratio="0.15" />
+            </data>
+        </skill>
+        <skill>
+            <cooldown>5</cooldown>
+            <data>
             <FissionOfLife>
-                <cooldown>5</cooldown>
                 <restore_max_hp_ratio>0.1</restore_max_hp_ratio>
                 <heal_turns>2</heal_turns>
                 <increase_turn_meter_ratio>0.2</increase_turn_meter_ratio>
             </FissionOfLife>
+            </data>
         </skill>
     </hero>
     <hero>
@@ -219,26 +243,40 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <passive>
-            <SharpInstinct />
-        </passive>
         <skill>
+            <cooldown>0</cooldown>
+            <target>SingleEnemy</target>
+            <type>Basic</type>
+            <data>
             <ScarletSlash>
-                <cooldown>0</cooldown>
                 <attack_damage_ratio>1.20</attack_damage_ratio>
             </ScarletSlash>
+            </data>
         </skill>
         <skill>
+            <cooldown>3</cooldown>
+            <target>AllEnemies</target>
+            <type>Active</type>
+            <data>
             <LeavesStorm>
-                <cooldown>3</cooldown>
                 <attack_damage_ratio>1.85</attack_damage_ratio>
             </LeavesStorm>
+            </data>
         </skill>
         <skill>
+            <data>
+                <SharpInstinct />
+            </data>
+        </skill>
+        <skill>
+            <cooldown>4</cooldown>
+            <target>SingleEnemy</target>
+            <type>Active</type>
+            <data>
             <ScaletMultiStrike>
-                <cooldown>4</cooldown>
                 <attack_damage_ratio>1.4</attack_damage_ratio>
             </ScaletMultiStrike>
+            </data>
         </skill>
     </hero>
     <hero>
@@ -262,30 +300,45 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <passive>
-            <BloodlustStrike leech="0.16" damage_reduction_buffs="0.18" damage_reduction_nobuffs="0.25" />
-        </passive>
         <skill>
+            <cooldown>0</cooldown>
+            <type>Basic</type>
+            <target>SingleEnemy</target>
+            <data>
             <DarknightStrike>
-                <cooldown>0</cooldown>
                 <attack_damage_ratio>0.80</attack_damage_ratio>
             </DarknightStrike>
+            </data>
         </skill>
         <skill>
+            <cooldown>6</cooldown>
+            <target>SingleSelf</target>
+            <type>Active</type>
+            <data>
             <EyeForAnEye>
-                <cooldown>6</cooldown>
                 <counterattack_turns>3</counterattack_turns>
                 <damage_immunity_turns>2</damage_immunity_turns>
                 <control_immunity_turns>2</control_immunity_turns>
             </EyeForAnEye>
+            </data>
         </skill>
         <skill>
+            <type>Passive</type>
+            <data>
+            <BloodlustStrike leech="0.16" damage_reduction_buffs="0.18" damage_reduction_nobuffs="0.25" />
+            </data>
+        </skill>
+        <skill>
+            <cooldown>5</cooldown>
+            <target>SingleEnemy</target>
+            <type>Active</type>
+            <data>
             <DarknightArbitrament>
-                <cooldown>5</cooldown>
                 <attack_damage_ratio>5.0</attack_damage_ratio>
                 <crit_rate_turns>2</crit_rate_turns>
                 <crit_damage_turns>2</crit_damage_turns>
             </DarknightArbitrament>
+            </data>
         </skill>
     </hero>
     <hero>
@@ -309,33 +362,48 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <passive>
-            <IncessantChatter />
-        </passive>
         <skill>
+            <cooldown>0</cooldown>
+            <target>SingleEnemy</target>
+            <type>Basic</type>
+            <data>
             <Generic>
                 <name>PowerOfKnowledge</name>
-                <cooldown>0</cooldown>
                 <subskill target="SingleEnemy" type="Damage" ratio="2.2" scale="AttackDamage"  />
                 <subskill target="SingleEnemy" type="Inflict" effect="BlockBuff" chance="0.6" turns="1" />
                 <subskill target="SingleSelf"  type="Inflict" effect="Arcane" turns="999"/>
             </Generic>
+            </data>
         </skill>
         <skill>
+            <cooldown>4</cooldown>
+            <target>AllEnemies</target>
+            <type>Active</type>
+            <data>
             <BurstingKnowledge>
-                <cooldown>4</cooldown>
                 <attack_damage_ratio>1.2</attack_damage_ratio>
                 <wisdom_runestones>4</wisdom_runestones>
                 <piercing_rate>0.0</piercing_rate>
             </BurstingKnowledge>
+            </data>
         </skill>
         <skill>
+            <type>Passive</type>
+            <data>
+                <IncessantChatter />
+            </data>
+        </skill>
+        <skill>
+            <cooldown>5</cooldown>
+            <target>AllEnemies</target>
+            <type>Active</type>
+            <data>
             <Generic>
                 <name>IntelectualPrison</name>
-                <cooldown>5</cooldown>
                 <subskill target="AllEnemies" type="Damage" ratio="2.0" scale="AttackDamage" effect="SpeedDownII" chance="0.5" turns="2" />
                 <subskill target="AllEnemies" type="RemoveAllBuffs" />
             </Generic>
+            </data>
         </skill>
     </hero>
     <!--
@@ -360,8 +428,6 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <passive>
-        </passive>
         <skill>
         </skill>
     </hero>
@@ -387,30 +453,45 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <passive>
-            <CounterattackCommand blades="4" crit_damage_turns="1" attack_damage_ratio="2.3" />
-        </passive>
         <skill>
+            <cooldown>0</cooldown>
+            <target>SingleEnemy</target>
+            <type>Basic</type>
+            <data>
             <Generic>
                 <name>SwordAssault</name>
-                <cooldown>0</cooldown>
                 <subskill target="SingleEnemy" type="Damage" ratio="1.4" scale="AttackDamage"  />
                 <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
             </Generic>
+            </data>
         </skill>
         <skill>
+            <cooldown>3</cooldown>
+            <type>Active</type>
+            <target>SingleEnemy</target>
+            <data>
             <Generic>
                 <name>BladeStriker</name>
-                <cooldown>3</cooldown>
                 <subskill target="SingleEnemy" type="Damage" ratio="5.4" scale="AttackDamage"  />
                 <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
                 <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
             </Generic>
+            </data>
         </skill>
         <skill>
+            <cooldown>0</cooldown>
+            <type>Passive</type>
+            <data>
+                <CounterattackCommand blades="4" crit_damage_turns="1" attack_damage_ratio="2.3" />
+            </data>
+        </skill>
+        <skill>
+            <cooldown>4</cooldown>
+            <type>Active</type>
+            <target>AllEnemies</target>
+            <data>
             <Generic>
                 <name>BladeDance</name>
-                <cooldown>4</cooldown>
                 <subskill target="AllEnemies" type="Damage" ratio="1.3" scale="AttackDamage"  />
                 <subskill target="AllEnemies" type="Damage" ratio="1.3" scale="AttackDamage"  />
                 <subskill target="AllEnemies" type="Damage" ratio="1.3" scale="AttackDamage"  />
@@ -420,6 +501,7 @@
                 <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
                 <subskill target="SingleSelf"  type="Inflict" effect="Blade" turns="999"/>
             </Generic>
+            </data>
         </skill>
     </hero>
     <hero>
@@ -443,29 +525,44 @@
         <piercing>0</piercing>
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
-        <passive>
-            <Commendation max_hp_restore_ratio="0.10"  />
-        </passive>
         <skill>
+            <cooldown>0</cooldown>
+            <type>Basic</type>
+            <target>SingleEnemy</target>
+            <data>
             <SpiritCall>
-                <cooldown>0</cooldown>
                 <attack_damage_ratio>1.8</attack_damage_ratio>
-                <restore_max_hp_damage_ratio>0.6</restore_max_hp_damage_ratio>
+                <restore_hp_damage_ratio>0.6</restore_hp_damage_ratio>
                 <remove_all_buffs>true</remove_all_buffs>
                 <increase_hp>true</increase_hp>
                 <heal_lowest_ally>true</heal_lowest_ally>
             </SpiritCall>
+            </data>
         </skill>
         <skill>
+            <cooldown>3</cooldown>
+            <type>Active</type>
+            <target>AllAllies</target>
+            <data>
             <SpiritFountain>
-                <cooldown>3</cooldown>
                 <heal_turns>2</heal_turns>
                 <cleanse_attribute_debuffs>true</cleanse_attribute_debuffs>
             </SpiritFountain>
+            </data>
         </skill>
         <skill>
+            <cooldown>1</cooldown>
+            <type>Passive</type>
+            <data>
+                <Commendation max_hp_restore_ratio="0.10" attack_up_turns="2"  />
+            </data>
+        </skill>
+        <skill>
+            <cooldown>4</cooldown>
+            <type>Active</type>
+            <target>AllEnemies</target>
+            <data>
             <Detach>
-                <cooldown>4</cooldown>
                 <attack_damage_ratio>1.6</attack_damage_ratio>
                 <stun_chance>0.4</stun_chance>
                 <stun_turns>1</stun_turns>
@@ -473,6 +570,7 @@
                 <shield_max_hp_ratio>0.2</shield_max_hp_ratio>
                 <shield_turns>2</shield_turns>
             </Detach>
+            </data>
         </skill>
     </hero>
 </heroes>

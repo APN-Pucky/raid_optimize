@@ -75,9 +75,9 @@ impl Instance<'_> {
         }
     }
 
-    pub fn has_passive(&self, passive: Passive) -> bool {
-        self.hero.passives.iter().any(|p| *p == passive)
-    }
+    //pub fn has_passive(&self, passive: Passive) -> bool {
+    //    self.hero.passives.iter().any(|p| *p == passive)
+    //}
 
     pub fn cooldown(&mut self, skill :usize) {
         self.cooldowns[skill] = get_cooldown(&self.hero.skills[skill]);//*get_cooldown(skill);
@@ -314,7 +314,7 @@ mod tests {
             tenacity:0.15,
             damage_reflection : 0.0,
             skills : Vec::new(),
-            passives : Vec::new(),
+            //passives : Vec::new(),
             mark: Mark::Blue,
             class: Class::Attack,
             faction: Faction::DoomLegion,
