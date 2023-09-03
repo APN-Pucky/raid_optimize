@@ -1,4 +1,4 @@
-use crate::{data::{effect::{Effect, is_debuff, is_buff, get_max}, faction::Faction}, roll, debug, wave::stat::effect_to_stat, indent};
+use crate::{data::{effect::{Effect, is_debuff, is_buff, get_max}, faction::Faction, skill::{Skill, SkillData}}, roll, debug, wave::stat::effect_to_stat, indent};
 
 use super::{ Wave, InstanceIndex};
 
@@ -22,6 +22,9 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 debug!("{} already has max {}", self.name(target), effect);
                 return false;
             }
+            let mut turns : u32 = turns;
+            self.on_inflict_dakota(actor, target, effect, &mut turns);
+
             self.add_stat(actor, effect_to_stat(effect) , turns as f32);
             self.effects[target].push(effect, turns, actor);
             self.on_inflicted_margarita( target, effect);

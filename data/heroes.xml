@@ -549,7 +549,7 @@
         <name>Alahan</name>
         <rarity>Legendary</rarity>
         <mark>Force</mark>
-        <class>Attack</class>
+        <class>Support</class>
         <faction>SunsetSages</faction>
         <health>76482</health>
         <attack>6998</attack>
@@ -613,4 +613,76 @@
             </data>
         </skill>
     </hero>
+    <hero>
+        <id>10</id>
+        <name>Dakota</name>
+        <rarity>Legendary</rarity>
+        <mark>Blue</mark>
+        <class>Support</class>
+        <faction>EternalSect</faction>
+        <health>90117</health>
+        <attack>8157</attack>
+        <defense>7285</defense>
+        <speed>1104</speed>
+        <crit_rate>0.050</crit_rate>
+        <crit_damage>1.525</crit_damage>
+        <effect_hit>0.045</effect_hit>
+        <effect_resistance>0.000</effect_resistance>
+        <mastery>0.464</mastery>
+        <healing_effect>0.036</healing_effect>
+        <leech>0.00</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        <skill>
+            <cooldown>0</cooldown>
+            <type>Basic</type>
+            <target>AllEnemies</target>
+            <data>
+            <Generic>
+                <name>SoulWave</name>
+                <subskill target="AllEnemies" type="Damage" ratio="1.0" scale="AttackDamage"  />
+                <subskill target="AllEnemies" type="Inflict" effect="Poison" chance="0.6" turns="2"/>
+            </Generic>
+            </data>
+        </skill>
+        <skill>
+            <cooldown>3</cooldown>
+            <type>Active</type>
+            <target>AllAllies</target>
+            <data>
+                <SoulSurge>
+                    <toxic_swamp_turns>3</toxic_swamp_turns>
+                    <rose_poison_chance>1.0</rose_poison_chance>
+                    <speed_up_turns>2</speed_up_turns>
+                </SoulSurge>
+            </data>
+        </skill>
+        <skill>
+            <cooldown>1</cooldown>
+            <type>Passive</type>
+            <data>
+                <SoulRing>
+                    <rose_poison_chance>1.0</rose_poison_chance>
+                    <effect_res_down_chance>1.0</effect_res_down_chance>
+                    <effect_res_down_turns>2</effect_res_down_turns>
+                </SoulRing>
+            </data>
+        </skill>
+        <skill>
+            <cooldown>3</cooldown>
+            <type>Active</type>
+            <target>AllEnemies</target>
+            <data>
+                <SoulSeal>
+                    <attack_damage_ratio>4.0</attack_damage_ratio>
+                    <attack_damage_ratio_per_poison>1.2</attack_damage_ratio_per_poison>
+                    <rose_per_poison>4</rose_per_poison>
+                    <increase_atk_turns>2</increase_atk_turns>
+                    <poison_turns>2</poison_turns>
+                </SoulSeal>
+            </data>
+        </skill>
+    </hero>
+
 </heroes>

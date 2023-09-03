@@ -123,6 +123,11 @@ impl<const LEN:usize> Wave<'_,LEN> {
                 debug!("{} has SpeedUpI -> speed * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
+            if self.effects[actor].has(Effect::SpeedUpII) {
+                let xfact = 1.4;
+                debug!("{} has SpeedUpII -> speed * {}", self.name(actor), xfact);
+                fact *= xfact;
+            }
             if self.effects[actor].has(Effect::SpeedDownI) {
                 let xfact = 0.8;
                 debug!("{} has SpeedDownI -> speed * {}", self.name(actor), xfact);

@@ -64,7 +64,6 @@ impl fmt::Display for Skill{
     }
 }
 
-
 pub const NONE_SKILL: Skill = Skill {
     cooldown : 0,
     typ : SkillType::None,
@@ -237,6 +236,25 @@ pub enum SkillData {
     FishDive {
         restore_fish_shoal: u32,
     },
+    //Dakota
+    SoulSurge {
+        toxic_swamp_turns : u32,
+        rose_poison_chance : f32,
+        speed_up_turns : u32,
+    },
+    SoulRing {
+        effect_res_down_chance : f32,
+        effect_res_down_turns : u32,
+    },
+    SoulSeal {
+        attack_damage_ratio : f32,
+        attack_damage_ratio_per_poison : f32,
+        increase_atk_turns : u32,
+        rose_per_poison : u32,
+        poison_turns : u32
+
+    },
+
 
     //Natalie
     BloodthirstyDesire,

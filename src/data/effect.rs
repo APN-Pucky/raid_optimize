@@ -30,6 +30,7 @@ pub enum Effect {
     SpeedDownI,
     SpeedDownII,
     SpeedUpI,
+    SpeedUpII,
     EffectHitUpI,
     EffectHitUpII,
     EffectHitDownI,
@@ -67,6 +68,10 @@ pub enum Effect {
     Arcane,
     Blade,
     FishShoal,
+    RosePoison,
+
+    // Skill
+    ToxicSwamp,
 
     //Faction
     FactionHiddenWaveAttack, // Counter for faction hidden wave
@@ -83,6 +88,7 @@ pub fn get_max(effect:Effect) -> u32 {
         Effect::FactionHiddenWaveAttack => 2,
         Effect::FactionHiddenWaveSkill => 2,
         Effect::FishShoal => 3,
+        Effect::RosePoison => 40,
         _ => 999999
     }
 }

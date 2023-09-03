@@ -22,6 +22,12 @@ impl Effects {
         }
     }
 
+    pub fn remove_layers(&mut self, key: Effect, n : u32) {
+        for _ in 0..n {
+            self.remove_layer(key);
+        }
+    }
+
     pub fn remove_layer(&mut self, key: Effect) {
         self.em[key].pop();
     }

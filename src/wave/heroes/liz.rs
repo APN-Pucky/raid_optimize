@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::Effect, }, };
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_dot}, }, };
 
 impl<'a,const LEN:usize> Wave<'a,LEN> {
     pub fn execute_skill_liz(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
@@ -9,8 +9,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
                 let max_hp = self.get_max_health(actor);
                 self.restore_max_hp_ratio_own_team(actor,restore_max_hp_ratio);
                 self.shield_ally_team(actor,shield_max_hp_ratio * max_hp  ,shield_turns);
-                //TODO
-                //self.cleanse_ally_team(actor,&is_dot,*cleanse_dot_debuffs);
+                self.cleanse_team(actor,&is_dot,cleanse_dot_debuffs);
             },
             SkillData::FireHeal{heal_attack_ratio,heal_max_hp_ratio,block_debuff_turns,..} => {
                 let heal = self.get_attack_damage(actor)*heal_attack_ratio ;
@@ -21,7 +20,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
             SkillData::ScorchedSoul{attack_damage_ratio,hp_burning_chance, hp_burning_turns ,..} => {
                 self.attack_single(attacker, defender,  self.get_attack_damage(attacker)  *attack_damage_ratio, skill);
                 self.inflict_single(attacker,defender,Effect::HPBurning, hp_burning_chance, hp_burning_turns);
-                //self.inflict_hp_burning(attacker,defender, *hp_burning_chance, *hp_burning_turns);
+                //self.inflict_hp_burning(attacker,defender, hp_burning_chance, hp_burning_turns);
             }
             _ => {}
 
