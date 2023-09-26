@@ -6,7 +6,7 @@ use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_selection,}
 use super::{InstanceIndex, Wave, TeamIndex};
 
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
 
     pub fn count_faction(&self, actor : TeamIndex, faction : Faction) -> usize {
         let mut count = 0;

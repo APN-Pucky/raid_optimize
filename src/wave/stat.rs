@@ -61,7 +61,7 @@ pub fn effect_to_stat(e:Effect) -> Stat {
     }
 }
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn add_stat(&mut self, actor:InstanceIndex, key: Stat, statistics: f32 ) {
         if self.track_statistics {
             self.statistics[actor].sts[key] += statistics;

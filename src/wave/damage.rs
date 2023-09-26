@@ -5,7 +5,7 @@ use crate::{debug, wave::stat::Stat, indent, data::{faction::Faction, mark::Mark
 
 use super::{Wave, InstanceIndex};
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn attack_enemy_team(&mut self, actor : InstanceIndex, damage : f32,skill:&Skill) {
         for a in self.get_enemies_indices(actor){
             self.attack_single(actor,a,damage,skill)

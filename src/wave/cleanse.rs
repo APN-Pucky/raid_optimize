@@ -5,7 +5,7 @@ use super::{ Wave, InstanceIndex};
 use rand::thread_rng;
 use rand::seq::SliceRandom;
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     // TODO this is broken
     pub fn cleanse<F>(&mut self,  actor :InstanceIndex, effect_closure:&F, layers: u32) where F : Fn(Effect) -> bool {
         for (k,v) in self.effects[actor].em.iter_mut() {

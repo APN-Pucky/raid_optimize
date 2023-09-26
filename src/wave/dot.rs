@@ -3,7 +3,7 @@ use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_selection, 
 use super::{InstanceIndex, Wave};
 
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
 
     pub fn dot_heal(&mut self, actor : InstanceIndex) {
         // apply heal

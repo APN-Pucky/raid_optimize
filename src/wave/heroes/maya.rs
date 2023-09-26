@@ -4,7 +4,7 @@ use rand::thread_rng;
 use rand::seq::SliceRandom;
 
 
-impl<'a,const LEN:usize> Wave<'a,LEN> {
+impl Wave<'_> {
     pub fn execute_skill_maya(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
         match skill.data {
             SkillData::LightOfPurifying{ max_hp_restore_ratio, heal_turns, cleanse_dot_layers, heal_allies  } =>{

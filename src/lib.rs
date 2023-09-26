@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
-extern crate serde_xml_rs;
+extern crate quick_xml;
 extern crate rand;
 extern crate log;
 extern crate enum_map;
@@ -11,6 +11,9 @@ pub mod data;
 pub mod sim;
 pub mod wave;
 pub mod player;
+pub mod input;
+//pub mod run;
+pub mod ui;
 
 use rand::Rng;
 

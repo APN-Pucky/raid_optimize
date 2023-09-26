@@ -6,7 +6,7 @@ pub mod subskills;
 
 
 pub type SkillIndex = usize;
-impl<'a,const LEN:usize> Wave<'a,LEN> {
+impl<'a> Wave<'a> {
 
     pub fn get_active_skills(&self, actor: InstanceIndex) -> Vec<&'a Skill> {
         self.heroes[actor].skills.iter()
@@ -16,7 +16,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
     }
 }
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn pre_execute_skill(&mut self, actor: InstanceIndex,target: InstanceIndex, skill: &Skill) {
         debug!("{} pre_execute_skill {}", self.name(actor), skill);
         indent!({

@@ -1,9 +1,9 @@
 
 use enum_map::{Enum, EnumMap};
+use strum_macros::EnumIter;
 
-
-//#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Clone )]
-#[derive(Debug,Enum, PartialEq, Eq, strum_macros::Display,Deserialize,Copy,Clone)]
+//#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
+#[derive(Debug,Enum, PartialEq, Eq, strum_macros::Display,strum_macros::EnumIter,Deserialize, Serialize,Copy,Clone)]
 pub enum Faction {
     // Stabilized
     // Tested

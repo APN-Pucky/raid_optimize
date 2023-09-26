@@ -5,7 +5,7 @@ use super::{ Wave, InstanceIndex};
 use rand::thread_rng;
 use rand::seq::SliceRandom;
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
 
     pub fn refresh_enemy_team<F>(&mut self, actor : InstanceIndex, effect_closure: &F) where F : Fn(Effect) -> bool {
         for i in self.get_enemies_indices(actor) {

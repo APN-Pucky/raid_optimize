@@ -2,7 +2,7 @@ use crate::{indent,debug, data::effect::Effect};
 
 use super::{Wave, InstanceIndex};
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn get_turn_meter(&self, actor : InstanceIndex) -> f32 {
         self.turn_meter[actor]
     }
@@ -42,7 +42,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
         debug!("Progressing turn meters");
         indent!({
             // get the time needed for one to reach threshold
-            let mut min : f32 = (0..self.len)
+            let mut min : f32 = (0..self.len())
                 .filter(|a| self.is_alive(*a))
                 .map(|a| (self.turn_meter_threshold - self.get_turn_meter(a) )/(self.get_speed(a)))
                 .min_by(|a,b| a.partial_cmp(b).unwrap()).unwrap();
@@ -50,7 +50,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             if min < 0.0 {
                 min = 0.0;
             }
-            for a in 0..self.len {
+            for a in 0..self.len(){
                 self.progress_turn_meter(a,min);
             }
         })

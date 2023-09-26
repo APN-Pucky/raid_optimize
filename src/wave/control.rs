@@ -5,7 +5,7 @@ use crate::{debug, wave::stat::Stat, indent, data::{faction::Faction, mark::Mark
 
 use super::{Wave, InstanceIndex};
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn control(&mut self, actor : InstanceIndex, target:InstanceIndex) {
         debug!("{} control {}", self.name(actor), self.name(target));
         indent!({

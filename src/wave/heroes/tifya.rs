@@ -1,6 +1,6 @@
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_debuff} }};
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn execute_skill_tifya(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
         //let wave = self;
         let attacker = actor;
@@ -38,7 +38,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn after_action_tifya(&mut self, actor:InstanceIndex) {
             if !self.team_acted[self.teams[actor]] {
-                for i in 0..LEN {
+                for i in 0..self.len(){
                     if self.teams[i] == self.teams[actor] {
                         if i != actor {
                             match self.heroes[i].skills[..] {

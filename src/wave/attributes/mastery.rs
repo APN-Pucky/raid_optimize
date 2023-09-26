@@ -3,7 +3,7 @@ use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_selection, 
 
 use super::{InstanceIndex, Wave};
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
 
     pub fn get_mastery(&self,actor : InstanceIndex) -> f32 {
         let mut fact = 1.0;

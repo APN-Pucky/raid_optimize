@@ -2,7 +2,7 @@ use crate::{wave::stat::Stat, debug, indent, data::instance::Instance};
 
 use super::{Wave, InstanceIndex};
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn shield(&mut self, actor : InstanceIndex, target : InstanceIndex,shield_value:f32, shield_turns:u32) {
         debug!("{} shields {} for {} for {}", self.name(actor), self.name(target), shield_value, shield_turns);
         self.add_stat(actor, Stat::Shielded, shield_value);
@@ -53,7 +53,8 @@ impl<const LEN:usize> Wave<'_,LEN> {
 
     pub fn steal_shield(&mut self, actor: InstanceIndex,target : InstanceIndex) {
         debug!("{} steals shield from {}", self.name(actor), self.name(target));
-        self.shields[actor].extend(self.shields[target].clone());
+        let val = self.shields[target].clone();
+        self.shields[actor].extend(val);
         self.clear_shield(actor, target);
     }
 

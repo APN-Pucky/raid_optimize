@@ -8,7 +8,8 @@ use super::subskill;
 use super::subskill::SubSkill;
 use super::subskill::Target;
 use super::subskill::merge_targets;
-
+use quick_xml::de::from_str;
+use quick_xml::se::to_string;
 type SkillRef = usize;
 
 pub struct NewSkill {
@@ -23,7 +24,7 @@ fn true_default() -> bool{
     true
 }
 
-#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Clone,Copy )]
+#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone,Copy )]
 pub enum SkillType{
     Basic,
     Passive,
@@ -47,7 +48,7 @@ pub fn data_default() -> SkillData {
     SkillData::None
 }
 
-#[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Select {
     Everyone,
     SingleAlly,
@@ -59,14 +60,15 @@ pub enum Select {
 }
 
 
-#[derive(Debug, PartialEq, Deserialize, Clone )]
+#[derive(Debug, PartialEq, Deserialize, Serialize, Clone )]
 pub struct Skill {
     #[serde(default="cooldown_default")]
     pub cooldown : u32,
-    #[serde(default="typ_default")]
+    #[serde(default="typ_default", rename="type",with = "quick_xml::serde_helpers::text_content")]
     pub typ : SkillType,
-    #[serde(default="select_default")]
+    #[serde(default="select_default",with = "quick_xml::serde_helpers::text_content")]
     pub select: Select,
+    #[serde(rename = "$value")]
     pub data : SkillData,
 }
 
@@ -92,7 +94,7 @@ pub const BASIC_ATTACK: Skill = Skill {
     },
 };
 
-#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Clone )]
+#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
 pub enum SkillData {
     None,
     // Stabilized
@@ -309,7 +311,7 @@ pub enum SkillData {
     },
 }
 
-pub fn get_selection<const LEN:usize>(select: Select, actor :InstanceIndex, wave :& Wave<LEN>) -> Vec<InstanceIndex> {
+pub fn get_selection(wave :& Wave, select: Select, actor :InstanceIndex, ) -> Vec<InstanceIndex> {
     match select{
         Select::Everyone => {
             // 0..LEN
@@ -448,7 +450,7 @@ pub fn get_cooldown(skill: &Skill) ->u32 {
 
 // TODO why option and not just empty array?!?!?
 
-fn get_alive_allies<const LEN:usize>(actor :  InstanceIndex, wave : &Wave<LEN>) -> Option<Vec<InstanceIndex>> {
+fn get_alive_allies<const LEN:usize>(wave : &Wave, actor :  InstanceIndex) -> Option<Vec<InstanceIndex>> {
     let team = wave.get_ally_indices(actor);
     let mut ids = Vec::new();
     for (index,&target) in team.iter().enumerate() {
@@ -464,7 +466,7 @@ fn get_alive_allies<const LEN:usize>(actor :  InstanceIndex, wave : &Wave<LEN>) 
     }
 }
 
-fn get_alive_enemies<const LEN:usize>(actor :InstanceIndex, wave :&Wave<LEN>) -> Option<Vec<InstanceIndex>> {
+fn get_alive_enemies<const LEN:usize>( wave :&Wave,actor :InstanceIndex,) -> Option<Vec<InstanceIndex>> {
     let team = wave.get_enemies_indices(actor);
     let mut ids = Vec::new();
     for (index,&target) in team.iter().enumerate() {
@@ -485,22 +487,39 @@ fn get_alive_enemies<const LEN:usize>(actor :InstanceIndex, wave :&Wave<LEN>) ->
 mod tests {
     use super::*;
 
+    #[test]
+    fn write_xml() {
+        let skill= Skill {
+            cooldown : 3,
+            typ : SkillType::Active,
+            select: Select::SingleEnemy,
+            data : SkillData::ScorchedSoul {
+                attack_damage_ratio : 1.0,
+                hp_burning_chance: 0.5,
+                hp_burning_turns: 2
+            },
+        };
+
+        let xml = to_string(&skill).unwrap();
+        //panic!("{}",xml);
+    }
 
     #[test]
     fn read_xml() {
-        let skill: Vec<Skill>= serde_xml_rs::from_str(
+        let skill: Vec<Skill>= from_str(
             r#"
+            <Skill><cooldown>3</cooldown><type>Active</type><select>SingleEnemy</select><ScorchedSoul><attack_damage_ratio>1</attack_damage_ratio><hp_burning_chance>0.5</hp_burning_chance><hp_burning_turns>2</hp_burning_turns></ScorchedSoul></Skill>
+            "#,
+            /* 
             <skill>
             <cooldown>3</cooldown>
-            <data>
                 <ScorchedSoul>
                     <attack_damage_ratio>1.0</attack_damage_ratio>
                     <hp_burning_chance>0.5</hp_burning_chance>
                     <hp_burning_turns>2</hp_burning_turns>
                 </ScorchedSoul>
-            </data>
             </skill>
-            "#,
+            */
         )
         .unwrap();
 

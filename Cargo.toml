@@ -16,8 +16,9 @@ path = "src/bin.rs"
 
 [dependencies]
 serde_derive = "^1.0"
-serde = "^1.0"
-serde-xml-rs = "^0.3.1"
+serde = ">=1.0.100,<1.0.181" # from quick-xml
+quick-xml = { version = "^0.30.0", features = ["serialize" ,"serde-types"] }
+#serde-xml-rs = "*"
 rand = "*"
 log = "^0.4.20"
 env_logger ="^0.10.0"
@@ -30,6 +31,16 @@ strum = "^0.25"
 strum_macros = "^0.25"
 enum-map = "^2.6"
 enum-map-derive = "*"
+
+url ="*"
+reqwest = {version = "*", features = ["json"]}
+serde_json = "*"
+axum = "0.6.20"
+dioxus = "0.4.0"
+dioxus-router = "0.4.0"
+dioxus-liveview = { version = "0.4.0", features = ["axum"] }
+tokio = { version = "1.32.0", features = ["full"] }
+open = "*"
 
 #[profile.release]
 #debug = true

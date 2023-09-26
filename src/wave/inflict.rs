@@ -2,7 +2,7 @@ use crate::{data::{effect::{Effect, is_debuff, is_buff, get_max}, faction::Facti
 
 use super::{ Wave, InstanceIndex};
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     fn inflict(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, turns :u32) {
         match effect {
             Effect::HPBurning => self.inflict_hp_burning(actor, target, turns),

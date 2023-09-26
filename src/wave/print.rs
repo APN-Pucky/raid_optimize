@@ -2,7 +2,7 @@ use crate::{wave::stat::Stat, debug, indent, data::{instance::Instance, effect::
 
 use super::{Wave, InstanceIndex};
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
 
     pub fn fmt(&self,actor:InstanceIndex) -> String {
         format!("{}-{} [health: {}, turn_meter: {}, shield: {} = {}]", 

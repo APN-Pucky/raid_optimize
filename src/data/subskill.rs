@@ -1,8 +1,10 @@
 use crate::wave::{Wave, InstanceIndex};
 
 use super::{effect::Effect, skill::Skill};
+use quick_xml::de::from_str;
+use quick_xml::se::to_string;
 
-#[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Target {
     Everyone,
     SingleAlly,
@@ -69,14 +71,14 @@ pub fn merge_targets(t1 : Target,t2:Target) -> Target {
     }
 }
 
-#[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Scale {
     AttackDamage,
     MaxHealth,
     TargetMaxHealth,
     None,
 }
-#[derive(Deserialize, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Type {
     Damage,
     Restore,
@@ -84,21 +86,25 @@ pub enum Type {
     RemoveAllBuffs,
 }
 
-#[derive(Deserialize, Debug, Clone, Copy, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, Clone, Copy, PartialEq)]
 pub struct SubSkill {
+    #[serde(default="target_default", rename= "@target")]
     pub target : Target,
-    #[serde(default="ratio_default")]
+    #[serde(default="ratio_default", rename= "@ratio")]
     pub ratio : f32,
-    #[serde(rename="type")]
+    #[serde(rename="@type")]
     pub typ : Type,
-    #[serde(default="scale_default")]
+    #[serde(default="scale_default",rename="@scale")]
     pub scale : Scale,
-    #[serde(default="effect_default")]
+    #[serde(default="effect_default",rename= "@effect")]
     pub effect : Effect,
-    #[serde(default="chance_default")]
+    #[serde(default="chance_default",rename= "@chance")]
     pub chance : f32,
-    #[serde(default="turns_default")]
+    #[serde(default="turns_default",rename= "@turns")]
     pub turns : u32,
+}
+fn target_default() -> Target {
+    Target::SingleEnemy
 }
 fn scale_default() -> Scale{
     Scale::None
@@ -123,36 +129,28 @@ mod tests {
     use super::*;
 
 
-    #[test]
-    fn read_xml_attr() {
-        let hero: SubSkill= serde_xml_rs::from_str(
-            r#"
-            <subskill target="SingleEnemy" type="Damage" ratio="2.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
-            "#,
-        )
-        .unwrap();
 
-        assert_eq!(hero.target, Target::SingleEnemy);
-        assert_eq!(hero.typ, Type::Damage);
-        assert_eq!(hero.ratio, 2.0);
-        assert_eq!(hero.scale, Scale::AttackDamage);
-        assert_eq!(hero.effect, Effect::WetI);
-        assert_eq!(hero.chance, 0.0);
+    #[test]
+    fn write_xml() {
+        let ss = SubSkill {
+            target : Target::SingleEnemy,
+            ratio : 1.0,
+            typ : Type::Damage,
+            scale : Scale::AttackDamage,
+            effect : Effect::WetI,
+            chance : 0.0,
+            turns : 0,
+        };
+
+        let xml = to_string(&ss).unwrap();
+        //panic!("{}",xml);
     }
 
     #[test]
     fn read_xml() {
-        let hero: SubSkill= serde_xml_rs::from_str(
+        let hero: SubSkill= from_str(
             r#"
-            <subskill>
-                <target>SingleEnemy</target>
-                <type>Damage</type>
-                <ratio>1.0</ratio>
-                <scale>AttackDamage</scale>
-                <effect>WetI</effect>
-                <chance>0.0</chance>
-                <turns>0</turns>
-            </subskill>
+            <subskill target="SingleEnemy" type="Damage" ratio="1.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
             "#,
         )
         .unwrap();

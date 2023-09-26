@@ -1,6 +1,6 @@
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData, BASIC_ATTACK}, effect::Effect, }, };
 
-impl<'a,const LEN:usize> Wave<'a,LEN> {
+impl Wave<'_> {
     pub fn on_inflicted_margarita(&mut self, target: InstanceIndex, effect : Effect, ) {
         match effect {
             Effect::Blade => {

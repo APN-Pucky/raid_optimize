@@ -5,7 +5,7 @@ use super::{ Wave, InstanceIndex};
 use rand::thread_rng;
 use rand::seq::SliceRandom;
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
 
     pub fn remove_all_buffs_single(&mut self, actor : InstanceIndex, target : InstanceIndex) {
         debug!("{} removes all buffs from {}", self.name(actor), self.name(target) );

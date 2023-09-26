@@ -1,6 +1,6 @@
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::Effect, }, debug, };
 
-impl<'a,const LEN:usize> Wave<'a,LEN> {
+impl Wave<'_> {
     pub fn execute_skill_space(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
         let attacker = actor;
         let defender = target;
@@ -28,7 +28,7 @@ impl<'a,const LEN:usize> Wave<'a,LEN> {
     }
 
     pub fn on_begin_wave_space(&mut self) {
-        (0..LEN)
+        (0..self.len())
                 .for_each(|i| 
                     match self.heroes[i].skills[..] {
                         [ Skill { data : SkillData::Resplendence { turn_meter_ratio }, ..} ,.. ] => {

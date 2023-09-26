@@ -3,7 +3,7 @@ use crate::{debug, indent, data::{effect::{Effect, is_debuff}, skill::{Skill, ge
 use super::{InstanceIndex, Wave};
 
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn before_action(&mut self, actor : InstanceIndex) {
         //let a = self.instances[actor];//get_ally_indices(actor);
         //let e = self.get_enemies_indices(actor);
@@ -70,7 +70,7 @@ impl<const LEN:usize> Wave<'_,LEN> {
             debug!("{} chooses {:?}", self.name(actor), skill);
             indent!({
                 // get targets
-                let ts = get_selection(skill.select, actor, self); 
+                let ts = get_selection(self,skill.select, actor); 
                 if !ts.is_empty() {
                     let target : InstanceIndex = self.get_player_of_instance(actor).pick_target(self, actor, &skill, &ts);
                     //

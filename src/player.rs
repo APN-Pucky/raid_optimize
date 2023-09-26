@@ -4,30 +4,30 @@ use std::io;
 use crate::{wave::{Wave, TeamIndex, InstanceIndex}, data::skill::Skill};
 
 
-pub trait Player<const LEN:usize> {
+pub trait Player {
     fn get_name(&self) -> String;
     fn get_team(&self) -> TeamIndex;
-    fn pick_skill<'a>(&self, wave : &Wave<LEN>, actor : InstanceIndex, skills: &Vec<&'a Skill>) -> &'a Skill;
-    fn pick_target(&self, wave : &Wave<LEN>, actor : InstanceIndex, skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex; 
+    fn pick_skill<'a>(&self, wave : &Wave, actor : InstanceIndex, skills: &Vec<&'a Skill>) -> &'a Skill;
+    fn pick_target(&self, wave : &Wave, actor : InstanceIndex, skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex; 
 }
 
 pub struct RandomPlayer {
     pub(crate) team_index : TeamIndex 
 }
 
-impl<const LEN:usize> Player<LEN> for RandomPlayer {
+impl Player for RandomPlayer {
     fn get_team(&self) -> TeamIndex {
         self.team_index
     }
     fn get_name(&self) -> String {
         format!("RandomPlayer {}", self.team_index)
     }
-    fn pick_target(&self, _wave : &Wave<LEN>, _actor : InstanceIndex, _skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex{
+    fn pick_target(&self, _wave : &Wave, _actor : InstanceIndex, _skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex{
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..targets.len());
         targets[index]
     }
-    fn pick_skill<'a>(&self, _wave : &Wave<LEN>, _actor : InstanceIndex, skills: &Vec<&'a Skill>) -> &'a Skill{
+    fn pick_skill<'a>(&self, _wave : &Wave, _actor : InstanceIndex, skills: &Vec<&'a Skill>) -> &'a Skill{
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..skills.len());
         skills[index]
@@ -40,7 +40,7 @@ pub struct ManualPlayer {
 
 impl ManualPlayer {
 
-    fn handle_inputs<const LEN:usize>(&self,s :&str , wave:&Wave<LEN>, actor : InstanceIndex) -> bool {
+    fn handle_inputs(&self,s :&str , wave:&Wave, actor : InstanceIndex) -> bool {
         match s {
             "s" => {
                 // show status
@@ -79,14 +79,14 @@ impl ManualPlayer {
     }
 }
 
-impl<const LEN:usize> Player<LEN> for ManualPlayer {
+impl Player for ManualPlayer {
     fn get_team(&self) -> TeamIndex {
         self.team_index
     }
     fn get_name(&self) -> String {
         format!("ManualPlayer {}", self.team_index)
     }
-    fn pick_target(&self, wave : &Wave<LEN>, actor : InstanceIndex, skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex{
+    fn pick_target(&self, wave : &Wave, actor : InstanceIndex, skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex{
         println!("Pick target for {} using skill {:?}", wave.heroes[actor].name, skill);
         for (i, target) in targets.iter().enumerate() {
             println!(" {}: {}", i, wave.name(*target));
@@ -114,7 +114,7 @@ impl<const LEN:usize> Player<LEN> for ManualPlayer {
     }
 
 
-    fn pick_skill<'a>(&self, wave : &Wave<LEN>, actor :InstanceIndex, skills: &Vec<&'a Skill>) -> &'a Skill{
+    fn pick_skill<'a>(&self, wave : &Wave, actor :InstanceIndex, skills: &Vec<&'a Skill>) -> &'a Skill{
         println!("Pick skill for {}", wave.heroes[actor].name);
         for (i, skill) in skills.iter().enumerate() {
             println!(" {}: {:?}", i, skill);

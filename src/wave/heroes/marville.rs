@@ -1,7 +1,7 @@
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_attribute_debuff, is_dot}}, roll};
 
 
-impl<'a,const LEN:usize> Wave<'a,LEN> {
+impl Wave<'_> {
     pub fn execute_skill_marville(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
         match skill.data {
             SkillData::FishWaterball {  attack_damage_ratio, act_chance, ..} =>{

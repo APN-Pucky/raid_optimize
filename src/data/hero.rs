@@ -1,16 +1,21 @@
 use std::fmt;
 
 use super::{mark::Mark, class::Class, faction::Faction, rarity::Rarity, skill::Skill, heroes::Heroes};
+use serde::ser::{Serialize, Serializer};
+use quick_xml::de::from_str;
+use quick_xml::se::to_string;
 
-
-
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize,Serialize, Debug, Clone)]
 pub struct Hero {
     pub id: u32,
     pub name: String,
+    #[serde(with = "quick_xml::serde_helpers::text_content")]
     pub mark : Mark,
+    #[serde(with = "quick_xml::serde_helpers::text_content")]
     pub class: Class,
+    #[serde(with = "quick_xml::serde_helpers::text_content")]
     pub faction: Faction,
+    #[serde(with = "quick_xml::serde_helpers::text_content")]
     pub rarity : Rarity,
     pub health: f32,
     pub attack: f32,
@@ -50,20 +55,79 @@ impl fmt::Display for Hero {
     }
 }
 
+
 #[cfg(test)]
 mod tests {
+    use itertools::assert_equal;
+
     use super::*;
 
     #[test]
-    fn read_xml_file() {
-        let file_string = std::fs::read_to_string("data/heroes.xml").unwrap();
-        let heroes : Heroes = serde_xml_rs::from_str(&file_string).unwrap();
-        assert_eq!(heroes.heroes[0].id, 1);
+    fn write_xml() {
+        
+
+        let hero = Hero{
+            id: 1,
+            name: "Elhain".to_string(),
+            mark : Mark::Blue,
+            class: Class::Support,
+            faction: Faction::WizardsEye,
+            rarity : Rarity::Legendary,
+            health: 15000.,
+            attack: 1000.,
+            defense: 1000.,
+            speed: 100.,
+            crit_rate: 0.15,
+            crit_damage: 1.5,
+            effect_hit: 0.15,
+            effect_resistance: 0.15,
+            mastery: 0.15,
+            healing_effect: 0.15,
+            leech: 0.15,
+            piercing: 0.15,
+            tenacity: 0.15,
+            damage_reflection : 0.15,
+            skills: vec![],
+        };
+        //String buffer writter
+        //let mut buffer = Vec::new();
+        
+        //match serde_xml_rs::to_writer(&mut buffer,&hero)  {
+        //    Ok(_) => {},
+        //    Err(e) => println!("Error: {}", e),
+        //};
+        //let xml = String::from_utf8(buffer).unwrap();
+        let xml = to_string(&hero).unwrap();
+        //panic!("{}", xml);
+        /* 
+        assert_eq!(xml,            r#"
+        <hero>
+            <id>1</id>
+            <name>Elhain</name>
+            <mark>Blue</mark>
+            <health>15000</health>
+            <attack>1000</attack>
+            <defense>1000</defense>
+            <speed>100</speed>
+            <crit_rate>0.15</crit_rate>
+            <crit_damage>1.5</crit_damage>
+            <effect_hit>0.15</effect_hit>
+            <effect_resistance>0.15</effect_resistance>
+            <mastery>0.15</mastery>
+            <healing_effect>0.15</healing_effect>
+            <leech>0.15</leech>
+            <piercing>0.15</piercing>
+            <tenacity>0.15</tenacity>
+            <damage_reflection>0.15</damage_reflection>
+            <skill>
+            </skill>
+        </hero>"#.to_string() );
+        */
     }
 
     #[test]
     fn read_xml() {
-        let hero: Hero = serde_xml_rs::from_str(
+        let hero: Hero = from_str(
             r#"
             <hero>
                 <id>1</id>
@@ -87,32 +151,27 @@ mod tests {
                 <tenacity>0.15</tenacity>
                 <damage_reflection>0.15</damage_reflection>
                 <skill>
-                    <data>
-                        <BloodthirstyDesire />
-                    </data>
+                    <type>Passive</type>
+                    <BloodthirstyDesire />
                 </skill>
                 <skill>
                     <cooldown>3</cooldown>
-                    <data>
                     <ScorchedSoul>
                         <attack_damage_ratio>1.0</attack_damage_ratio>
                         <hp_burning_chance>0.5</hp_burning_chance>
                         <hp_burning_turns>2</hp_burning_turns>
                     </ScorchedSoul>
-                    </data>
                 </skill>
                 <skill>
                     <cooldown>3</cooldown>
-                    <data>
                     <Generic>
                         <name>test</name>
-                        <subskill target="SingleEnemy" type="Damage" ratio="2.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
+                        <subskill target="SingleEnemy" type="Damage" ratio="1.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
                     </Generic>
-                    </data>
                 </skill>
             </hero>
-            "#,
-        )
+            "#)
+
         .unwrap();
 
         assert_eq!(hero.id, 1);

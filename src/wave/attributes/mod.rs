@@ -8,7 +8,7 @@ pub mod attack;
 pub mod defense;
 pub mod mastery;
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
 
     pub fn get_turn_meter_reduction_reduction(&self,actor: InstanceIndex) -> f32 {
         let base = 0.0;

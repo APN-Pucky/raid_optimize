@@ -1,7 +1,7 @@
 use crate::{wave::{Wave, InstanceIndex, attributes::attack}, data::{skill::{Skill, SkillData}, effect::{Effect, is_buff, is_attribute_debuff}}, indent, debug};
 
 
-impl<'a,const LEN:usize> Wave<'a,LEN> {
+impl Wave<'_> {
     pub fn execute_skill_alahan(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
         let attacker = actor;
         let defender = target;

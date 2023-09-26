@@ -2,7 +2,7 @@ use enum_map::Enum;
 
 
 
-#[derive(Debug,Enum, PartialEq, Eq ,strum_macros::Display,Copy,Clone,Deserialize, )]
+#[derive(Debug,Enum, PartialEq, Eq ,strum_macros::Display,Copy,Clone,Deserialize, Serialize, )]
 pub enum Effect {
     WetI,
     WetII,

@@ -2,7 +2,7 @@ use crate::{indent, debug, data::{ skill::{SkillData, Skill}}};
 
 use super::Wave;
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn begin(&mut self) {
         debug!("Wave begin");
         indent!({

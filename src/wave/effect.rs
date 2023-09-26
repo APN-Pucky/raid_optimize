@@ -83,7 +83,7 @@ impl Effects {
 }
 
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn has_effect(&self, actor: InstanceIndex, effect : Effect) -> bool {
         self.effects[actor].has(effect)
     }

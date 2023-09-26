@@ -2,7 +2,7 @@ use crate::{debug, wave::stat::Stat, indent, warn};
 
 use super::{Wave, InstanceIndex};
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn heal(&mut self,actor : InstanceIndex, target :InstanceIndex, health:f32) {
         if self.is_dead(target) {
             warn!("{} is dead, cannot heal [{},{}]", self.name(target),self.health[target],self.health[target]> 0.0);

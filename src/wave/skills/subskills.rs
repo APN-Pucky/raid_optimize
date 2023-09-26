@@ -4,7 +4,7 @@ use super::{InstanceIndex, Wave};
 
 
 
-impl<const LEN:usize> Wave<'_,LEN> {
+impl Wave<'_> {
     pub fn execute_subskill(&mut self,subskill : &SubSkill, actor :InstanceIndex, target :InstanceIndex,  skill: &Skill) {
         let wave = self;
         let mut val= 0.0;
