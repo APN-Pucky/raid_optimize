@@ -44,9 +44,9 @@ pub fn save_to_file(heroes : &Heroes) {
 
 #[inline_props]
 pub(crate) fn Edit(cx: Scope) -> Element {
-    let heroes = use_shared_state::<EditState>(cx).unwrap();
-    if heroes.read().auto_safe {
-        save_to_file(&heroes.read().heroes);
+    let edit= use_shared_state::<EditState>(cx).unwrap();
+    if edit.read().auto_safe {
+        save_to_file(&edit.read().heroes);
     }
     render! {
         div {
@@ -60,12 +60,12 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "heroselect",
                     oninput: move |evt| {
                         println!("{evt:?}");
-                        heroes.write().id = evt.value.parse::<usize>().unwrap();
+                        edit.write().id = evt.value.parse::<usize>().unwrap();
                     },
-                    for (i,hero) in heroes.read().heroes.heroes.iter().enumerate() {
+                    for (i,hero) in edit.read().heroes.heroes.iter().enumerate() {
                         option {
                             value: "{i}", 
-                            selected: i == heroes.read().id,
+                            selected: i == edit.read().id,
                             "{hero.name}" 
                         }
                     }
@@ -76,10 +76,10 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 button {
                     onclick: move |_| {
                         let mut hero = Hero::default();
-                        hero.id = heroes.read().heroes.heroes.len() as u32;
-                        heroes.write().heroes.heroes.push(hero);
-                        let id = heroes.read().heroes.heroes.len() - 1;
-                        heroes.write().id = id;
+                        hero.id = edit.read().heroes.heroes.len() as u32;
+                        edit.write().heroes.heroes.push(hero);
+                        let id = edit.read().heroes.heroes.len() - 1;
+                        edit.write().id = id;
                     },
                     "New"
                 }
@@ -88,12 +88,12 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 class : "column properties" ,
                 button {
                     onclick: move |_| {
-                        let i = heroes.read().id;
-                        let mut hero = heroes.read().heroes.heroes[i].clone();
-                        hero.id = heroes.read().heroes.heroes.len() as u32;
-                        heroes.write().heroes.heroes.push(hero);
-                        let id = heroes.read().heroes.heroes.len() - 1;
-                        heroes.write().id = id;
+                        let i = edit.read().id;
+                        let mut hero = edit.read().heroes.heroes[i].clone();
+                        hero.id = edit.read().heroes.heroes.len() as u32;
+                        edit.write().heroes.heroes.push(hero);
+                        let id = edit.read().heroes.heroes.len() - 1;
+                        edit.write().id = id;
                     },
                     "Clone"
                 }
@@ -102,9 +102,9 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 class : "column inputs " ,
                 button {
                     onclick: move |_| {
-                        let ii = heroes.read().id;
-                        heroes.write().heroes.heroes.remove(ii);
-                        heroes.write().id = std::cmp::max(ii-1,0);
+                        let ii = edit.read().id;
+                        edit.write().heroes.heroes.remove(ii);
+                        edit.write().id = std::cmp::max(ii-1,0);
                     },
                     "Delete"
                 }
@@ -113,7 +113,7 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 class : "column inputs " ,
                 button {
                     onclick: move |_| {
-                        heroes.write().heroes = load_heroes("data/heroes.xml".to_string());
+                        edit.write().heroes = load_heroes("data/heroes.xml".to_string());
                     },
                     "Reload"
                 }
@@ -125,7 +125,7 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     class : "form-group",
                     button {
                         onclick: move |_| {
-                            save_to_file(&heroes.read().heroes);
+                            save_to_file(&edit.read().heroes);
                         },
                         "save"
                     }
@@ -133,9 +133,9 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         id : "auto_safe",
                         value: "auto_safe",
                         r#type : "checkbox",
-                        checked : "{heroes.read().auto_safe}",
+                        checked : "{edit.read().auto_safe}",
                         onchange: move |e| {
-                            heroes.write().auto_safe = e.value.parse::<bool>().unwrap();
+                            edit.write().auto_safe = e.value.parse::<bool>().unwrap();
                         },
                     }
                     label {
@@ -155,11 +155,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "id",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].id}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].id}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<u32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].id = i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].id = i;
                         };
                     },
                 }
@@ -169,10 +169,10 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "name", "name:"},
                 input {
                     id : "name",
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].name}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].name}",
                     oninput: move |e| {
-                        let ii = heroes.read().id;
-                        heroes.write().heroes.heroes[ii].name = e.value.clone();
+                        let ii = edit.read().id;
+                        edit.write().heroes.heroes[ii].name = e.value.clone();
                     },
                 }
             }
@@ -183,11 +183,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "health",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].health}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].health}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].health = i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].health = i;
                         };
                     },
                 }
@@ -199,11 +199,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "attack",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].attack}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].attack}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].attack= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].attack= i;
                         };
                     },
                 }
@@ -215,11 +215,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "defense",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].defense}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].defense}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].defense= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].defense= i;
                         };
                     },
                 }
@@ -231,11 +231,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "speed",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].speed}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].speed}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].speed= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].speed= i;
                         };
                     },
                 }
@@ -247,11 +247,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "crit_rate",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].crit_rate}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].crit_rate}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].crit_rate= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].crit_rate= i;
                         };
                     },
                 }
@@ -263,11 +263,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "crit_rate",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].crit_damage}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].crit_damage}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].crit_damage= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].crit_damage= i;
                         };
                     },
                 }
@@ -279,11 +279,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "effect_hit",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].effect_hit}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].effect_hit}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].effect_hit= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].effect_hit= i;
                         };
                     },
                 }
@@ -295,11 +295,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "effect_resistance",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].effect_resistance}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].effect_resistance}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].effect_resistance= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].effect_resistance= i;
                         };
                     },
                 }
@@ -311,11 +311,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "mastery",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].mastery}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].mastery}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].mastery= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].mastery= i;
                         };
                     },
                 }
@@ -327,11 +327,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "healing_effect",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].healing_effect}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].healing_effect}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].healing_effect= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].healing_effect= i;
                         };
                     },
                 }
@@ -343,11 +343,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "leech",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].leech}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].leech}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].leech= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].leech= i;
                         };
                     },
                 }
@@ -359,11 +359,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "piercing",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].piercing}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].piercing}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].piercing= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].piercing= i;
                         };
                     },
                 }
@@ -375,11 +375,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "tenacity",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].tenacity}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].tenacity}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].tenacity= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].tenacity= i;
                         };
                     },
                 }
@@ -391,11 +391,11 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "damage_reflection",
                     r#type : "number",
                     min : 0,
-                    value: "{heroes.read().heroes.heroes[heroes.read().id].damage_reflection}",
+                    value: "{edit.read().heroes.heroes[edit.read().id].damage_reflection}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = heroes.read().id;
-                            heroes.write().heroes.heroes[ii].damage_reflection= i;
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].damage_reflection= i;
                         };
                     },
                 }
@@ -407,13 +407,13 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "mark",
                     oninput: move |evt| {
                         println!("{evt:?}");
-                        let ii = heroes.read().id;
-                        heroes.write().heroes.heroes[ii].mark = *Mark::iter().collect::<Vec<Mark>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
+                        let ii = edit.read().id;
+                        edit.write().heroes.heroes[ii].mark = *Mark::iter().collect::<Vec<Mark>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
                     },
                     for (i,mark) in Mark::iter().enumerate() {
                         option {
                             value: "{i}", 
-                            selected : heroes.read().heroes.heroes[heroes.read().id].mark == mark,
+                            selected : edit.read().heroes.heroes[edit.read().id].mark == mark,
                             "{mark}"
                         }
                     }
@@ -426,13 +426,13 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "class",
                     oninput: move |evt| {
                         println!("{evt:?}");
-                        let ii = heroes.read().id;
-                        heroes.write().heroes.heroes[ii].class = *Class::iter().collect::<Vec<Class>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
+                        let ii = edit.read().id;
+                        edit.write().heroes.heroes[ii].class = *Class::iter().collect::<Vec<Class>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
                     },
                     for (i,class) in Class::iter().enumerate() {
                         option {
                             value: "{i}", 
-                            selected : heroes.read().heroes.heroes[heroes.read().id].class == class,
+                            selected : edit.read().heroes.heroes[edit.read().id].class == class,
                             "{class}"
                         }
                     }
@@ -445,13 +445,13 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "faction",
                     oninput: move |evt| {
                         println!("{evt:?}");
-                        let ii = heroes.read().id;
-                        heroes.write().heroes.heroes[ii].faction= *Faction::iter().collect::<Vec<Faction>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
+                        let ii = edit.read().id;
+                        edit.write().heroes.heroes[ii].faction= *Faction::iter().collect::<Vec<Faction>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
                     },
                     for (i,faction) in Faction::iter().enumerate() {
                         option {
                             value: "{i}", 
-                            selected : heroes.read().heroes.heroes[heroes.read().id].faction== faction,
+                            selected : edit.read().heroes.heroes[edit.read().id].faction== faction,
                             "{faction}"
                         }
                     }
@@ -464,13 +464,13 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     id : "rarity",
                     oninput: move |evt| {
                         println!("{evt:?}");
-                        let ii = heroes.read().id;
-                        heroes.write().heroes.heroes[ii].rarity = *Rarity::iter().collect::<Vec<Rarity>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
+                        let ii = edit.read().id;
+                        edit.write().heroes.heroes[ii].rarity = *Rarity::iter().collect::<Vec<Rarity>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
                     },
                     for (i,rarity) in Rarity::iter().enumerate() {
                         option {
                             value: "{i}", 
-                            selected : heroes.read().heroes.heroes[heroes.read().id].rarity== rarity,
+                            selected : edit.read().heroes.heroes[edit.read().id].rarity== rarity,
                             "{rarity}"
                         }
                     }

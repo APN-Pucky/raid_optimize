@@ -1,9 +1,14 @@
    Compiling raid_optimize v0.0.1 (/home/apn/git/raid_optimize)
-error: expected `,`
-  --> src/ui/app/run.rs:79:44
-   |
-79 | ...                   td { "{job.id}" }
-   |                          ^
+error[E0425]: cannot find function `save_to_file` in this scope
+   --> src/ui/app/edit.rs:120:29
+    |
+120 | ...                   save_to_file(&edit.read().heroes);
+    |                       ^^^^^^^^^^^^ not found in this scope
+    |
+help: consider importing this function
+    |
+1   + use crate::ui::app::input::save_to_file;
+    |
 
 warning: unused import: `std::fmt`
  --> src/data/mod.rs:1:5
@@ -836,17 +841,23 @@ warning: unused import: `std::future::IntoFuture`
 13 | use std::future::IntoFuture;
    |     ^^^^^^^^^^^^^^^^^^^^^^^
 
-warning: unused import: `Status`
-  --> src/ui/app/input.rs:14:34
+warning: unused import: `fermi::use_atom_state`
+  --> src/ui/app/input.rs:14:5
    |
-14 | use crate::{ui::app::{run::{Job, Status,RunState}, edit::EditState}, sim::args::Args,sim::Sim};
-   |                                  ^^^^^^
+14 | use fermi::use_atom_state;
+   |     ^^^^^^^^^^^^^^^^^^^^^
 
-warning: unused import: `results::CombinedResult`
-  --> src/ui/app/input.rs:15:18
+warning: unused import: `DateTime`
+  --> src/ui/app/input.rs:16:14
    |
-15 | use crate::sim::{results::CombinedResult};
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^
+16 | use chrono::{DateTime, Utc};
+   |              ^^^^^^^^
+
+warning: unused imports: `ui::app::run`, `wave::print`
+  --> src/ui/app/input.rs:25:13
+   |
+25 | use crate::{ui::app::run, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
+   |             ^^^^^^^^^^^^                                                   ^^^^^^^^^^^
 
 warning: unused imports: `Extension`, `Path`, `Router`, `Server`, `response::Html`, `routing::get`, `self`, `ws::WebSocketUpgrade`
  --> src/ui/app/run.rs:1:22
@@ -914,10 +925,22 @@ warning: unused import: `std::future::Future`
 14 | use std::future::Future;
    |     ^^^^^^^^^^^^^^^^^^^
 
-warning: unused import: `Sim`
-  --> src/ui/app/run.rs:15:18
+warning: unused import: `std::thread::JoinHandle`
+  --> src/ui/app/run.rs:15:5
    |
-15 | use crate::sim::{Sim, results::CombinedResult, args::Args};
+15 | use std::thread::JoinHandle;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::future::IntoFuture`
+  --> src/ui/app/run.rs:16:5
+   |
+16 | use std::future::IntoFuture;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Sim`
+  --> src/ui/app/run.rs:18:18
+   |
+18 | use crate::sim::{Sim, results::CombinedResult, args::Args};
    |                  ^^^
 
 warning: unused imports: `Extension`, `Path`, `Router`, `Server`, `response::Html`, `routing::get`, `self`, `ws::WebSocketUpgrade`
@@ -985,6 +1008,12 @@ warning: unused imports: `Job`, `wave::print`
    |
 13 | use crate::{ui::app::run::{Job, }, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
    |                            ^^^                                                      ^^^^^^^^^^^
+
+warning: unused import: `quick_xml::se::to_string`
+  --> src/ui/app/edit.rs:14:5
+   |
+14 | use quick_xml::se::to_string;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
 
 warning: unused variable: `expires_in`
   --> src/ui/login.rs:87:49
@@ -1078,6 +1107,12 @@ warning: unused import: `dioxus_router::prelude`
    |     ^^^^^^^^^^^^^^^^^^^^^^
 
 warning: unused import: `dioxus::prelude`
+ --> src/ui/app/run.rs:3:5
+  |
+3 | use dioxus::prelude::*;
+  |     ^^^^^^^^^^^^^^^
+
+warning: unused import: `dioxus::prelude`
  --> src/ui/mod.rs:3:5
   |
 3 | use dioxus::prelude::*;
@@ -1089,5 +1124,6 @@ warning: unused import: `dioxus_router::prelude`
 11 | use dioxus_router::prelude::*;
    |     ^^^^^^^^^^^^^^^^^^^^^^
 
-warning: `raid_optimize` (lib) generated 166 warnings
-error: could not compile `raid_optimize` (lib) due to previous error; 166 warnings emitted
+For more information about this error, try `rustc --explain E0425`.
+warning: `raid_optimize` (lib) generated 171 warnings
+error: could not compile `raid_optimize` (lib) due to previous error; 171 warnings emitted

@@ -157,6 +157,22 @@ pub async fn main() {
                               display: inline-block;
                               width: 100px;
                           }}
+                          .container2 {{
+                            display: flex;
+                            width: 100%;
+                            height: 50vh; /* Set the height to fill the viewport */
+                        }}
+                          .half {{
+                            flex: 1; /* This makes both halves take up equal space */
+                            border: 1px solid #ccc;
+                            box-sizing: border-box;
+                        }}
+                        .scrollable-div {{
+            height: 40vh;  /*Set a specific height */
+            overflow-y: scroll; /* Enable vertical scrolling */
+            border: 1px solid #ccc; /* Optional: Add border for visual clarity */
+            padding: 10px; /* Optional: Add padding for content spacing */
+        }}
                     </style>
                 </head>
                 <body> 

@@ -19,8 +19,9 @@ use crate::sim::{Sim, results::CombinedResult, args::Args};
 pub struct Job {
     pub id : usize,
     pub name : String,
+    pub status : Status,
     pub start_time : Option<DateTime<Utc>>,
-    //pub end_time : Option<DateTime<Utc>>,
+    pub end_time : Option<DateTime<Utc>>,
     //pub run_time : Option<u64>, // TODO
     pub args : Args,
     //pub sim : Sim,
@@ -41,9 +42,10 @@ pub enum JobId {
 #[derive(Debug, PartialEq, Eq, strum_macros::Display,strum_macros::EnumIter,Deserialize, Serialize,Copy,Clone)]
 pub enum Status {
     Pending,
-    Started,
+    Running,
     Ended,
-    Aborted
+    Aborted,
+    Failed,
 }
 
 pub struct RunState {
@@ -54,58 +56,6 @@ impl Default for RunState {
     fn default() -> Self {
         Self {
             jobs: vec![],
-        }
-    }
-}
-
-#[inline_props]
-pub(crate) fn Run(cx: Scope) -> Element {
-    let run = use_shared_state::<RunState>(cx).unwrap();
-    render! {
-        h2 {"Jobs"}
-        div {
-            // table of jobs gg
-            table {
-                tr {
-                    th { "ID" }
-                    th { "Name" }
-                    th { "Start" }
-                    th { "Status" }
-                    th { "Wins" }
-                    th { "Stalls" }
-                    th { "Losses" }
-                }
-                for job in run.read().jobs.iter() {
-                    match job.result {
-                        Some(result) => {
-                            rsx! {
-                                tr {
-                                    td { "{job.id}" }
-                                    td { "{job.name}" }
-                                    td { "{job.start_time:?}" }
-                                    td { "Ended" }
-                                    td { "{result.wins}" }
-                                    td { "{result.stalls}" }
-                                    td { "{result.losses}" }
-                                }
-                            }
-                        },
-                        None => {
-                            rsx! {
-                                tr {
-                                    td { "{job.id}" }
-                                    td { "{job.name}" }
-                                    td { "{job.start_time:?}" }
-                                    td { "Running" }
-                                    td { "" }
-                                    td { "" }
-                                    td { "" }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }

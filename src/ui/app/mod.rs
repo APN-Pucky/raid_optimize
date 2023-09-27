@@ -13,7 +13,7 @@ use std::collections::HashMap;
 
 use crate::ui::app::{ input::StartState, edit::EditState, run::RunState};
 use crate::ui::app::input::Start;
-use crate::ui::app::run::Run;
+//use crate::ui::app::run::Run;
 use crate::ui::app::edit::Edit;
 
 pub mod input;
@@ -28,12 +28,12 @@ enum Route {
     #[layout(NavBar)]
         #[route("/")]
         Start {},
-        #[route("/run")]
-        Run {},
-        #[route("/history")]
-        History {},
-        #[route("/edit")]
-        Edit {},
+        //#[route("/run")]
+        //Run {},
+        //#[route("/history")]
+        //History {},
+        //#[route("/edit")]
+        //Edit {},
     #[end_layout]
     #[route("/:..route")]
     PageNotFound {
@@ -48,9 +48,9 @@ fn NavBar(cx: Scope) -> Element {
         nav {
             class: "navbar",
             Link { to: Route::Start {}, "Start" } 
-            Link { to: Route::Run{}, "Run" } 
-            Link { to: Route::History{}, "History" } 
-            Link { to: Route::Edit{}, "Edit" } 
+            //Link { to: Route::Run{}, "Run" } 
+            //Link { to: Route::History{}, "History" } 
+            //Link { to: Route::Edit{}, "Edit" } 
         }
         Outlet::<Route> {}
     }
