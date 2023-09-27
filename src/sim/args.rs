@@ -3,6 +3,7 @@ use crate::{data::{hero::{Hero, get_hero_by_string}, load_heroes, heroes::Heroes
 use log::info;
 use log::warn;
 
+#[derive(Debug,Clone)]
 pub struct Args {
     //pub heroes : Heroes,
     pub allies : Vec<Hero>,
@@ -21,8 +22,8 @@ impl Default for Args {
     fn default() -> Self {
         Self {
             //heroes : Heroes::default(),
-            allies : vec![Hero::default(),Hero::default(),Hero::default(),Hero::default(),Hero::default()],
-            enemies : vec![Hero::default(),Hero::default(),Hero::default(),Hero::default(),Hero::default()],
+            allies : vec![],
+            enemies : vec![],
             iterations : 1000,
             threads : 1,
             print_version : false,

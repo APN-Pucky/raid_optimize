@@ -14,6 +14,7 @@ use raid_optimize::ui;
 
 #[tokio::main]
 pub async fn main() {
+    env_logger::init();
     //let args: Vec<String> = env::args().collect();
     //if let 2 = args.len() {
     //    if let Ok("--no-gui") = args[1].parse() {

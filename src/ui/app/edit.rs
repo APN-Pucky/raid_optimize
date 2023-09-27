@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use reqwest::{Error, Client, Response};
 use dioxus_router::prelude::*;
 use std::collections::HashMap;
-use crate::{ui::app::run::{Job, RunState}, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
+use crate::{ui::app::run::{Job, }, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
 use quick_xml::se::to_string;
 use crate::data::faction::Faction;
 use crate::data::mark::Mark;
@@ -153,6 +153,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "id", "id:"},
                 input {
                     id : "id",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].id}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<u32>() {
@@ -179,6 +181,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "health", "health:"},
                 input {
                     id : "health",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].health}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -193,6 +197,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "attack", "attack:"},
                 input {
                     id : "attack",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].attack}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -207,6 +213,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "defense", "defense:"},
                 input {
                     id : "defense",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].defense}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -221,6 +229,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "speed", "speed:"},
                 input {
                     id : "speed",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].speed}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -235,6 +245,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "crit_rate", "crit_rate:"},
                 input {
                     id : "crit_rate",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].crit_rate}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -249,6 +261,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "crit_damage", "crit_damage:"},
                 input {
                     id : "crit_rate",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].crit_damage}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -263,6 +277,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "effect_hit", "effect_hit:"},
                 input {
                     id : "effect_hit",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].effect_hit}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -277,6 +293,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "effect_resistance", "effect_resistance:"},
                 input {
                     id : "effect_resistance",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].effect_resistance}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -291,6 +309,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "mastery", "mastery"},
                 input {
                     id : "mastery",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].mastery}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -305,6 +325,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "healing_effect", "healing_effect"},
                 input {
                     id : "healing_effect",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].healing_effect}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -319,6 +341,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "leech", "leech"},
                 input {
                     id : "leech",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].leech}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -333,6 +357,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "piercing", "piercing"},
                 input {
                     id : "piercing",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].piercing}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -347,6 +373,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "tenacity", "tenacity"},
                 input {
                     id : "tenacity",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].tenacity}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {
@@ -361,6 +389,8 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                 label {r#for : "damage_reflection", "damage_reflection"},
                 input {
                     id : "damage_reflection",
+                    r#type : "number",
+                    min : 0,
                     value: "{heroes.read().heroes.heroes[heroes.read().id].damage_reflection}",
                     oninput: move |e| {
                         if let Ok(i) = e.value.parse::<f32>() {

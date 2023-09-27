@@ -27,10 +27,11 @@ pub mod results;
 
 
 
+#[derive(Debug,Clone)]
 pub struct Sim {
     args : Args,
     //results : Vec<Result>,
-    result : CombinedResult,
+    //result : CombinedResult,
 }
 
 
@@ -41,17 +42,10 @@ impl Sim {
         // create statistcs vector with one entry per hero
         Sim {
             args,
-            result : CombinedResult {
-                iterations: 0,
-                wins: 0,
-                losses: 0,
-                stalls: 0,
-                statistics: Vec::new(),
-            },
         }
     }
 
-
+    /* 
     pub fn print_results(&self) {
         println!("win%:\t{:>6.2} ({} / {})", self.result.wins as f64 / self.result.iterations as f64*100., self.result.wins, self.result.iterations);
         println!("stall%:\t{:>6.2} ({} / {})", self.result.stalls as f64 / self.result.iterations as f64*100., self.result.stalls, self.result.iterations);
@@ -142,26 +136,22 @@ impl Sim {
         etable.set_format(*prettytable::format::consts::FORMAT_NO_LINESEP_WITH_TITLE);
         etable.printstd();
     }
+    */
 
 
-    pub fn run(&mut self , threads : u32,track_statistics:bool) {
-        let vecit : Vec<u32> = (0..threads).collect::<Vec<_>>();
-        let iter = self.args.iterations / (threads as u64) ;
-        let bar = ProgressBar::new(self.args.iterations);
-        bar.set_style(
-            ProgressStyle::with_template(
-                "{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] ({pos}/{len}, ETA {eta})",
-            )
-            .unwrap(),
-        );
+    pub fn run(&self) -> CombinedResult {
+        let vecit : Vec<u32> = (0..self.args.threads as u32).collect::<Vec<_>>();
+        let iter = self.args.iterations / (self.args.threads as u64) ;
+        //let bar = ProgressBar::new(self.args.iterations);
+        //bar.set_style(
+        //    ProgressStyle::with_template(
+        //        "{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] ({pos}/{len}, ETA {eta})",
+        //    )
+        //    .unwrap(),
+        //);
         let results : Vec<CombinedResult> = vecit.par_iter().map(|_i| {
-            let mut cr = CombinedResult {
-                iterations: 0,
-                wins: 0,
-                losses: 0,
-                stalls: 0,
-                statistics: Vec::new(),
-            };
+            let mut cr = CombinedResult::default();
+            // TODO refactor
             let ap : Box<dyn Player> = if self.args.manual_ally {
                 Box::new(ManualPlayer{team_index:0})
             }
@@ -187,21 +177,21 @@ impl Sim {
 
             let mut instance = a.iter_mut().chain(e.iter_mut()).collect::<Vec<_>>();
             let mut players : Vec<Box<dyn Player>> = vec![ap,ep]; 
-            let mut wave = Wave::new(&mut instance, &mut players ,track_statistics);
-            for x in 0..iter {
+            let mut wave = Wave::new(&mut instance, &mut players ,!self.args.no_stats);
+            for _ in 0..iter {
                 cr.add_result(&wave.run());
                 wave.reset();
-                if (x+1) % 1000 == 0 { // plus one because we start at 0 and want the score added after the iteration
-                    bar.inc(1000);
-                }
+                //if (x+1) % 1000 == 0 { // plus one because we start at 0 and want the score added after the iteration
+                //    bar.inc(1000);
+                //}
             }
             cr
         }).collect::<Vec<_>>();
 
-        self.result = results.iter().fold(CombinedResult::new(&Vec::new()), |mut acc, x| {
+        results.iter().fold(CombinedResult::new(&Vec::new()), |mut acc, x| {
             CombinedResult::add_combined_result(&mut acc, x);
             acc
-        });
+        })
         //for _ in 0..self.iterations {
         //    let mut wave = Wave::new(self.allies, self.enemies);
         //    let result = wave.run();

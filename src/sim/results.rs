@@ -14,14 +14,28 @@ pub fn get_mean_and_standard_deviation(sum : f64, sum_sq:f64, n: u64) -> (f64, f
     (get_mean(sum, n), get_standard_deviation(sum, sum_sq, n))
 }
 
+#[derive(Debug,Clone,Copy)]
 pub struct CombinedResult {
     pub iterations: u64,
     pub wins: u32,
     pub losses: u32,
     pub stalls: u32,
-    pub statistics: Vec<CombinedStatistics>,
+    //pub statistics: Vec<CombinedStatistics>, // TODO strong type allies and emeies ?
 }
 
+
+impl Default for CombinedResult {
+    fn default() -> Self {
+        Self {
+            iterations: 0,
+            wins: 0,
+            losses: 0,
+            stalls: 0,
+            //statistics: Vec::new(),
+        }
+    }
+}
+#[derive(Debug,Clone,Copy)]
 pub struct CombinedStatistics {
     pub hm: EnumMap<Stat, f64>,
     pub hm_sq: EnumMap<Stat, f64>,
@@ -34,7 +48,7 @@ impl  CombinedResult {
             wins: 0,
             losses: 0,
             stalls: 0,
-            statistics: Vec::new(),
+            //statistics: Vec::new(),
         };
         for r in results {
             cr.add_result(r);
@@ -47,7 +61,7 @@ impl  CombinedResult {
         result.wins += added.wins;
         result.losses += added.losses;
         result.stalls += added.stalls;
-        Self::add_combined_statistics(&mut result.statistics, &added.statistics);
+        //Self::add_combined_statistics(&mut result.statistics, &added.statistics);
     }
 
     pub fn add_result(self: &mut CombinedResult, added : &Result) {
@@ -61,8 +75,9 @@ impl  CombinedResult {
         else if added.stall {
             self.stalls += 1;
         }
-        Self::add_statistics(&mut self.statistics, &added.statistics);
+        //Self::add_statistics(&mut self.statistics, &added.statistics);
     }
+    /* 
 
     pub fn add_combined_statistics( statistics : &mut Vec<CombinedStatistics>,  added : &Vec<CombinedStatistics>) {
         if statistics.len() < added.len() {
@@ -119,6 +134,7 @@ impl  CombinedResult {
         let hm =  &self.statistics[index].hm;
         get_standard_deviation(hm[key], self.statistics[index].hm_sq[key], self.iterations)
     }
+    */
     
 }
 

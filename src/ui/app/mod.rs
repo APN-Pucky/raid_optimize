@@ -11,7 +11,7 @@ use reqwest::{Error, Client, Response};
 use dioxus_router::prelude::*;
 use std::collections::HashMap;
 
-use crate::ui::app::{run::RunState, input::StartState, edit::EditState};
+use crate::ui::app::{ input::StartState, edit::EditState, run::RunState};
 use crate::ui::app::input::Start;
 use crate::ui::app::run::Run;
 use crate::ui::app::edit::Edit;

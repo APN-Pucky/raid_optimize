@@ -10,15 +10,40 @@ use serde::{Deserialize, Serialize};
 use reqwest::{Error, Client, Response};
 use dioxus_router::prelude::*;
 use std::collections::HashMap;
+use chrono::{DateTime, Utc};
+use std::future::Future;
+use std::thread::JoinHandle;
+use std::future::IntoFuture;
 
+use crate::sim::{Sim, results::CombinedResult, args::Args};
 pub struct Job {
+    pub id : usize,
     pub name : String,
-    pub status : String,
-    pub progress : f32,
-    pub eta : f32,
-    pub speed : f32,
-    pub result : String,
-    pub error : String,
+    pub start_time : Option<DateTime<Utc>>,
+    //pub end_time : Option<DateTime<Utc>>,
+    //pub run_time : Option<u64>, // TODO
+    pub args : Args,
+    //pub sim : Sim,
+    pub result : Option<CombinedResult>,
+    //pub result : tokio::task::JoinHandle<CombinedResult>,
+    //pub result : Option<std::thread::JoinHandle<CombinedResult>>,
+}
+
+pub struct Result{
+    //pub end_time : Option<DateTime<Utc>>,
+    pub result : CombinedResult,
+}
+
+pub enum JobId {
+    ID(usize),
+}
+
+#[derive(Debug, PartialEq, Eq, strum_macros::Display,strum_macros::EnumIter,Deserialize, Serialize,Copy,Clone)]
+pub enum Status {
+    Pending,
+    Started,
+    Ended,
+    Aborted
 }
 
 pub struct RunState {
@@ -33,44 +58,54 @@ impl Default for RunState {
     }
 }
 
-fn sort_by_name(a: &Job, b: &Job) -> std::cmp::Ordering {
-    a.name.cmp(&b.name)
-}
-
 #[inline_props]
 pub(crate) fn Run(cx: Scope) -> Element {
     let run = use_shared_state::<RunState>(cx).unwrap();
     render! {
         h2 {"Jobs"}
         div {
-            // table of jobs 
+            // table of jobs gg
             table {
                 tr {
+                    th { "ID" }
                     th { "Name" }
+                    th { "Start" }
                     th { "Status" }
-                    th { "Progress" }
-                    th { "ETA" }
-                    th { "Speed" }
-                    th { "Result" }
-                    th { "Error" }
+                    th { "Wins" }
+                    th { "Stalls" }
+                    th { "Losses" }
                 }
-            for job in run.read().jobs.iter() {
-                tr {
-                    td { "{job.name}" }
-                    td { "{job.status}" }
-                    td { 
-                        progress {
-                            value: "{job.progress}",
-                            max: "100",
+                for job in run.read().jobs.iter() {
+                    match job.result {
+                        Some(result) => {
+                            rsx! {
+                                tr {
+                                    td { "{job.id}" }
+                                    td { "{job.name}" }
+                                    td { "{job.start_time:?}" }
+                                    td { "Ended" }
+                                    td { "{result.wins}" }
+                                    td { "{result.stalls}" }
+                                    td { "{result.losses}" }
+                                }
+                            }
+                        },
+                        None => {
+                            rsx! {
+                                tr {
+                                    td { "{job.id}" }
+                                    td { "{job.name}" }
+                                    td { "{job.start_time:?}" }
+                                    td { "Running" }
+                                    td { "" }
+                                    td { "" }
+                                    td { "" }
+                                }
+                            }
                         }
                     }
-                    td { "{job.eta}" }
-                    td { "{job.speed}" }
-                    td { "{job.result}" }
-                    td { "{job.error}" }
                 }
             }
-        }
         }
     }
 }
