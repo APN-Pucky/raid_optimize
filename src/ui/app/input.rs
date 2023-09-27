@@ -11,20 +11,16 @@ use reqwest::{Error, Client, Response};
 use dioxus_router::prelude::*;
 use std::collections::HashMap;
 
-use crate::ui::app::run::{Job, RunState};
+use crate::{ui::app::{run::{Job, RunState}, edit::EditState}, sim::args::Args};
 
 pub struct StartState {
-    ally_team: String,
-    enemy_team: String,
-    flags : String,
+    args : Args,
 }
 
 impl Default for StartState {
     fn default() -> Self {
         Self {
-            ally_team: "".to_string(),
-            enemy_team: "".to_string(),
-            flags: "".to_string(),
+            args : Args::default(),
         }
     }
 }
@@ -33,27 +29,79 @@ impl Default for StartState {
 #[inline_props]
 pub(crate) fn Start(cx: Scope) -> Element {
     let start = use_shared_state::<StartState>(cx).unwrap();
+    let edit = use_shared_state::<EditState>(cx).unwrap();
     render! {
         h2 {"Input"}
         div {
             p { "Ally Team: " }
-            input {
-                value: "{start.read().ally_team}",
-                oninput: move |e| start.write().ally_team = e.value.clone(),
+            div {
+                class : "form-group",
+                for (i, hero) in start.read().args.allies.iter().enumerate() {
+                    select {
+                        id : "heroselect",
+                        oninput: move |evt| {
+                            println!("{evt:?}");
+
+                            start.write().args.allies[i] = edit.read().heroes.heroes[evt.value.parse::<usize>().unwrap()].clone();
+                            //.write().id = evt.value.parse::<usize>().unwrap();
+                        },
+                        for (i,ahero) in edit.read().heroes.heroes.iter().enumerate() {
+                            option {
+                                value: "{i}", 
+                                selected: ahero.id == hero.id,
+                                "{ahero.name}" 
+                            }
+                        }
+                    }
+                }
+                button {
+                    onclick: move |_| {
+                        start.write().args.allies.push(edit.read().heroes.heroes[0].clone());
+                    },
+                    "Add"
+                }
+                button {
+                    onclick: move |_| {
+                        start.write().args.allies.pop();
+                    },
+                    "Remove"
+                }
             }
         }
         div {
             p { "Enemy Team: " }
-            input {
-                value: "{start.read().enemy_team}",
-                oninput: move |e| start.write().enemy_team = e.value.clone(),
-            }
-        }
-        div {
-            p { "Flags: " }
-            input {
-                value: "{start.read().flags}",
-                oninput: move |e| start.write().flags = e.value.clone(),
+            div {
+                class : "form-group",
+                for (i, hero) in start.read().args.enemies.iter().enumerate() {
+                    select {
+                        id : "heroselect",
+                        oninput: move |evt| {
+                            println!("{evt:?}");
+
+                            start.write().args.enemies[i] = edit.read().heroes.heroes[evt.value.parse::<usize>().unwrap()].clone();
+                            //.write().id = evt.value.parse::<usize>().unwrap();
+                        },
+                        for (i,ahero) in edit.read().heroes.heroes.iter().enumerate() {
+                            option {
+                                value: "{i}", 
+                                selected: ahero.id == hero.id,
+                                "{ahero.name}" 
+                            }
+                        }
+                    }
+                }
+                button {
+                    onclick: move |_| {
+                        start.write().args.enemies.push(edit.read().heroes.heroes[0].clone());
+                    },
+                    "Add"
+                }
+                button {
+                    onclick: move |_| {
+                        start.write().args.enemies.pop();
+                    },
+                    "Remove"
+                }
             }
         }
         div {

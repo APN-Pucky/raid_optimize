@@ -37,6 +37,34 @@ pub struct Hero {
     //pub passives : Vec<Passive>,
 }
 
+impl Default for Hero {
+    fn default() -> Self {
+        Hero {
+            id: 0,
+            name: "".to_string(),
+            mark : Mark::Blue,
+            class: Class::Attack,
+            faction: Faction::DoomLegion,
+            rarity : Rarity::Legendary,
+            health: 0.,
+            attack: 0.,
+            defense: 0.,
+            speed: 0.,
+            crit_rate: 0.,
+            crit_damage: 0.,
+            effect_hit: 0.,
+            effect_resistance: 0.,
+            mastery: 0.,
+            healing_effect: 0.,
+            leech: 0.,
+            piercing: 0.,
+            tenacity: 0.,
+            damage_reflection : 0.,
+            skills: vec![],
+        }
+    }
+}
+
 pub fn get_hero_by_string<'a>(heroes: &'a Heroes, name: &'a str) -> Option<&'a Hero> {
     for hero in heroes.heroes.iter() {
         if hero.name == name  || name  == format!("[{}]", hero.id) 

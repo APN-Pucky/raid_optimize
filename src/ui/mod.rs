@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 use reqwest::{Error, Client, Response};
 use dioxus_router::prelude::*;
 use std::collections::HashMap;
+use axum_server::HttpConfig;
 
 use crate::ui::{login::check_login, user::{UserData, Login}};
 
@@ -185,14 +186,14 @@ pub async fn main() {
 
     println!("Listening on http://{addr}");
 
-    let path = "http://127.0.0.1:3030";
+    //let path = "http://127.0.0.1:3030";
 
     //match open::that(path) {
     //    Ok(()) => println!("Opened '{}' successfully.", path),
     //    Err(err) => eprintln!("An error occurred when opening '{}': {}", path, err),
     //}
 
-    axum::Server::bind(&addr.to_string().parse().unwrap())
+    axum_server::bind(addr)
         .serve(app.into_make_service())
         .await
         .unwrap();

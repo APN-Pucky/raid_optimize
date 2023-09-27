@@ -19,8 +19,9 @@ use crate::data::rarity::Rarity;
 use strum::IntoEnumIterator;
 
 pub struct EditState {
-    heroes : Heroes,
-    id: usize,
+    pub heroes : Heroes,
+    pub id: usize,
+    pub auto_safe : bool
 }
 
 impl Default for EditState {
@@ -29,6 +30,7 @@ impl Default for EditState {
         Self {
             heroes,
             id: 0,
+            auto_safe : false,
         }
     }
 }
@@ -43,6 +45,9 @@ pub fn save_to_file(heroes : &Heroes) {
 #[inline_props]
 pub(crate) fn Edit(cx: Scope) -> Element {
     let heroes = use_shared_state::<EditState>(cx).unwrap();
+    if heroes.read().auto_safe {
+        save_to_file(&heroes.read().heroes);
+    }
     render! {
         div {
             class: "container",
@@ -58,20 +63,85 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         heroes.write().id = evt.value.parse::<usize>().unwrap();
                     },
                     for (i,hero) in heroes.read().heroes.heroes.iter().enumerate() {
-                        option {value: "{i}", "{hero.name}" }
+                        option {
+                            value: "{i}", 
+                            selected: i == heroes.read().id,
+                            "{hero.name}" 
+                        }
                     }
                 }
             }
             div {
                 class : "column properties" ,
                 button {
+                    onclick: move |_| {
+                        let mut hero = Hero::default();
+                        hero.id = heroes.read().heroes.heroes.len() as u32;
+                        heroes.write().heroes.heroes.push(hero);
+                        let id = heroes.read().heroes.heroes.len() - 1;
+                        heroes.write().id = id;
+                    },
                     "New"
+                }
+            }
+            div {
+                class : "column properties" ,
+                button {
+                    onclick: move |_| {
+                        let i = heroes.read().id;
+                        let mut hero = heroes.read().heroes.heroes[i].clone();
+                        hero.id = heroes.read().heroes.heroes.len() as u32;
+                        heroes.write().heroes.heroes.push(hero);
+                        let id = heroes.read().heroes.heroes.len() - 1;
+                        heroes.write().id = id;
+                    },
+                    "Clone"
                 }
             }
             div {
                 class : "column inputs " ,
                 button {
+                    onclick: move |_| {
+                        let ii = heroes.read().id;
+                        heroes.write().heroes.heroes.remove(ii);
+                        heroes.write().id = std::cmp::max(ii-1,0);
+                    },
                     "Delete"
+                }
+            }
+            div {
+                class : "column inputs " ,
+                button {
+                    onclick: move |_| {
+                        heroes.write().heroes = load_heroes("data/heroes.xml".to_string());
+                    },
+                    "Reload"
+                }
+            }
+            div {
+                class : "column inputs " ,
+                
+                div {
+                    class : "form-group",
+                    button {
+                        onclick: move |_| {
+                            save_to_file(&heroes.read().heroes);
+                        },
+                        "save"
+                    }
+                    input {
+                        id : "auto_safe",
+                        value: "auto_safe",
+                        r#type : "checkbox",
+                        checked : "{heroes.read().auto_safe}",
+                        onchange: move |e| {
+                            heroes.write().auto_safe = e.value.parse::<bool>().unwrap();
+                        },
+                    }
+                    label {
+                        r#for : "auto_safe",
+                        "auto safe"
+                    }
                 }
             }
         }
@@ -88,7 +158,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<u32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].id = i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -102,7 +171,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                     oninput: move |e| {
                         let ii = heroes.read().id;
                         heroes.write().heroes.heroes[ii].name = e.value.clone();
-                        save_to_file(&heroes.read().heroes);
                     },
                 }
             }
@@ -116,7 +184,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].health = i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -131,7 +198,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].attack= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -146,7 +212,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].defense= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -161,7 +226,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].speed= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -176,7 +240,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].crit_rate= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -191,7 +254,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].crit_damage= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -206,7 +268,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].effect_hit= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -221,7 +282,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].effect_resistance= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -236,7 +296,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].mastery= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -251,7 +310,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].healing_effect= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -266,7 +324,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].leech= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -281,7 +338,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].piercing= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -296,7 +352,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].tenacity= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -311,7 +366,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         if let Ok(i) = e.value.parse::<f32>() {
                             let ii = heroes.read().id;
                             heroes.write().heroes.heroes[ii].damage_reflection= i;
-                            save_to_file(&heroes.read().heroes);
                         };
                     },
                 }
@@ -325,7 +379,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         println!("{evt:?}");
                         let ii = heroes.read().id;
                         heroes.write().heroes.heroes[ii].mark = *Mark::iter().collect::<Vec<Mark>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
-                        save_to_file(&heroes.read().heroes);
                     },
                     for (i,mark) in Mark::iter().enumerate() {
                         option {
@@ -345,7 +398,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         println!("{evt:?}");
                         let ii = heroes.read().id;
                         heroes.write().heroes.heroes[ii].class = *Class::iter().collect::<Vec<Class>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
-                        save_to_file(&heroes.read().heroes);
                     },
                     for (i,class) in Class::iter().enumerate() {
                         option {
@@ -365,7 +417,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         println!("{evt:?}");
                         let ii = heroes.read().id;
                         heroes.write().heroes.heroes[ii].faction= *Faction::iter().collect::<Vec<Faction>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
-                        save_to_file(&heroes.read().heroes);
                     },
                     for (i,faction) in Faction::iter().enumerate() {
                         option {
@@ -385,7 +436,6 @@ pub(crate) fn Edit(cx: Scope) -> Element {
                         println!("{evt:?}");
                         let ii = heroes.read().id;
                         heroes.write().heroes.heroes[ii].rarity = *Rarity::iter().collect::<Vec<Rarity>>().get(evt.value.parse::<usize>().unwrap()).unwrap();
-                        save_to_file(&heroes.read().heroes);
                     },
                     for (i,rarity) in Rarity::iter().enumerate() {
                         option {

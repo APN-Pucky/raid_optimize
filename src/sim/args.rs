@@ -17,6 +17,24 @@ pub struct Args {
     pub manual_enemy  : bool,
 }
 
+impl Default for Args {
+    fn default() -> Self {
+        Self {
+            //heroes : Heroes::default(),
+            allies : vec![Hero::default(),Hero::default(),Hero::default(),Hero::default(),Hero::default()],
+            enemies : vec![Hero::default(),Hero::default(),Hero::default(),Hero::default(),Hero::default()],
+            iterations : 1000,
+            threads : 1,
+            print_version : false,
+            no_stats : false,
+            no_results : false,
+            bar : false,
+            manual_ally : false,
+            manual_enemy : false,
+        }
+    }
+}
+
 pub fn args_from_input(input:Input) ->Args {
     let heroes = load_heroes(input.heroes_xml);
     let mut args = Args {
