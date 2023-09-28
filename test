@@ -1,157 +1,9 @@
    Compiling raid_optimize v0.0.1 (/home/apn/git/raid_optimize)
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
+error: expected `,`
+   --> src/ui/app/input.rs:542:39
     |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-378 |             hero_positive_number!(edit,health)
-    |             ---------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-379 |             hero_positive_number!(edit,attack)
-    |             ---------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-380 |             hero_positive_number!(edit,defense)
-    |             ----------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-381 |             hero_positive_number!(edit,speed)
-    |             --------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-382 |             hero_positive_number!(edit,crit_rate)
-    |             ------------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-383 |             hero_positive_number!(edit,crit_damage)
-    |             --------------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-384 |             hero_positive_number!(edit,effect_hit)
-    |             -------------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-385 |             hero_positive_number!(edit,effect_resistance)
-    |             --------------------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-386 |             hero_positive_number!(edit,mastery)
-    |             ----------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-387 |             hero_positive_number!(edit,healing_effect)
-    |             ------------------------------------------ in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-388 |             hero_positive_number!(edit,leech)
-    |             --------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-389 |             hero_positive_number!(edit,piercing)
-    |             ------------------------------------ in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-390 |             hero_positive_number!(edit,tenacity)
-    |             ------------------------------------ in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: expected expression, found `$`
-   --> src/ui/app/input.rs:66:46
-    |
-66  |                             println!("{} {}",$value,stringify!($value));
-    |                                              ^^^^^^ expected expression
-...
-391 |             hero_positive_number!(edit,damage_reflection)
-    |             --------------------------------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+542 | ...                   label {"No inputs (yet)"}
+    |                             ^
 
 warning: unused import: `std::fmt`
  --> src/data/mod.rs:1:5
@@ -984,6 +836,12 @@ warning: unused imports: `Client`, `Error`, `Response`
 10 | use reqwest::{Error, Client, Response};
    |               ^^^^^  ^^^^^^  ^^^^^^^^
 
+warning: unused import: `dioxus_router::prelude::*`
+  --> src/ui/app/input.rs:11:5
+   |
+11 | use dioxus_router::prelude::*;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
 warning: unused import: `std::collections::HashMap`
   --> src/ui/app/input.rs:12:5
    |
@@ -1002,17 +860,79 @@ warning: unused import: `fermi::use_atom_state`
 14 | use fermi::use_atom_state;
    |     ^^^^^^^^^^^^^^^^^^^^^
 
-warning: unused import: `DateTime`
+warning: unused import: `strum::IntoEnumIterator`
+  --> src/ui/app/input.rs:15:5
+   |
+15 | use strum::IntoEnumIterator;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `DateTime`, `Utc`
   --> src/ui/app/input.rs:16:14
    |
 16 | use chrono::{DateTime, Utc};
-   |              ^^^^^^^^
+   |              ^^^^^^^^  ^^^
 
-warning: unused imports: `ui::app::run`, `wave::print`
+warning: unused import: `crate::data::faction::Faction`
+  --> src/ui/app/input.rs:17:5
+   |
+17 | use crate::data::faction::Faction;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::data::mark::Mark`
+  --> src/ui/app/input.rs:18:5
+   |
+18 | use crate::data::mark::Mark;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::data::class::Class`
+  --> src/ui/app/input.rs:19:5
+   |
+19 | use crate::data::class::Class;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::data::rarity::Rarity`
+  --> src/ui/app/input.rs:20:5
+   |
+20 | use crate::data::rarity::Rarity;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::data::skill::SkillData`
+  --> src/ui/app/input.rs:21:5
+   |
+21 | use crate::data::skill::SkillData;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Job`, `Status`, `sim::Sim`
+  --> src/ui/app/input.rs:22:29
+   |
+22 | use crate::{ui::app::{run::{Job, Status,RunState}, edit::EditState}, sim::args::Args,sim::Sim};
+   |                             ^^^  ^^^^^^                                              ^^^^^^^^
+
+warning: unused import: `results::CombinedResult`
+  --> src/ui/app/input.rs:23:18
+   |
+23 | use crate::sim::{results::CombinedResult};
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `hero::Hero`, `load_heroes`, `ui::app::run`, `wave::print`
   --> src/ui/app/input.rs:26:13
    |
 26 | use crate::{ui::app::run, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
-   |             ^^^^^^^^^^^^                                                   ^^^^^^^^^^^
+   |             ^^^^^^^^^^^^                         ^^^^^^^^^^^  ^^^^^^^^^^   ^^^^^^^^^^^
+
+warning: unused macro definition: `skill_parameter`
+  --> src/ui/app/input.rs:49:14
+   |
+49 | macro_rules! skill_parameter {
+   |              ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_macros)]` on by default
+
+warning: unused macro definition: `hero_positive_number`
+  --> src/ui/app/input.rs:73:14
+   |
+73 | macro_rules! hero_positive_number {
+   |              ^^^^^^^^^^^^^^^^^^^^
 
 warning: unused imports: `Extension`, `Path`, `Router`, `Server`, `response::Html`, `routing::get`, `self`, `ws::WebSocketUpgrade`
  --> src/ui/app/run.rs:1:22
@@ -1249,12 +1169,6 @@ warning: use of deprecated method `wave::Wave::<'_>::len`
 231 |         (0..self.len())
     |                  ^^^
 
-warning: unused import: `dioxus_router::prelude`
-  --> src/ui/app/input.rs:11:5
-   |
-11 | use dioxus_router::prelude::*;
-   |     ^^^^^^^^^^^^^^^^^^^^^^
-
 warning: unused import: `dioxus::prelude`
  --> src/ui/app/run.rs:3:5
   |
@@ -1273,5 +1187,5 @@ warning: unused import: `dioxus_router::prelude`
 11 | use dioxus_router::prelude::*;
    |     ^^^^^^^^^^^^^^^^^^^^^^
 
-warning: `raid_optimize` (lib) generated 172 warnings
-error: could not compile `raid_optimize` (lib) due to 14 previous errors; 172 warnings emitted
+warning: `raid_optimize` (lib) generated 182 warnings
+error: could not compile `raid_optimize` (lib) due to previous error; 182 warnings emitted

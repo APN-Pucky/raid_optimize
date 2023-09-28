@@ -45,6 +45,31 @@ pub fn save_to_file(heroes : &Heroes) {
     // write str to file
     std::fs::write("data/heroes.xml", str).unwrap();
 }
+
+macro_rules! skill_parameter {
+    ($edit:expr, $j:expr, $t:ty { $($x:expr),* }) => {
+        rsx!{
+            $(
+            div { 
+                class : "form-group",
+                label {stringify!($x:)}
+                input {
+                    oninput: move |evt| {
+                        let ii = $edit.read().id;
+                        if let $t {$x,..} = &mut $edit.write().heroes.heroes[ii].skills[$j].data{ 
+                            if let Ok(val) =  evt.value.parse::<_>() {
+                                *$x =  val;
+                            }
+                        }
+                    },
+                    value : $x as f64
+                }
+            }
+            )*
+        }
+    }
+}
+
 macro_rules! hero_positive_number {
     ($edit:expr, $prop:expr) => {
         rsx!{
@@ -496,22 +521,29 @@ pub(crate) fn Start(cx: Scope) -> Element {
                 }
                 match edit.read().heroes.heroes[edit.read().id].skills[j].data {
                         SkillData::BasicAttack {attack_damage_ratio} => 
-                            rsx!{
-                                div { 
-                                    class : "form-group",
-                                    label {"Attack Damage Ratio: "}
-                                    input {
-                                        oninput: move |evt| {
-                                            println!("{evt:?}");
-                                            let ii = edit.read().id;
-                                            edit.write().heroes.heroes[ii].skills[j].data = SkillData::BasicAttack {attack_damage_ratio : evt.value.parse::<f32>().unwrap()};
-                                        },
-                                        value : "{attack_damage_ratio}"
-                                    }
+                            skill_parameter!(edit,j, SkillData::BasicAttack {attack_damage_ratio}),
+
+                        SkillData::ScorchedSoul{ attack_damage_ratio , hp_burning_chance, hp_burning_turns } => 
+                            skill_parameter!(edit,j, SkillData::ScorchedSoul {attack_damage_ratio , hp_burning_chance, hp_burning_turns}),
+                        SkillData::FireHeal{ heal_attack_ratio, heal_max_hp_ratio, block_debuff_turns} =>
+                            skill_parameter!(edit,j, SkillData::FireHeal {heal_attack_ratio, heal_max_hp_ratio, block_debuff_turns}),
+                        SkillData::Resurrection{ shield_max_hp_ratio, shield_turns, cleanse_dot_debuffs, restore_max_hp_ratio} =>
+                            skill_parameter!(edit,j, SkillData::Resurrection {shield_max_hp_ratio, shield_turns, cleanse_dot_debuffs, restore_max_hp_ratio}),
+
+                        SkillData::ScytheStrike{ attack_damage_ratio, bleed_chance,bleed_turns} =>
+                            skill_parameter!(edit,j, SkillData::ScytheStrike {attack_damage_ratio, bleed_chance,bleed_turns}),
+                        SkillData::BloodthirstyScythe{ attack_damage_ratio, bleed_chance,bleed_turns} => 
+                            skill_parameter!(edit,j, SkillData::BloodthirstyScythe {attack_damage_ratio, bleed_chance,bleed_turns}),
+                        SkillData::EnergyBurst{attack_damage_ratio, bleed_turns, reduce_effect_resistance_chance, reduce_effect_resistance_turns} =>
+                            skill_parameter!(edit,j, SkillData::EnergyBurst {attack_damage_ratio, bleed_turns, reduce_effect_resistance_chance, reduce_effect_resistance_turns}),
+                        _ => {
+                            rsx! {
+                                div {
+                                    "No inputs (yet)"
                                 }
                             }
-                        ,
-                        _ => rsx!{div {"No Input for this skill data type"}}
+                        }
+                        
                 }
             }
         }
