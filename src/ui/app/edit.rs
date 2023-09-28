@@ -29,7 +29,7 @@ impl Default for EditState {
         let heroes = load_heroes("data/heroes.xml".to_string());
         Self {
             heroes,
-            id: 0,
+            id: 0, // TODO rename to pos/selected
             auto_safe : false,
         }
     }

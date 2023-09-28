@@ -29,6 +29,8 @@ use quick_xml::se::to_string;
 pub struct StartState {
     pub name : String,
     pub args : Args,
+    pub allies : Vec<u32>,
+    pub enemies : Vec<u32>,
 }
 
 impl Default for StartState {
@@ -36,6 +38,8 @@ impl Default for StartState {
         Self {
             name : "Job Name".to_string(),
             args : Args::default(),
+            allies : vec![],
+            enemies : vec![],
         }
     }
 }
@@ -126,19 +130,19 @@ pub(crate) fn Start(cx: Scope) -> Element {
             p { "Ally Team: " }
             div {
                 class : "form-group",
-                for (i, hero) in start.read().args.allies.iter().enumerate() {
+                for (i, heroid) in start.read().allies.iter().enumerate() {
                     select {
                         id : "heroselect",
                         oninput: move |evt| {
                             println!("{evt:?}");
 
-                            start.write().args.allies[i] = edit.read().heroes.heroes[evt.value.parse::<usize>().unwrap()].clone();
+                            start.write().allies[i] = evt.value.parse::<u32>().unwrap();
                             //.write().id = evt.value.parse::<usize>().unwrap();
                         },
                         for (i,ahero) in edit.read().heroes.heroes.iter().enumerate() {
                             option {
-                                value: "{i}", 
-                                selected: ahero.id == hero.id,
+                                value: "{ahero.id}", 
+                                selected: ahero.id == *heroid,
                                 "{ahero.name}" 
                             }
                         }
@@ -146,13 +150,13 @@ pub(crate) fn Start(cx: Scope) -> Element {
                 }
                 button {
                     onclick: move |_| {
-                        start.write().args.allies.push(edit.read().heroes.heroes[0].clone());
+                        start.write().allies.push(0);
                     },
                     "Add"
                 }
                 button {
                     onclick: move |_| {
-                        start.write().args.allies.pop();
+                        start.write().allies.pop();
                     },
                     "Remove"
                 }
@@ -162,19 +166,19 @@ pub(crate) fn Start(cx: Scope) -> Element {
             p { "Enemy Team: " }
             div {
                 class : "form-group",
-                for (i, hero) in start.read().args.enemies.iter().enumerate() {
+                for (i, heroid) in start.read().enemies.iter().enumerate() {
                     select {
                         id : "heroselect",
                         oninput: move |evt| {
                             println!("{evt:?}");
 
-                            start.write().args.enemies[i] = edit.read().heroes.heroes[evt.value.parse::<usize>().unwrap()].clone();
+                            start.write().enemies[i] = evt.value.parse::<u32>().unwrap();
                             //.write().id = evt.value.parse::<usize>().unwrap();
                         },
                         for (i,ahero) in edit.read().heroes.heroes.iter().enumerate() {
                             option {
-                                value: "{i}", 
-                                selected: ahero.id == hero.id,
+                                value: "{ahero.id}", 
+                                selected: ahero.id == *heroid,
                                 "{ahero.name}" 
                             }
                         }
@@ -182,13 +186,13 @@ pub(crate) fn Start(cx: Scope) -> Element {
                 }
                 button {
                     onclick: move |_| {
-                        start.write().args.enemies.push(edit.read().heroes.heroes[0].clone());
+                        start.write().enemies.push(0);
                     },
                     "Add"
                 }
                 button {
                     onclick: move |_| {
-                        start.write().args.enemies.pop();
+                        start.write().enemies.pop();
                     },
                     "Remove"
                 }
@@ -225,6 +229,11 @@ pub(crate) fn Start(cx: Scope) -> Element {
         div {
             button { 
                 onclick: move |_| {
+                    {
+                        // set allies and enemies in args
+                        start.write().args.allies = start.read().allies.iter().map(|i| edit.read().heroes.heroes.iter().find(|&h| h.id == *i).unwrap().clone()).collect();
+                        start.write().args.enemies = start.read().enemies.iter().map(|i| edit.read().heroes.heroes.iter().find(|&h| h.id == *i).unwrap().clone()).collect();
+                    }
                     let name = start.read().name.clone();
                     let args = start.read().args.clone();
                     let ret = cx.spawn( {
@@ -299,7 +308,13 @@ pub(crate) fn Start(cx: Scope) -> Element {
                 button {
                     onclick: move |_| {
                         let mut hero = Hero::default();
-                        hero.id = edit.read().heroes.heroes.len() as u32;
+                        let mut max = 0;
+                        for h in edit.read().heroes.heroes.iter() {
+                            if h.id > max {
+                                max = h.id;
+                            }
+                        }
+                        hero.id = max + 1;
                         edit.write().heroes.heroes.push(hero);
                         let id = edit.read().heroes.heroes.len() - 1;
                         edit.write().id = id;
@@ -493,13 +508,7 @@ pub(crate) fn Start(cx: Scope) -> Element {
         div {
             h3{"Skills"}
             for (j,s) in edit.read().heroes.heroes[edit.read().id].skills.iter().enumerate() {
-                div {
-                    class : "form-group",
-                    label {"Cooldown: "}
-                    input {
-                        value : "{s.cooldown}"
-                    }
-                }
+                
                 div {
                     class : "form-group",
                     select {
@@ -518,6 +527,13 @@ pub(crate) fn Start(cx: Scope) -> Element {
                         //class : "full-input",
                         //value : "{s.data}"
                     },
+                }
+                div {
+                    class : "form-group",
+                    label {"Cooldown: "}
+                    input {
+                        value : "{s.cooldown}"
+                    }
                 }
                 match edit.read().heroes.heroes[edit.read().id].skills[j].data {
                         SkillData::BasicAttack {attack_damage_ratio} => 
