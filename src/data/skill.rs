@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::wave::InstanceIndex;
 use crate::wave::Wave;
-
+use strum_macros::EnumIter;
 use super::effect::is_dot;
 use super::subskill;
 use super::subskill::SubSkill;
@@ -11,7 +11,8 @@ use super::subskill::merge_targets;
 use quick_xml::de::from_str;
 use quick_xml::se::to_string;
 type SkillRef = usize;
-
+use strum_macros::EnumString;
+use std::str::FromStr;
 pub struct NewSkill {
     pub cooldown : u32,
     pub subskills : Vec<SubSkill>,
@@ -94,7 +95,7 @@ pub const BASIC_ATTACK: Skill = Skill {
     },
 };
 
-#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
+#[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
 pub enum SkillData {
     None,
     // Stabilized

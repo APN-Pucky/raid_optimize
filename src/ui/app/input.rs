@@ -18,6 +18,7 @@ use crate::data::faction::Faction;
 use crate::data::mark::Mark;
 use crate::data::class::Class;
 use crate::data::rarity::Rarity;
+use crate::data::skill::SkillData;
 use crate::{ui::app::{run::{Job, Status,RunState}, edit::EditState}, sim::args::Args,sim::Sim};
 use crate::sim::{results::CombinedResult};
 //use crate::scheduler::{SCHEDULER,start_job};
@@ -43,6 +44,32 @@ pub fn save_to_file(heroes : &Heroes) {
     let str = to_string(&heroes).unwrap();
     // write str to file
     std::fs::write("data/heroes.xml", str).unwrap();
+}
+macro_rules! hero_positive_number {
+    ($edit:expr, $prop:expr) => {
+        rsx!{
+            div {
+                class : "form-group",
+                label {r#for : stringify!($prop), 
+                    stringify!($prop:)
+                },
+                input {
+                    id : stringify!($prop),
+                    r#type : "number",
+                    min : 0,
+                    value : $edit.read().heroes.heroes[$edit.read().id].$prop as i64,
+                    //value : "{$edit.read().heroes.heroes[$edit.read().id].health}",
+                    //value : concat!("{",stringify!($value),"}"),
+                    oninput: move |e| {
+                        if let Ok(i) = e.value.parse::<f32>() {
+                            let ii = $edit.read().id;
+                            $edit.write().heroes.heroes[ii].$prop= i;
+                        };
+                    },
+                }
+            }
+        }
+    }
 }
 
 #[inline_props]
@@ -347,230 +374,20 @@ pub(crate) fn Start(cx: Scope) -> Element {
                     },
                 }
             }
-            div {
-                class : "form-group",
-                label {r#for : "health", "health:"},
-                input {
-                    id : "health",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].health}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].health = i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "attack", "attack:"},
-                input {
-                    id : "attack",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].attack}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].attack= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "defense", "defense:"},
-                input {
-                    id : "defense",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].defense}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].defense= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "speed", "speed:"},
-                input {
-                    id : "speed",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].speed}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].speed= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "crit_rate", "crit_rate:"},
-                input {
-                    id : "crit_rate",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].crit_rate}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].crit_rate= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "crit_damage", "crit_damage:"},
-                input {
-                    id : "crit_rate",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].crit_damage}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].crit_damage= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "effect_hit", "effect_hit:"},
-                input {
-                    id : "effect_hit",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].effect_hit}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].effect_hit= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "effect_resistance", "effect_resistance:"},
-                input {
-                    id : "effect_resistance",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].effect_resistance}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].effect_resistance= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "mastery", "mastery"},
-                input {
-                    id : "mastery",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].mastery}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].mastery= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "healing_effect", "healing_effect"},
-                input {
-                    id : "healing_effect",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].healing_effect}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].healing_effect= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "leech", "leech"},
-                input {
-                    id : "leech",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].leech}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].leech= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "piercing", "piercing"},
-                input {
-                    id : "piercing",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].piercing}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].piercing= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "tenacity", "tenacity"},
-                input {
-                    id : "tenacity",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].tenacity}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].tenacity= i;
-                        };
-                    },
-                }
-            }
-            div {
-                class : "form-group",
-                label {r#for : "damage_reflection", "damage_reflection"},
-                input {
-                    id : "damage_reflection",
-                    r#type : "number",
-                    min : 0,
-                    value: "{edit.read().heroes.heroes[edit.read().id].damage_reflection}",
-                    oninput: move |e| {
-                        if let Ok(i) = e.value.parse::<f32>() {
-                            let ii = edit.read().id;
-                            edit.write().heroes.heroes[ii].damage_reflection= i;
-                        };
-                    },
-                }
-            }
+            hero_positive_number!(edit,health)
+            hero_positive_number!(edit,attack)
+            hero_positive_number!(edit,defense)
+            hero_positive_number!(edit,speed)
+            hero_positive_number!(edit,crit_rate)
+            hero_positive_number!(edit,crit_damage)
+            hero_positive_number!(edit,effect_hit)
+            hero_positive_number!(edit,effect_resistance)
+            hero_positive_number!(edit,mastery)
+            hero_positive_number!(edit,healing_effect)
+            hero_positive_number!(edit,leech)
+            hero_positive_number!(edit,piercing)
+            hero_positive_number!(edit,tenacity)
+            hero_positive_number!(edit,damage_reflection)
             div {
                 class : "form-group",
                 label {r#for : "mark", "mark"},
@@ -645,6 +462,56 @@ pub(crate) fn Start(cx: Scope) -> Element {
                             "{rarity}"
                         }
                     }
+                }
+            }
+        }
+        div {
+            h3{"Skills"}
+            for (j,s) in edit.read().heroes.heroes[edit.read().id].skills.iter().enumerate() {
+                div {
+                    class : "form-group",
+                    label {"Cooldown: "}
+                    input {
+                        value : "{s.cooldown}"
+                    }
+                }
+                div {
+                    class : "form-group",
+                    select {
+                        oninput: move |evt| {
+                            println!("{evt:?}");
+                            let ii = edit.read().id;
+                            edit.write().heroes.heroes[ii].skills[j].data = SkillData::iter().collect::<Vec<SkillData>>().get(evt.value.parse::<usize>().unwrap()).unwrap().clone();
+                        },
+                        for (i,sd) in SkillData::iter().enumerate() {
+                            option {
+                                value: "{i}", 
+                                selected : format!("{}",edit.read().heroes.heroes[edit.read().id].skills[j].data) == format!("{}",sd),
+                                "{sd}"
+                            }
+                        }
+                        //class : "full-input",
+                        //value : "{s.data}"
+                    },
+                }
+                match edit.read().heroes.heroes[edit.read().id].skills[j].data {
+                        SkillData::BasicAttack {attack_damage_ratio} => 
+                            rsx!{
+                                div { 
+                                    class : "form-group",
+                                    label {"Attack Damage Ratio: "}
+                                    input {
+                                        oninput: move |evt| {
+                                            println!("{evt:?}");
+                                            let ii = edit.read().id;
+                                            edit.write().heroes.heroes[ii].skills[j].data = SkillData::BasicAttack {attack_damage_ratio : evt.value.parse::<f32>().unwrap()};
+                                        },
+                                        value : "{attack_damage_ratio}"
+                                    }
+                                }
+                            }
+                        ,
+                        _ => rsx!{div {"No Input for this skill data type"}}
                 }
             }
         }

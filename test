@@ -1,14 +1,157 @@
    Compiling raid_optimize v0.0.1 (/home/apn/git/raid_optimize)
-error[E0425]: cannot find function `save_to_file` in this scope
-   --> src/ui/app/edit.rs:120:29
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
     |
-120 | ...                   save_to_file(&edit.read().heroes);
-    |                       ^^^^^^^^^^^^ not found in this scope
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+378 |             hero_positive_number!(edit,health)
+    |             ---------------------------------- in this macro invocation
     |
-help: consider importing this function
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
     |
-1   + use crate::ui::app::input::save_to_file;
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+379 |             hero_positive_number!(edit,attack)
+    |             ---------------------------------- in this macro invocation
     |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+380 |             hero_positive_number!(edit,defense)
+    |             ----------------------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+381 |             hero_positive_number!(edit,speed)
+    |             --------------------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+382 |             hero_positive_number!(edit,crit_rate)
+    |             ------------------------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+383 |             hero_positive_number!(edit,crit_damage)
+    |             --------------------------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+384 |             hero_positive_number!(edit,effect_hit)
+    |             -------------------------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+385 |             hero_positive_number!(edit,effect_resistance)
+    |             --------------------------------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+386 |             hero_positive_number!(edit,mastery)
+    |             ----------------------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+387 |             hero_positive_number!(edit,healing_effect)
+    |             ------------------------------------------ in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+388 |             hero_positive_number!(edit,leech)
+    |             --------------------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+389 |             hero_positive_number!(edit,piercing)
+    |             ------------------------------------ in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+390 |             hero_positive_number!(edit,tenacity)
+    |             ------------------------------------ in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected expression, found `$`
+   --> src/ui/app/input.rs:66:46
+    |
+66  |                             println!("{} {}",$value,stringify!($value));
+    |                                              ^^^^^^ expected expression
+...
+391 |             hero_positive_number!(edit,damage_reflection)
+    |             --------------------------------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `hero_positive_number` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unused import: `std::fmt`
  --> src/data/mod.rs:1:5
@@ -83,6 +226,12 @@ warning: unused import: `quick_xml::se::to_string`
    |
 12 | use quick_xml::se::to_string;
    |     ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::str::FromStr`
+  --> src/data/skill.rs:15:5
+   |
+15 | use std::str::FromStr;
+   |     ^^^^^^^^^^^^^^^^^
 
 warning: unused imports: `InstanceIndex`, `Wave`
  --> src/data/subskill.rs:1:19
@@ -775,6 +924,12 @@ warning: unused import: `std::collections::HashMap`
 12 | use std::collections::HashMap;
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^
 
+warning: unused import: `crate::ui::app::edit::Edit`
+  --> src/ui/app/mod.rs:17:5
+   |
+17 | use crate::ui::app::edit::Edit;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 warning: unused imports: `Extension`, `Path`, `Router`, `Server`, `response::Html`, `routing::get`, `self`, `ws::WebSocketUpgrade`
  --> src/ui/app/input.rs:1:22
   |
@@ -854,9 +1009,9 @@ warning: unused import: `DateTime`
    |              ^^^^^^^^
 
 warning: unused imports: `ui::app::run`, `wave::print`
-  --> src/ui/app/input.rs:25:13
+  --> src/ui/app/input.rs:26:13
    |
-25 | use crate::{ui::app::run, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
+26 | use crate::{ui::app::run, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
    |             ^^^^^^^^^^^^                                                   ^^^^^^^^^^^
 
 warning: unused imports: `Extension`, `Path`, `Router`, `Server`, `response::Html`, `routing::get`, `self`, `ws::WebSocketUpgrade`
@@ -1003,17 +1158,11 @@ warning: unused import: `std::collections::HashMap`
 12 | use std::collections::HashMap;
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-warning: unused imports: `Job`, `wave::print`
+warning: unused imports: `Job`, `skill::Skill`, `wave::print`
   --> src/ui/app/edit.rs:13:28
    |
-13 | use crate::{ui::app::run::{Job, }, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
-   |                            ^^^                                                      ^^^^^^^^^^^
-
-warning: unused import: `quick_xml::se::to_string`
-  --> src/ui/app/edit.rs:14:5
-   |
-14 | use quick_xml::se::to_string;
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+13 | use crate::{ui::app::run::{Job, }, data::{heroes::Heroes, load_heroes, hero::Hero, skill::Skill}, wave::print};
+   |                            ^^^                                                     ^^^^^^^^^^^^   ^^^^^^^^^^^
 
 warning: unused variable: `expires_in`
   --> src/ui/login.rs:87:49
@@ -1124,6 +1273,5 @@ warning: unused import: `dioxus_router::prelude`
 11 | use dioxus_router::prelude::*;
    |     ^^^^^^^^^^^^^^^^^^^^^^
 
-For more information about this error, try `rustc --explain E0425`.
-warning: `raid_optimize` (lib) generated 171 warnings
-error: could not compile `raid_optimize` (lib) due to previous error; 171 warnings emitted
+warning: `raid_optimize` (lib) generated 172 warnings
+error: could not compile `raid_optimize` (lib) due to 14 previous errors; 172 warnings emitted

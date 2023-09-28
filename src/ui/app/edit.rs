@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use reqwest::{Error, Client, Response};
 use dioxus_router::prelude::*;
 use std::collections::HashMap;
-use crate::{ui::app::run::{Job, }, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
+use crate::{ui::app::run::{Job, }, data::{heroes::Heroes, load_heroes, hero::Hero, skill::Skill}, wave::print};
 use quick_xml::se::to_string;
 use crate::data::faction::Faction;
 use crate::data::mark::Mark;

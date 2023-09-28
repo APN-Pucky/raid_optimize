@@ -157,7 +157,11 @@ pub async fn main() {
                               display: inline-block;
                               width: 100px;
                           }}
+                          .full-input {{
+                              width: 100%;
+                          }}
                           .container2 {{
+
                             display: flex;
                             width: 100%;
                             height: 50vh; /* Set the height to fill the viewport */
