@@ -58,6 +58,7 @@ macro_rules! skill_parameter {
                 class : "form-group",
                 label {stringify!($x:)}
                 input {
+                    r#type : "number",
                     oninput: move |evt| {
                         let ii = $edit.read().id;
                         if let $t {$x,..} = &mut $edit.write().heroes.heroes[ii].skills[$j].data{ 
@@ -86,7 +87,7 @@ macro_rules! hero_positive_number {
                     id : stringify!($prop),
                     r#type : "number",
                     min : 0,
-                    value : $edit.read().heroes.heroes[$edit.read().id].$prop as i64,
+                    value : $edit.read().heroes.heroes[$edit.read().id].$prop as f64,
                     //value : "{$edit.read().heroes.heroes[$edit.read().id].health}",
                     //value : concat!("{",stringify!($value),"}"),
                     oninput: move |e| {
@@ -150,7 +151,7 @@ pub(crate) fn Start(cx: Scope) -> Element {
                 }
                 button {
                     onclick: move |_| {
-                        start.write().allies.push(0);
+                        start.write().allies.push(edit.read().heroes.heroes[0].id);
                     },
                     "Add"
                 }
@@ -186,7 +187,7 @@ pub(crate) fn Start(cx: Scope) -> Element {
                 }
                 button {
                     onclick: move |_| {
-                        start.write().enemies.push(0);
+                        start.write().enemies.push(edit.read().heroes.heroes[0].id);
                     },
                     "Add"
                 }
@@ -231,8 +232,10 @@ pub(crate) fn Start(cx: Scope) -> Element {
                 onclick: move |_| {
                     {
                         // set allies and enemies in args
-                        start.write().args.allies = start.read().allies.iter().map(|i| edit.read().heroes.heroes.iter().find(|&h| h.id == *i).unwrap().clone()).collect();
-                        start.write().args.enemies = start.read().enemies.iter().map(|i| edit.read().heroes.heroes.iter().find(|&h| h.id == *i).unwrap().clone()).collect();
+                        let al = start.read().allies.iter().map(|i| edit.read().heroes.heroes.iter().find(|&h| h.id == *i).unwrap().clone()).collect();
+                        start.write().args.allies = al;
+                        let el = start.read().enemies.iter().map(|i| edit.read().heroes.heroes.iter().find(|&h| h.id == *i).unwrap().clone()).collect();
+                        start.write().args.enemies = el;
                     }
                     let name = start.read().name.clone();
                     let args = start.read().args.clone();

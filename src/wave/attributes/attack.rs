@@ -90,7 +90,7 @@ impl Wave<'_> {
         match skill.data {
             SkillData::BurstingKnowledge { piercing_rate ,.. } =>  {
                 fact = fact + piercing_rate;
-                debug!("{} uses BurstingKnowledge -> piercing * {}", self.name(actor), piercing_rate)
+                debug!("{} uses BurstingKnowledge -> piercing * {}", self.name(actor), piercing_rate);
             },
             _ =>  {}
         }
