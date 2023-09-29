@@ -2,6 +2,7 @@ use std::fmt;
 
 use crate::wave::InstanceIndex;
 use crate::wave::Wave;
+use crate::wave::heroes::liz::scorched_soul::ScorchedSoul;
 use strum_macros::EnumIter;
 use super::effect::is_dot;
 use super::subskill;
@@ -90,10 +91,22 @@ pub const BASIC_ATTACK: Skill = Skill {
     cooldown : 0,
     typ : SkillType::Basic,
     select : Select::SingleEnemy,
-    data : SkillData::BasicAttack {
-        attack_damage_ratio : 1.0,
-    },
+    data : SkillData::BasicAttack (
+        BasicAttack{
+            attack_damage_ratio : 1.0,
+        }
+    ),
 };
+#[derive(Default,Debug, PartialEq, Deserialize, Serialize, Clone )]
+pub struct BasicAttack {
+    attack_damage_ratio : f32,
+}
+//#[derive(Default,Debug, PartialEq, Deserialize, Serialize, Clone )]
+//pub struct ScorchedSoul{
+//    attack_damage_ratio : f32,
+//    hp_burning_chance: f32,
+//    hp_burning_turns: u32
+//}
 
 #[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
 pub enum SkillData {
@@ -106,15 +119,17 @@ pub enum SkillData {
         #[serde(rename="subskill")]
         subskills : Vec<SubSkill>,
     },
-    BasicAttack {
-        attack_damage_ratio : f32,
-    },
+    BasicAttack(BasicAttack), 
+    //BasicAttack {
+    //    attack_damage_ratio : f32,
+    //},
     //Liz
-    ScorchedSoul {
-        attack_damage_ratio : f32,
-        hp_burning_chance: f32,
-        hp_burning_turns: u32
-    },
+    ScorchedSoul(ScorchedSoul),
+    //ScorchedSoul {
+    //    attack_damage_ratio : f32,
+    //    hp_burning_chance: f32,
+    //    hp_burning_turns: u32
+    //},
     FireHeal {
         heal_attack_ratio: f32,
         heal_max_hp_ratio: f32,
@@ -494,11 +509,11 @@ mod tests {
             cooldown : 3,
             typ : SkillType::Active,
             select: Select::SingleEnemy,
-            data : SkillData::ScorchedSoul {
+            data : SkillData::ScorchedSoul (ScorchedSoul{
                 attack_damage_ratio : 1.0,
                 hp_burning_chance: 0.5,
                 hp_burning_turns: 2
-            },
+            }),
         };
 
         let xml = to_string(&skill).unwrap();
@@ -525,7 +540,7 @@ mod tests {
         .unwrap();
 
         match skill[0].data {
-            SkillData::ScorchedSoul{attack_damage_ratio,hp_burning_chance, hp_burning_turns ,..} => {
+            SkillData::ScorchedSoul(ScorchedSoul{attack_damage_ratio,hp_burning_chance, hp_burning_turns ,..}) => {
                 assert_eq!(attack_damage_ratio, 1.0);
                 assert_eq!(hp_burning_chance, 0.5);
                 assert_eq!(hp_burning_turns, 2);

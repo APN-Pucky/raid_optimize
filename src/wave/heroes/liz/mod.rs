@@ -1,5 +1,7 @@
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_dot}, }, };
 
+pub mod scorched_soul;
+
 impl Wave<'_> {
     pub fn execute_skill_liz(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
         let attacker = actor;
@@ -17,9 +19,8 @@ impl Wave<'_> {
                 self.restore(actor,target, heal + max_hp_heal);
                 self.inflict_single(actor,target,Effect::BlockDebuff, 1.0,block_debuff_turns);
             }
-            SkillData::ScorchedSoul{attack_damage_ratio,hp_burning_chance, hp_burning_turns ,..} => {
-                self.attack_single(attacker, defender,  self.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-                self.inflict_single(attacker,defender,Effect::HPBurning, hp_burning_chance, hp_burning_turns);
+            SkillData::ScorchedSoul(s) => {
+                s.execute(self,skill,attacker,defender);
                 //self.inflict_hp_burning(attacker,defender, hp_burning_chance, hp_burning_turns);
             }
             _ => {}

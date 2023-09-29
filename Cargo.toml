@@ -37,12 +37,12 @@ enum-map-derive = "*"
 url ="*"
 reqwest = {version = "*", features = ["json"]}
 serde_json = "*"
-axum = "0.6.20"
+axum = "^0.6.20"
 axum-server = "*"
-dioxus = "0.4.0"
-dioxus-router = "0.4.0"
-dioxus-liveview = { version = "0.4.0", features = ["axum"] }
-tokio = { version = "1.32.0", features = ["full"] }
+dioxus = "^0.4.0"
+dioxus-router = "^0.4.0"
+dioxus-liveview = { version = "^0.4.0", features = ["axum"] }
+tokio = { version = "^1.32.0", features = ["full"] }
 open = "*"
 
 #[profile.release]

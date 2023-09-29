@@ -21,6 +21,7 @@ use crate::data::rarity::Rarity;
 use crate::data::skill::SkillData;
 use crate::{ui::app::{run::{Job, Status,RunState}, edit::EditState}, sim::args::Args,sim::Sim};
 use crate::sim::{results::CombinedResult};
+use crate::wave::heroes::liz::scorched_soul::ScorchedSoul;
 //use crate::scheduler::{SCHEDULER,start_job};
 //use crate::scheduler;
 use crate::{ui::app::run, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
@@ -50,8 +51,9 @@ pub fn save_to_file(heroes : &Heroes) {
     std::fs::write("data/heroes.xml", str).unwrap();
 }
 
-macro_rules! skill_parameter {
-    ($edit:expr, $j:expr, $t:ty { $($x:expr),* }) => {
+
+macro_rules! skill_parameter_struct {
+    ($edit:expr, $j:expr, $t:ty , $s:ty { $($x:expr),* }) => {
         rsx!{
             $(
             div { 
@@ -61,7 +63,32 @@ macro_rules! skill_parameter {
                     r#type : "number",
                     oninput: move |evt| {
                         let ii = $edit.read().id;
-                        if let $t {$x,..} = &mut $edit.write().heroes.heroes[ii].skills[$j].data{ 
+                        if let $t ($s{$x,..}) = &mut $edit.write().heroes.heroes[ii].skills[$j].data{ 
+                            if let Ok(val) =  evt.value.parse::<_>() {
+                                *$x =  val;
+                            }
+                        }
+                    },
+                    value : $x as f64
+                }
+            }
+            )*
+        }
+    }
+}
+
+macro_rules! skill_parameter {
+    ($edit:expr, $j:expr, $s:ty { $($x:expr),* }) => {
+        rsx!{
+            $(
+            div { 
+                class : "form-group",
+                label {stringify!($x:)}
+                input {
+                    r#type : "number",
+                    oninput: move |evt| {
+                        let ii = $edit.read().id;
+                        if let $s{$x,..} = &mut $edit.write().heroes.heroes[ii].skills[$j].data{ 
                             if let Ok(val) =  evt.value.parse::<_>() {
                                 *$x =  val;
                             }
@@ -539,11 +566,11 @@ pub(crate) fn Start(cx: Scope) -> Element {
                     }
                 }
                 match edit.read().heroes.heroes[edit.read().id].skills[j].data {
-                        SkillData::BasicAttack {attack_damage_ratio} => 
-                            skill_parameter!(edit,j, SkillData::BasicAttack {attack_damage_ratio}),
+                        //SkillData::BasicAttack {attack_damage_ratio} => 
+                        //    skill_parameter!(edit,j, SkillData::BasicAttack {attack_damage_ratio}),
 
-                        SkillData::ScorchedSoul{ attack_damage_ratio , hp_burning_chance, hp_burning_turns } => 
-                            skill_parameter!(edit,j, SkillData::ScorchedSoul {attack_damage_ratio , hp_burning_chance, hp_burning_turns}),
+                        SkillData::ScorchedSoul(ScorchedSoul{ attack_damage_ratio , hp_burning_chance, hp_burning_turns }) => 
+                            skill_parameter_struct!(edit,j, SkillData::ScorchedSoul , ScorchedSoul{attack_damage_ratio , hp_burning_chance, hp_burning_turns}),
                         SkillData::FireHeal{ heal_attack_ratio, heal_max_hp_ratio, block_debuff_turns} =>
                             skill_parameter!(edit,j, SkillData::FireHeal {heal_attack_ratio, heal_max_hp_ratio, block_debuff_turns}),
                         SkillData::Resurrection{ shield_max_hp_ratio, shield_turns, cleanse_dot_debuffs, restore_max_hp_ratio} =>
