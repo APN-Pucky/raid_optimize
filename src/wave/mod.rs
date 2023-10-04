@@ -256,7 +256,6 @@ impl Wave<'_> {
             else {
                 log::debug!("Nobody acts");
             }
-
             // game over
             // TODO hard coded team indices... of 0
             let win = self.get_enemies_indices(0).iter().all(|&e| !self.is_alive(e));
