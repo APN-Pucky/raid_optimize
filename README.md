@@ -30,3 +30,7 @@ The software will initially include bugs, which will be addressed over time thro
 After downloading the executable from ![the release page](./release) extracting the archive and running the executable therein should bring up a interface like below.
 
 ![image](./data/ui.png)
+
+## Unlock all features via SubscribeStar
+
+https://www.subscribestar.com/apn-pucky
