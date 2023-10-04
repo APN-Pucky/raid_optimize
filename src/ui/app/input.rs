@@ -235,6 +235,19 @@ pub(crate) fn Start(cx: Scope) -> Element {
         }
         div {
             class : "form-group",
+            label { "Statistics: " }
+             input {
+                        id : "stats",
+                        value: "stats",
+                        r#type : "checkbox",
+                        checked : "{start.read().args.stats}",
+                        onchange: move |e| {
+                            start.write().args.stats = e.value.parse::<bool>().unwrap();
+                        },
+                    }
+        }
+        div {
+            class : "form-group",
             label { "Iterations: " }
             input {
                 r#type : "number",
@@ -660,9 +673,19 @@ pub(crate) fn Start(cx: Scope) -> Element {
                     th { "Losses" }
                 }
                 for job in run.read().lock().unwrap().jobs.iter().rev() {
+                            //let idd = job.id;
                             rsx! {
                                 tr {
-                                    td { "{job.id}" }
+                                    td { 
+                                        form {
+                                            onsubmit : move |e| {
+                                                println!("{:?}",e);
+                                                open::that(format!("http://localhost:3030/job/{}",e.data.values["jobid"][0]));
+                                            },
+                                            input { display : "none", name: "jobid",value: "{job.id}" },
+                                            input { r#type: "submit", value: "{job.id}" },
+                                        }
+                                    }
                                     td { "{job.name}" }
                                     match job.start_time {
                                         Some(end) => rsx!{

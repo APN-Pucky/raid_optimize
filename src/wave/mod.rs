@@ -84,6 +84,7 @@ pub struct Result {
 
 impl Wave<'_> {
     pub fn new<'a>(instances: &'a mut  Vec<&mut Instance<'a>>, players:&'a mut Vec<Box<dyn Player>>, track_statistics : bool) -> Wave<'a>  {
+        println!("Wave::new, {}",track_statistics);
         // ensure right instance indices
         instances.iter_mut().enumerate().for_each(|(i,a)| a.index = i);
         let heroes  = instances.iter().map(|i| i.hero).collect::<Vec<_>>();

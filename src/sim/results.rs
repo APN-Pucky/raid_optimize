@@ -61,7 +61,7 @@ impl  CombinedResult {
         result.wins += added.wins;
         result.losses += added.losses;
         result.stalls += added.stalls;
-        //Self::add_combined_statistics(&mut result.statistics, &added.statistics);
+        Self::add_combined_statistics(&mut result.statistics, &added.statistics);
     }
 
     pub fn add_result(self: &mut CombinedResult, added : &Result) {
@@ -75,7 +75,7 @@ impl  CombinedResult {
         else if added.stall {
             self.stalls += 1;
         }
-        //Self::add_statistics(&mut self.statistics, &added.statistics);
+        Self::add_statistics(&mut self.statistics, &added.statistics);
     }
     ///* 
 
@@ -112,6 +112,18 @@ impl  CombinedResult {
                 s.hm_sq[key] += v*v;
             }
         }
+    }
+
+    pub fn to_string(&self,index:usize) -> String {
+        let mut s = String::new();
+        for (key,value) in self.statistics[index].hm.iter() {
+            //let value = self.statistics[index].hm[key];
+            s += &format!("\t {}: {:.2} +- {:.2}\n", key, 
+                get_mean(*value, self.iterations), 
+                get_standard_deviation(*value, self.statistics[index].hm_sq[key], 
+                self.iterations));
+        }
+        s
     }
 
     pub fn print_statistics(&self, index : usize) {

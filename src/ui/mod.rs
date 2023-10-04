@@ -1,4 +1,5 @@
-use axum::{extract::{ws::WebSocketUpgrade}, response::Html, routing::get, Router};
+use axum::{extract::{ws::WebSocketUpgrade, Path}, response::Html, routing::get, Router};
+use std::collections::HashMap;
 
 use dioxus::prelude::*;
 use axum::extract::Host;
@@ -12,7 +13,7 @@ use axum::http::Request;
 
 
 
-use crate::ui::{login::{check_login, UserData, Login}};
+use crate::ui::{login::{check_login, UserData, Login}, app::JobViewProps};
 
 pub mod login;
 
@@ -21,6 +22,7 @@ pub mod app;
 
 
 pub async fn main() {
+  // read css from data/layout.css file
     let addr: std::net::SocketAddr = ([127, 0, 0, 1], 3030).into();
 
     let view = dioxus_liveview::LiveViewPool::new();
@@ -30,6 +32,7 @@ pub async fn main() {
         .route(
             "/",
             get(move |Host(_hostname): Host,request: Request<Body>| async move {
+              let css = std::fs::read_to_string("data/layout.css").unwrap();
                 // get code from url
                 //let code = extract::FromRequest::from_request(.await.unwrap();
                 //println!("Hostname: {}", hostname);
@@ -57,129 +60,7 @@ pub async fn main() {
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>
-
-                        body {{
-                            font-family: Arial, sans-serif;
-                            margin: 0;
-                        }}
-                
-                        .navbar {{
-                            background-color: #333;
-                            overflow: hidden;
-                        }}
-
-                        #loginbar {{
-                            background-color: #444;
-                            overflow: hidden;
-                        }}
-                
-                        .navbar a {{
-                            float: left;
-                            display: block;
-                            color: #f2f2f2;
-                            text-align: center;
-                            padding: 14px 16px;
-                            text-decoration: none;
-                        }}
-                
-                        .navbar a:hover {{
-                            background-color: #ddd;
-                            color: black;
-                        }}
-                
-                        .tabcontent {{
-                            display: none;
-                        }}
-                
-                        .tabcontent.active {{
-                            display: block;
-                        }}
-                        /* Table style */
-                        table {{
-                          border-collapse: collapse;
-                          width: 100%;
-                        }}
-
-                        /* Table header style */
-                        th, td {{
-                          border: 1px solid #dddddd;
-                          text-align: left;
-                          padding: 8px;
-                        }}
-
-                        /* Alternate row color */
-                        tr:nth-child(even) {{
-                          background-color: #f2f2f2;
-                        }}
-
-                        /* Hover effect */
-                        tr:hover {{
-                          background-color: #ddd;
-                        }}
-
-                          .container {{
-                            display: flex;
-                          }}
-                        
-                          .column {{
-                            flex: 1;
-                            padding: 10px;
-                          }}
-                        
-                          .files {{
-                            background-color: #f2f2f2;
-                          }}
-                        
-                          .properties {{
-                            background-color: #e0e0e0;
-                          }}
-                        
-                          .inputs {{
-                            background-color: #d8d8d8;
-                          }}
-                          .resize {{
-                            resize: both;
-                            overflow: auto;
-                          }}
-                        
-                          select, input {{
-                            width: 100%;
-                            padding: 5px;
-                            margin: 5px 0;
-                          }}
-                          .form-group {{
-                            margin-bottom: 15px;
-                            display: flex;
-                            align-items: center;
-                          }}
-                          label {{
-                              display: inline-block;
-                              width: 200px;
-                          }}
-                          input {{
-                              display: inline-block;
-                              width: 100px;
-                          }}
-                          .full-input {{
-                              width: 100%;
-                          }}
-                          .container2 {{
-
-                            display: flex;
-                            width: 100%;
-                            //height: 50vh; /* Set the height to fill the viewport */
-                        }}
-                          .half {{
-                            flex: 1; /* This makes both halves take up equal space */
-                            border: 1px solid #ccc;
-                            box-sizing: border-box;
-                        }}
-                        .scrollable-div {{
-            height: 40vh;  /*Set a specific height */
-            overflow-y: scroll; /* Enable vertical scrolling */
-            border: 1px solid #ccc; /* Optional: Add border for visual clarity */
-            padding: 10px; /* Optional: Add padding for content spacing */
-        }}
+                    {css}
                     </style>
                 </head>
                 <body> 
@@ -192,17 +73,47 @@ pub async fn main() {
                 </html>
                 "#,
                     // Create the glue code to connect to the WebSocket on the "/ws" route
-                    glue = dioxus_liveview::interpreter_glue(&format!("ws://{addr}/ws"))
+                    glue = dioxus_liveview::interpreter_glue(&format!("ws://{addr}/ws/-1"))
                 ))
             }),
         )
+        .route("/job/:job_id", get(move |Path(params) : Path<HashMap<String,String>>| async move {
+              let css = std::fs::read_to_string("data/layout.css").unwrap();
+            Html(format!(
+                    r#"
+                <!DOCTYPE html>
+                <html>
+                <head> 
+                    <title>Raid Optimize</title>  
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                      {css}
+                    </style>
+                </head>
+                <body> 
+                <div id="main"></div> 
+                </body>
+                {glue}
+                </html>
+                "#,
+                    // Create the glue code to connect to the WebSocket on the "/ws" route
+                    glue = dioxus_liveview::interpreter_glue(&format!("ws://{addr}/ws/{}",params.get("job_id").unwrap()))
+                ))
+        }))
         // The WebSocket route is what Dioxus uses to communicate with the browser
         .route(
-            "/ws",
-            get(move |ws: WebSocketUpgrade| async move {
+            "/ws/:job_id",
+            get(move |ws: WebSocketUpgrade, Path(params) : Path<HashMap<String,String>>| async move {
                 ws.on_upgrade(move |socket| async move {
                     // When the WebSocket is upgraded, launch the LiveView with the app component
-                    _ = view.launch(dioxus_liveview::axum_socket(socket), app::app).await;
+                    let j = params.get("job_id").unwrap();
+                    if j == "-1" {
+                        _ = view.launch(dioxus_liveview::axum_socket(socket), app::app).await;
+                    }
+                    else {
+                        _ = view.launch_with_props(dioxus_liveview::axum_socket(socket), app::JobView, JobViewProps {job_id : j.parse::<usize>().unwrap()}).await;
+                    }
                 })
             }),
         );
