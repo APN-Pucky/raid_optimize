@@ -1,0 +1,3 @@
+[submodule "src/ui"]
+	path = src/ui
+	url = git@github.com:APN-Pucky/raid_optimize_ui.git
