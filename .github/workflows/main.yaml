@@ -15,7 +15,7 @@ jobs:
           - { os: 'macOS-latest',   target: 'x86_64-apple-darwin',      cross: false }
           - { os: 'windows-latest', target: 'x86_64-pc-windows-msvc',   cross: false }
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
           ssh-key: ${{ secrets.ACCESS_TOKEN }}
@@ -39,7 +39,7 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: true
         ssh-key: ${{ secrets.ACCESS_TOKEN }}
@@ -77,7 +77,7 @@ jobs:
           - { os: 'macOS-latest',   target: 'x86_64-apple-darwin',      cross: false }
           - { os: 'windows-latest', target: 'x86_64-pc-windows-msvc',   cross: false }
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
           ssh-key: ${{ secrets.ACCESS_TOKEN }}
