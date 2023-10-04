@@ -2,6 +2,10 @@ use std::fmt;
 
 use crate::wave::InstanceIndex;
 use crate::wave::Wave;
+use crate::wave::heroes::geeliman::bursting_knowledge::BurstingKnowledge;
+use crate::wave::heroes::hazier::darknight_arbitrament::DarknightArbitrament;
+use crate::wave::heroes::hazier::darknight_strike::DarknightStrike;
+use crate::wave::heroes::hazier::eye_for_an_eye::EyeForAnEye;
 use crate::wave::heroes::liz::fire_heal::FireHeal;
 use crate::wave::heroes::liz::resurrection::Resurrection;
 use crate::wave::heroes::liz::scorched_soul::ScorchedSoul;
@@ -13,6 +17,7 @@ use crate::wave::heroes::seth::deep_sea_power::DeepSeaPower;
 use crate::wave::heroes::seth::tide_big_hit::TideBigHit;
 use crate::wave::heroes::space::fission_of_life::FissionOfLife;
 use crate::wave::heroes::space::nightmare::Nightmare;
+use crate::wave::heroes::space::resplendence::Resplendence;
 use crate::wave::heroes::space::tricks::Tricks;
 use crate::wave::heroes::tifya::leaves_storm::LeavesStorm;
 use crate::wave::heroes::tifya::scarlet_multi_strike::ScarletMultiStrike;
@@ -157,34 +162,18 @@ pub enum SkillData {
     // Space
     Tricks(Tricks),
     Nightmare(Nightmare),
-    Resplendence {
-        turn_meter_ratio: f32,
-    },
+    Resplendence(Resplendence) ,
     FissionOfLife(FissionOfLife),
     // Tifya
     ScarletSlash(ScarletSlash),
     LeavesStorm(LeavesStorm),
     ScaletMultiStrike(ScarletMultiStrike),
     //Hazier
-    DarknightStrike {
-        attack_damage_ratio : f32
-    },
-    EyeForAnEye {
-        counterattack_turns : u32,
-        damage_immunity_turns : u32,
-        control_immunity_turns : u32,
-    },
-    DarknightArbitrament {
-        attack_damage_ratio : f32,
-        crit_rate_turns : u32,
-        crit_damage_turns : u32,
-    },
+    DarknightStrike(DarknightStrike) ,
+    EyeForAnEye (EyeForAnEye),
+    DarknightArbitrament(DarknightArbitrament) ,
     //Geeliman
-    BurstingKnowledge {
-        attack_damage_ratio : f32,
-        wisdom_runestones : u32,
-        piercing_rate: f32,
-    },
+    BurstingKnowledge(BurstingKnowledge) ,
     //Alahan
     SpiritCall {
         attack_damage_ratio: f32,

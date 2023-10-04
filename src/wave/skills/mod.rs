@@ -125,14 +125,12 @@ impl Wave<'_> {
             },
             SkillData::Resurrection(s)  => {
                 s.execute(self,skill,attacker,defender);
-
             },
             SkillData::FireHeal(s) => {
                 s.execute(self,skill,attacker,defender);
             },
             SkillData::ScorchedSoul(s) => {
                 s.execute(self,skill,attacker,defender);
-                //self.inflict_hp_burning(attacker,defender, hp_burning_chance, hp_burning_turns);
             },
             SkillData::TideBigHit(s)  => {
                 s.execute(self,skill,attacker,defender);
@@ -152,14 +150,26 @@ impl Wave<'_> {
             SkillData::ScytheStrike(s) => {
                 s.execute(self,skill,attacker,defender);
             },
+            SkillData::BurstingKnowledge(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::DarknightArbitrament(s) => {
+                s.execute(self,skill,attacker,defender);
+            }, 
+            SkillData::EyeForAnEye(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::DarknightStrike(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
             SkillData::None => {}
-            _ => {}
+            //_ => {}
         }
         //self.execute_skill_liz(skill, actor, target);
         //self.execute_skill_seth(skill, actor, target);
         //self.execute_skill_natalie(skill, actor, target);
-        self.execute_skill_hazier(skill, actor, target);
-        self.execute_skill_geeliman(skill, actor, target);
+        //self.execute_skill_hazier(skill, actor, target);
+        //self.execute_skill_geeliman(skill, actor, target);
         //self.execute_skill_margarita(skill, actor, target);
         self.execute_skill_alahan(skill, actor, target);
 
