@@ -14,13 +14,13 @@ pub fn get_mean_and_standard_deviation(sum : f64, sum_sq:f64, n: u64) -> (f64, f
     (get_mean(sum, n), get_standard_deviation(sum, sum_sq, n))
 }
 
-#[derive(Debug,Clone,Copy)]
+#[derive(Debug,Clone)]
 pub struct CombinedResult {
     pub iterations: u64,
     pub wins: u64,
     pub losses: u64,
     pub stalls: u64,
-    //pub statistics: Vec<CombinedStatistics>, // TODO strong type allies and emeies ?
+    pub statistics: Vec<CombinedStatistics>, // TODO strong type allies and emeies ?
 }
 
 
@@ -31,7 +31,7 @@ impl Default for CombinedResult {
             wins: 0,
             losses: 0,
             stalls: 0,
-            //statistics: Vec::new(),
+            statistics: Vec::new(),
         }
     }
 }
@@ -48,7 +48,7 @@ impl  CombinedResult {
             wins: 0,
             losses: 0,
             stalls: 0,
-            //statistics: Vec::new(),
+            statistics: Vec::new(),
         };
         for r in results {
             cr.add_result(r);
@@ -77,7 +77,7 @@ impl  CombinedResult {
         }
         //Self::add_statistics(&mut self.statistics, &added.statistics);
     }
-    /* 
+    ///* 
 
     pub fn add_combined_statistics( statistics : &mut Vec<CombinedStatistics>,  added : &Vec<CombinedStatistics>) {
         if statistics.len() < added.len() {
@@ -134,7 +134,7 @@ impl  CombinedResult {
         let hm =  &self.statistics[index].hm;
         get_standard_deviation(hm[key], self.statistics[index].hm_sq[key], self.iterations)
     }
-    */
+    //*/
     
 }
 
