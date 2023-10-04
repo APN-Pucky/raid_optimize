@@ -141,7 +141,7 @@ impl Sim {
     */
 
 
-    pub fn run(&self , tx :UnboundedSender<CombinedResult> ) -> CombinedResult {
+    pub fn run(&self , tx :UnboundedSender<CombinedResult> ) {
         let vecit : Vec<u32> = (0..self.args.threads as u32).collect::<Vec<_>>();
         let iter = self.args.iterations / (self.args.threads as u64) ;
         //let bar = ProgressBar::new(self.args.iterations);
@@ -151,7 +151,7 @@ impl Sim {
         //    )
         //    .unwrap(),
         //);
-        let results : Vec<CombinedResult> = vecit.par_iter().map(|_i| {
+        vecit.par_iter().map(|_i| {
             let mut cr = CombinedResult::default();
             // TODO refactor
             let ap : Box<dyn Player> = if self.args.manual_ally {
@@ -187,20 +187,20 @@ impl Sim {
                     match tx.send(cr) {
                         Ok(_) => {},
                         Err(e) => {
-                            error!("Error sending result: {}", e);
+                            return ();
                         }
                     }
                     cr = CombinedResult::default();
                     //bar.inc(1000);
                 }
             }
-            cr
+            ()
         }).collect::<Vec<_>>();
 
-        results.iter().fold(CombinedResult::new(&Vec::new()), |mut acc, x| {
-            CombinedResult::add_combined_result(&mut acc, x);
-            acc
-        })
+        //results.iter().fold(CombinedResult::new(&Vec::new()), |mut acc, x| {
+        //    CombinedResult::add_combined_result(&mut acc, x);
+        //    acc
+        //})
         //for _ in 0..self.iterations {
         //    let mut wave = Wave::new(self.allies, self.enemies);
         //    let result = wave.run();

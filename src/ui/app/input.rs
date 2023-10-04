@@ -313,12 +313,12 @@ pub(crate) fn Start(cx: Scope) -> Element {
                             result : CombinedResult::default(),
                         });
                         let (tx, mut rx) = mpsc::unbounded_channel::<CombinedResult>();
-                        let handler : tokio::task::JoinHandle<CombinedResult> =  //std::thread::spawn(move || 
+                        let handler  =  //std::thread::spawn(move || 
                             tokio::task::spawn_blocking(move || {
                                 println!("running");
                                 let ret = sim.run(tx);
                                 println!("done");
-                                ret
+                                //ret
                             });
 
                         println!("awaiting");
