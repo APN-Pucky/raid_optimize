@@ -1,8 +1,8 @@
-use crate::data::effect::{is_buff, self};
-use crate::{data::effect::Effect, roll, debug, wave::stat::effect_to_stat, indent};
+
+use crate::{data::effect::Effect};
 
 use super::{ Wave, InstanceIndex};
-use rand::thread_rng;
+
 use rand::seq::SliceRandom;
 
 impl Wave<'_> {

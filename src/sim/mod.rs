@@ -1,22 +1,22 @@
-use enum_map::EnumMap;
+
 
 use rayon::prelude::*;
-use indicatif::ProgressBar;
-use indicatif::ProgressStyle;
 
-use prettytable::Table;
-use prettytable::Cell;
-use prettytable::Row;
 
-use crate::data::hero::Hero;
+
+
+
+
+
+
 use crate::data::instance::Instance;
-use crate::error;
+
 use crate::player::ManualPlayer;
 use crate::player::Player;
 use crate::player::RandomPlayer;
 use crate::wave::Wave;
-use crate::wave::Result;
-use crate::wave::stat::Stat;
+
+
 use tokio::sync::mpsc::UnboundedSender;
 
 use self::args::Args;
@@ -186,7 +186,7 @@ impl Sim {
                 if (x+1) % 1000 == 0 { // plus one because we start at 0 and want the score added after the iteration
                     match tx.send(cr) {
                         Ok(_) => {},
-                        Err(e) => {
+                        Err(_e) => {
                             return ();
                         }
                     }

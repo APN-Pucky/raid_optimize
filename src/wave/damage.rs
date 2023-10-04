@@ -40,7 +40,7 @@ impl Wave<'_> {
                     self.add_stat(target, Stat::CriticalDamaged, attack  * crit_rate  );
                     self.add_stat(target,Stat::SavedByTenacity, attack  * tenacity );
                     self.add_stat(actor,Stat::LostToTenacity, attack  * tenacity );
-                    attack = (attack * crit_rate);
+                    attack = attack * crit_rate;
                     debug!("{} critical attacks {} ({}%={}%-{}%)", self.name(actor),self.name(target),crit_rate*100.,crit*100.,tenacity*100.);
                     if self.get_faction(actor) == Faction::NamelessBrotherhood {
                         if rng.gen::<f32>() < 0.5 {
@@ -56,14 +56,14 @@ impl Wave<'_> {
             self.add_stat(target,Stat::Attacked, attack);
             let mut def = self.get_defense(target);
     
-            let pierce = (def  * p); // TODO handle rounding
+            let pierce = def  * p; // TODO handle rounding
             self.add_stat(actor,Stat::Piercing, pierce);
             self.add_stat(target,Stat::Pierced, pierce);
             debug!("{} pierces {} defense of {} ({}%)", self.name(actor), pierce, def, p*100.);
             def -= pierce;
              
             if attack -def > 0. {
-                self.damage(actor,target, (attack - def),skill,true,true,crit);
+                self.damage(actor,target, attack - def,skill,true,true,crit);
             }
             else {
                 self.add_stat(actor,Stat::Blocked, attack);

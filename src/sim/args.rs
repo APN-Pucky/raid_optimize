@@ -1,4 +1,4 @@
-use crate::{data::{hero::{Hero, get_hero_by_string}, load_heroes, heroes::Heroes}, input::Input};
+use crate::{data::{hero::{Hero, get_hero_by_string}, load_heroes}, input::Input};
 
 use log::info;
 use log::warn;

@@ -4,16 +4,16 @@ use crate::wave::InstanceIndex;
 use crate::wave::Wave;
 use crate::wave::heroes::liz::scorched_soul::ScorchedSoul;
 use strum_macros::EnumIter;
-use super::effect::is_dot;
-use super::subskill;
+
+
 use super::subskill::SubSkill;
-use super::subskill::Target;
-use super::subskill::merge_targets;
-use quick_xml::de::from_str;
-use quick_xml::se::to_string;
+
+
+
+
 type SkillRef = usize;
 use strum_macros::EnumString;
-use std::str::FromStr;
+
 pub struct NewSkill {
     pub cooldown : u32,
     pub subskills : Vec<SubSkill>,
@@ -469,7 +469,7 @@ pub fn get_cooldown(skill: &Skill) ->u32 {
 fn get_alive_allies<const LEN:usize>(wave : &Wave, actor :  InstanceIndex) -> Option<Vec<InstanceIndex>> {
     let team = wave.get_ally_indices(actor);
     let mut ids = Vec::new();
-    for (index,&target) in team.iter().enumerate() {
+    for (_index,&target) in team.iter().enumerate() {
         if wave.is_alive(target)  {
             ids.push(target);
         }
@@ -485,7 +485,7 @@ fn get_alive_allies<const LEN:usize>(wave : &Wave, actor :  InstanceIndex) -> Op
 fn get_alive_enemies<const LEN:usize>( wave :&Wave,actor :InstanceIndex,) -> Option<Vec<InstanceIndex>> {
     let team = wave.get_enemies_indices(actor);
     let mut ids = Vec::new();
-    for (index,&target) in team.iter().enumerate() {
+    for (_index,&target) in team.iter().enumerate() {
         if wave.is_alive(target)  {
             ids.push(target);
         }

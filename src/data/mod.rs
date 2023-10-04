@@ -1,6 +1,6 @@
-use std::fmt;
+
 use quick_xml::de::from_str;
-use quick_xml::se::to_string;
+
 
 pub mod instance;
 pub mod skill;
@@ -14,7 +14,7 @@ pub mod hero;
 pub mod heroes;
 
 
-use self::{ faction::Faction, rarity::Rarity, class::Class, mark::Mark, heroes::Heroes};
+use self::{ heroes::Heroes};
 
 
 pub fn load_heroes(heroes_xml :String ) -> Heroes {

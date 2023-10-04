@@ -1,4 +1,4 @@
-use crate::{wave::stat::Stat, debug, indent, data::{instance::Instance, effect::{Effect, is_debuff, is_buff}}};
+use crate::{data::{effect::{Effect, is_debuff, is_buff}}};
 
 use super::{Wave, InstanceIndex};
 use enum_map::EnumMap;

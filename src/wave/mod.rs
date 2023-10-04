@@ -1,7 +1,7 @@
 use enum_map::EnumMap;
-use rand::Rng;
-use strum::EnumProperty;
-use std::convert::TryInto;
+
+
+
 
 pub mod damage;
 pub mod inflict;
@@ -23,12 +23,12 @@ pub mod remove;
 pub mod refresh;
 
 use crate::data::hero::Hero;
-use crate::data::effect::Effect;
+
 use crate::data::faction::Faction;
 use crate::data::instance::Instance;
-use crate::data::skill::{Skill, get_selection, is_passive};
+use crate::data::skill::{Skill, is_passive};
 use crate::player::Player;
-use crate::{debug, indent, info};
+use crate::{debug, indent};
 
 use self::effect::Effects;
 use self::stat::{Stat, Statistics};
@@ -94,7 +94,7 @@ impl Wave<'_> {
         let health = instances.iter().map(|i| i.health).collect::<Vec<_>>();
         let mut cooldowns = instances.iter().map(|_| Vec::new()).collect::<Vec<_>>();
         let shields = instances.iter().map(|_| Vec::new()).collect::<Vec<_>>();
-        let bonds  = players.iter().map(|p| EnumMap::default()).collect::<Vec<_>>();
+        let bonds  = players.iter().map(|_p| EnumMap::default()).collect::<Vec<_>>();
         let bonds_counter = instances.iter().map(|_| 0).collect::<Vec<_>>();
         // set the values of the cooldowns from the Instances
         for i in 0..cooldowns.len() {

@@ -3,8 +3,8 @@ use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effec
 
 impl Wave<'_> {
     pub fn execute_skill_dakota(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
-        let attacker = actor;
-        let defender = target;
+        let _attacker = actor;
+        let _defender = target;
         match skill.data {
             SkillData::SoulSurge {toxic_swamp_turns,  speed_up_turns ,..} => {
                 self.inflict_enemy_team(actor, Effect::ToxicSwamp, 1.0, toxic_swamp_turns);
@@ -13,8 +13,8 @@ impl Wave<'_> {
             SkillData::SoulSeal{ rose_per_poison, attack_damage_ratio, poison_turns ,attack_damage_ratio_per_poison, increase_atk_turns } => {
                 self.inflict_ally_team(actor, Effect::AttackUpII, 1.0, increase_atk_turns);
                 // counter number of effects arcane
-                let mut poison = self.effects[target].get(Effect::Poison);
-                let mut rose_poison = self.effects[target].get(Effect::RosePoison);
+                let poison = self.effects[target].get(Effect::Poison);
+                let _rose_poison = self.effects[target].get(Effect::RosePoison);
 
                 self.effects[target].clear_single(Effect::Poison);
                 self.attack_single(actor, target, self.get_attack_damage(actor) * (attack_damage_ratio + poison as f32 * attack_damage_ratio_per_poison), skill);
@@ -40,7 +40,7 @@ impl Wave<'_> {
         }
     }
 
-    pub fn on_inflict_dakota(&mut self, actor : InstanceIndex, target:InstanceIndex, effect : Effect, turns :&mut u32) {
+    pub fn on_inflict_dakota(&mut self, _actor : InstanceIndex, target:InstanceIndex, effect : Effect, turns :&mut u32) {
         if self.has_effect(target,Effect::ToxicSwamp) && effect == Effect::Poison {
             let inflictor = self.effects[target].get_last_inflictor(Effect::ToxicSwamp);
             if self.is_alive(inflictor) {

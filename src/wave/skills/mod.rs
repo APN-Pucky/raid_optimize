@@ -17,7 +17,7 @@ impl<'a> Wave<'a> {
 }
 
 impl Wave<'_> {
-    pub fn pre_execute_skill(&mut self, actor: InstanceIndex,target: InstanceIndex, skill: &Skill) {
+    pub fn pre_execute_skill(&mut self, actor: InstanceIndex,_target: InstanceIndex, skill: &Skill) {
         debug!("{} pre_execute_skill {}", self.name(actor), skill);
         indent!({
             if self.get_faction(actor) == Faction::HiddenWave {

@@ -1,5 +1,5 @@
 
-use crate::{debug, indent, data::{effect::Effect, skill::{Skill, get_selection, SkillData, },  instance::Instance, faction::Faction}};
+use crate::{debug, indent, data::{effect::Effect, skill::{Skill, SkillData, }, faction::Faction}};
 
 use super::{InstanceIndex, Wave};
 
@@ -13,7 +13,7 @@ impl Wave<'_> {
             if self.has_effect(actor, Effect::FactionHiddenWaveSkill) {
                 let xfact = self.effects[actor].get(Effect::FactionHiddenWaveSkill).min(2) as f32;
                 let n = self.get_bond(actor, Faction::HiddenWave);
-                let r = xfact * n;
+                let _r = xfact * n;
                 debug!("{} has FactionHiddenWaveSkill -> skill damage * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
@@ -33,7 +33,7 @@ impl Wave<'_> {
             if self.has_effect(actor, Effect::FactionHiddenWaveAttack) {
                 let xfact = self.effects[actor].get(Effect::FactionHiddenWaveAttack).min(2) as f32;
                 let n = self.get_bond(actor, Faction::HiddenWave);
-                let r = xfact * n;
+                let _r = xfact * n;
                 debug!("{} has FactionHiddenWaveAttack -> basic attack damage * {}", self.name(actor), xfact);
                 fact *= xfact;
             }

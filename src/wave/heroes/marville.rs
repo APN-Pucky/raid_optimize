@@ -2,7 +2,7 @@ use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effec
 
 
 impl Wave<'_> {
-    pub fn execute_skill_marville(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
+    pub fn execute_skill_marville(&mut self,  skill : &Skill, actor :InstanceIndex, _target :InstanceIndex, ) {
         match skill.data {
             SkillData::FishWaterball {  attack_damage_ratio, act_chance, ..} =>{
                 let damage = self.get_attack_damage(actor) * attack_damage_ratio;

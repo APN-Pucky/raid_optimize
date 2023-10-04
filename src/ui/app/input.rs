@@ -1,21 +1,21 @@
-use axum::{extract::{ws::WebSocketUpgrade, self,Path}, response::Html, routing::get, Router, Extension, Server};
+
 use chrono::Duration;
-use axum::http::Uri;
+
 use dioxus::prelude::*;
-use axum::extract::Host;
-use axum::body::Body;
-use axum::http::Request;
-use serde_json::json;
-use url::Url;
-use serde::{Deserialize, Serialize};
-use reqwest::{Error, Client, Response};
+
+
+
+
+
+
+
 use dioxus_router::prelude::*;
-use std::collections::HashMap;
-use std::future::IntoFuture;
-use fermi::use_atom_state;
+
+
+
 use strum::IntoEnumIterator;
-use chrono::{DateTime, Local};
-use crate::{data::faction::Faction, ui::app::run::RUN_STATE};
+use chrono::{Local};
+use crate::{data::faction::Faction};
 use crate::data::mark::Mark;
 use crate::data::class::Class;
 use crate::data::rarity::Rarity;
@@ -23,11 +23,11 @@ use crate::data::skill::SkillData;
 use crate::{ui::app::{run::{Job, Status,RunState}, edit::EditState}, sim::args::Args,sim::Sim};
 use crate::sim::{results::CombinedResult};
 use crate::wave::heroes::liz::scorched_soul::ScorchedSoul;
-use std::sync::Arc;
+
 use std::sync::Mutex;
 //use crate::scheduler::{SCHEDULER,start_job};
 //use crate::scheduler;
-use crate::{ui::app::run, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
+use crate::{data::{heroes::Heroes, load_heroes, hero::Hero}};
 use quick_xml::se::to_string;
 use tokio::sync::mpsc;
 use crate::ui::login::{Login, LOGGED_IN};
@@ -174,7 +174,7 @@ pub(crate) fn Start(cx: Scope) -> Element {
                             start.write().allies[i] = evt.value.parse::<u32>().unwrap();
                             //.write().id = evt.value.parse::<usize>().unwrap();
                         },
-                        for (i,ahero) in edit.read().heroes.heroes.iter().enumerate() {
+                        for (_i,ahero) in edit.read().heroes.heroes.iter().enumerate() {
                             option {
                                 value: "{ahero.id}", 
                                 selected: ahero.id == *heroid,
@@ -210,7 +210,7 @@ pub(crate) fn Start(cx: Scope) -> Element {
                             start.write().enemies[i] = evt.value.parse::<u32>().unwrap();
                             //.write().id = evt.value.parse::<usize>().unwrap();
                         },
-                        for (i,ahero) in edit.read().heroes.heroes.iter().enumerate() {
+                        for (_i,ahero) in edit.read().heroes.heroes.iter().enumerate() {
                             option {
                                 value: "{ahero.id}", 
                                 selected: ahero.id == *heroid,
@@ -296,7 +296,7 @@ pub(crate) fn Start(cx: Scope) -> Element {
                     }
                     let name = start.read().name.clone();
                     let args = start.read().args.clone();
-                    let ret = cx.spawn( {
+                    let _ret = cx.spawn( {
                         let run = run.to_owned();
                         async move {
                         let id = run.read().lock().unwrap().jobs.len();
@@ -313,10 +313,10 @@ pub(crate) fn Start(cx: Scope) -> Element {
                             result : CombinedResult::default(),
                         });
                         let (tx, mut rx) = mpsc::unbounded_channel::<CombinedResult>();
-                        let handler  =  //std::thread::spawn(move || 
+                        let _handler  =  //std::thread::spawn(move || 
                             tokio::task::spawn_blocking(move || {
                                 println!("running");
-                                let ret = sim.run(tx);
+                                let _ret = sim.run(tx);
                                 println!("done");
                                 //ret
                             });

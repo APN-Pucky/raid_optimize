@@ -1,4 +1,4 @@
-use crate::{indent, debug, data::{ skill::{SkillData, Skill}}};
+use crate::{indent, debug};
 
 use super::Wave;
 

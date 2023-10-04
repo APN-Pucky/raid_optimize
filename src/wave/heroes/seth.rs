@@ -11,7 +11,7 @@ impl Wave<'_> {
                 self.inflict_ally_team(actor, Effect::TenacityUpII, 1.0, tenacity_increase_turns);
             },
             SkillData::CrystalOfLife {  max_hp_restore_ratio, ripple_turns , attack_up_turns ,..} =>{
-                let rest_hp = (self.get_max_health(actor)  * max_hp_restore_ratio) ;
+                let rest_hp = self.get_max_health(actor)  * max_hp_restore_ratio ;
                 self.restore_ally_team(actor,rest_hp);
                 self.inflict_ally_team(actor, Effect::RippleII, 1.0, ripple_turns);
                 self.inflict_ally_team(actor, Effect::AttackUpII, 1.0 ,attack_up_turns);
@@ -19,7 +19,7 @@ impl Wave<'_> {
             SkillData::TideBigHit { max_hp_damage_ratio, suffocated_chance, suffocated_turns,.. } => {
                 log::debug!("{} uses Tide Big Hit on {}", attacker, defender);
                 let mut chance = suffocated_chance;
-                self.attack_single(attacker,defender, (self.get_max_health(attacker) * max_hp_damage_ratio), skill);
+                self.attack_single(attacker,defender, self.get_max_health(attacker) * max_hp_damage_ratio, skill);
                 if self.has_effect(defender,Effect::WetI) 
                 || self.has_effect(defender,Effect::WetII) 
                 || self.has_effect(defender,Effect::ColdI) 

@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData, BASIC_ATTACK}, effect::Effect, }, };
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{SkillData, BASIC_ATTACK}, effect::Effect, }, };
 
 impl Wave<'_> {
     pub fn on_inflicted_margarita(&mut self, target: InstanceIndex, effect : Effect, ) {

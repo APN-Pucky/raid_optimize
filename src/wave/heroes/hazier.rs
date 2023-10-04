@@ -7,8 +7,8 @@ impl Wave<'_> {
         let defender = target;
         match skill.data {
             SkillData::DarknightStrike { attack_damage_ratio,.. }  => {
-                self.attack_single(attacker,defender, (self.get_attack_damage(attacker) * attack_damage_ratio), skill);
-                self.attack_single(attacker,defender, (self.get_attack_damage(attacker) * attack_damage_ratio), skill);
+                self.attack_single(attacker,defender, self.get_attack_damage(attacker) * attack_damage_ratio, skill);
+                self.attack_single(attacker,defender, self.get_attack_damage(attacker) * attack_damage_ratio, skill);
             },
             SkillData::EyeForAnEye {counterattack_turns: counter_attack_turns,damage_immunity_turns,control_immunity_turns,..} => {
                 self.inflict_single(actor,actor,Effect::CounterAttack,1.0,counter_attack_turns);
@@ -29,7 +29,7 @@ impl Wave<'_> {
                         self.effects[actor].em[effect].extend(cloned_vec);
                     }
                 });
-                self.attack_single(attacker,defender, (self.get_attack_damage(attacker) * attack_damage_ratio), skill);
+                self.attack_single(attacker,defender, self.get_attack_damage(attacker) * attack_damage_ratio, skill);
 
             },
             _ => {}

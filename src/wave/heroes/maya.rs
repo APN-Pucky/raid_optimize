@@ -1,6 +1,6 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_attribute_debuff, is_dot}}, roll};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_dot}}};
 
-use rand::thread_rng;
+
 use rand::seq::SliceRandom;
 
 
@@ -57,7 +57,7 @@ impl Wave<'_> {
         }
     }
 
-    pub fn on_damage_dealt_maya(&mut self, actor : InstanceIndex, target :InstanceIndex,dmg : f32,skill : &Skill) {
+    pub fn on_damage_dealt_maya(&mut self, _actor : InstanceIndex, target :InstanceIndex,_dmg : f32,_skill : &Skill) {
         for i in self.get_ally_indices(target) {
             if let [ Skill { data : SkillData::ForceOfMercy { max_hp_restore_ratio, .. } , .. }, ..] = self.heroes[i].skills[..] {
                 self.restore_single(i, i, max_hp_restore_ratio* self.get_max_health(i));

@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_dot}, }, };
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect}, }, };
 
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct ScorchedSoul{

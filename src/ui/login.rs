@@ -1,16 +1,16 @@
-use axum::{extract::{ws::WebSocketUpgrade, self,Path}, response::Html, routing::get, Router, Extension, Server};
+
 use axum::http::Uri;
-use axum::extract::Host;
-use axum::body::Body;
-use axum::http::Request;
-use once_cell::sync::Lazy;
+
+
+
+
 use serde_json::json;
 use std::sync::Mutex;
 use url::Url;
 use serde::{Deserialize, Serialize};
-use reqwest::{Error, Client, Response};
-use dioxus_router::prelude::*;
-use std::collections::HashMap;
+use reqwest::{Client, Response};
+
+
 
 
 #[derive(Deserialize, Serialize, Debug, )]
@@ -100,7 +100,7 @@ pub async fn check_login(uri :&Uri) -> UserData {
         println!("{:?}", response);
         // JSON parse reply to User
         match response.json().await {
-            Ok(Token{ access_token, token_type, expires_in, refresh_token }) 
+            Ok(Token{ access_token, token_type, expires_in: _, refresh_token: _ }) 
                 =>  {
                     //println!("User: {:?}", User{ access_token, token_type, expires_in, refresh_token });
                     println!("ok");

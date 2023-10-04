@@ -1,6 +1,6 @@
 use argparse::{ArgumentParser, StoreTrue, Store};
 
-use crate::data::hero::{Hero, get_hero_by_string};
+
 pub struct Input {
     pub allies : String,
     pub enemies: String,

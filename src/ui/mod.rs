@@ -1,16 +1,16 @@
-use axum::{extract::{ws::WebSocketUpgrade, self,Path}, response::Html, routing::get, Router, Extension, Server};
-use axum::http::Uri;
+use axum::{extract::{ws::WebSocketUpgrade}, response::Html, routing::get, Router};
+
 use dioxus::prelude::*;
 use axum::extract::Host;
 use axum::body::Body;
 use axum::http::Request;
-use serde_json::json;
-use url::Url;
-use serde::{Deserialize, Serialize};
-use reqwest::{Error, Client, Response};
-use dioxus_router::prelude::*;
-use std::collections::HashMap;
-use axum_server::HttpConfig;
+
+
+
+
+
+
+
 
 use crate::ui::{login::{check_login, UserData, Login}};
 
@@ -29,7 +29,7 @@ pub async fn main() {
         // The root route contains the glue code to connect to the WebSocket
         .route(
             "/",
-            get(move |Host(hostname): Host,request: Request<Body>| async move {
+            get(move |Host(_hostname): Host,request: Request<Body>| async move {
                 // get code from url
                 //let code = extract::FromRequest::from_request(.await.unwrap();
                 //println!("Hostname: {}", hostname);

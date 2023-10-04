@@ -18,7 +18,7 @@ impl Wave<'_> {
                 self.inflict_enemy_team(actor, Effect::EffectResistanceDownII, reduce_effect_resistance_chance, reduce_effect_resistance_turns);
             },
             SkillData::ScytheStrike { attack_damage_ratio, bleed_chance,bleed_turns,.. } => {
-                self.attack_single(attacker,defender, (self.get_attack_damage(attacker) * attack_damage_ratio), skill);
+                self.attack_single(attacker,defender, self.get_attack_damage(attacker) * attack_damage_ratio, skill);
                 self.inflict_single(attacker,defender,Effect::Bleed,bleed_chance,bleed_turns);
             }
             _ => {}

@@ -1,9 +1,9 @@
-use crate::{wave::{Wave, InstanceIndex, attributes::attack}, data::{skill::{Skill, SkillData}, effect::{Effect, is_buff, is_attribute_debuff}}, indent, debug};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_attribute_debuff}}};
 
 
 impl Wave<'_> {
     pub fn execute_skill_alahan(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
-        let attacker = actor;
+        let _attacker = actor;
         let defender = target;
         match skill.data {
             SkillData::SpiritCall{ attack_damage_ratio, restore_hp_damage_ratio, remove_all_buffs, heal_lowest_ally, increase_hp } => {
@@ -56,9 +56,9 @@ impl Wave<'_> {
     
         }
     }
-    pub fn on_damage_dealt_alahan(&mut self, actor : InstanceIndex, target :InstanceIndex,dmg : f32,skill : &Skill) {
+    pub fn on_damage_dealt_alahan(&mut self, actor : InstanceIndex, _target :InstanceIndex,dmg : f32,skill : &Skill) {
         match skill.data {
-            SkillData::SpiritCall { attack_damage_ratio, restore_hp_damage_ratio, remove_all_buffs, heal_lowest_ally, increase_hp } => {
+            SkillData::SpiritCall { attack_damage_ratio: _, restore_hp_damage_ratio, remove_all_buffs: _, heal_lowest_ally, increase_hp: _ } => {
                 self.heal(actor,actor,dmg * restore_hp_damage_ratio);
                 if heal_lowest_ally {
                     let lowest = self.get_lowest_health_ally(actor);
@@ -68,7 +68,7 @@ impl Wave<'_> {
             _ => {}
         }
     }
-    pub fn on_destroys_shield_alahan(&mut self, actor : InstanceIndex, target :InstanceIndex) {
+    pub fn on_destroys_shield_alahan(&mut self, actor : InstanceIndex, _target :InstanceIndex) {
         for i in self.get_ally_indices(actor) {
             if self.is_alive(i) {
                 for (si , s) in  self.heroes[i].skills.iter().enumerate() {

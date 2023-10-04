@@ -6,13 +6,13 @@ impl Wave<'_> {
         let attacker = actor;
         let defender = target;
         match skill.data {
-            SkillData::BurstingKnowledge{ attack_damage_ratio, wisdom_runestones,   piercing_rate } => {
+            SkillData::BurstingKnowledge{ attack_damage_ratio, wisdom_runestones,   piercing_rate: _ } => {
                 // counter number of effects arcane
                 let mut n = wisdom_runestones + self.effects[actor].get(Effect::Arcane);
 
                 while  n > 0 {
                     if self.is_alive(target) {
-                        self.attack_single(attacker,defender, (self.get_attack_damage(attacker) * attack_damage_ratio ), skill);
+                        self.attack_single(attacker,defender, self.get_attack_damage(attacker) * attack_damage_ratio, skill);
                     }
                     else {
                         // get lowest hp enemy
@@ -23,7 +23,7 @@ impl Wave<'_> {
                                 lowest = e;
                             }
                         }
-                        self.attack_single(attacker,lowest, (self.get_attack_damage(attacker) * attack_damage_ratio ), skill);
+                        self.attack_single(attacker,lowest, self.get_attack_damage(attacker) * attack_damage_ratio, skill);
                     }
                     n = n-1;
                 }

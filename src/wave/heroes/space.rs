@@ -6,11 +6,11 @@ impl Wave<'_> {
         let defender = target;
         match skill.data {
             SkillData::Tricks{attack_damage_ratio,turn_meter_reduction_ratio: turn_meter_reduction,..} => {
-                self.attack_single(attacker,defender, (self.get_attack_damage(attacker) * attack_damage_ratio), skill);
+                self.attack_single(attacker,defender, self.get_attack_damage(attacker) * attack_damage_ratio, skill);
                 self.reduce_turn_meter(attacker,defender, turn_meter_reduction);
             },
             SkillData::Nightmare {   attack_damage_ratio, reduce_speed_chance, reduce_speed_turns, increase_speed_turns ,..} => {
-                self.attack_single(attacker,defender, (self.get_attack_damage(attacker) * attack_damage_ratio),skill);
+                self.attack_single(attacker,defender, self.get_attack_damage(attacker) * attack_damage_ratio,skill);
                 self.inflict_single(attacker,defender,Effect::SpeedDownII, reduce_speed_chance, reduce_speed_turns);
                 self.inflict_ally_team(actor, Effect::SpeedUpI, 1.0,increase_speed_turns);
                 //TODO target make no sense here

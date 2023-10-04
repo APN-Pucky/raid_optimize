@@ -1,23 +1,23 @@
-use axum::{extract::{ws::WebSocketUpgrade, self,Path}, response::Html, routing::get, Router, Extension, Server};
-use axum::http::Uri;
-use dioxus::prelude::*;
-use axum::extract::Host;
-use axum::body::Body;
-use axum::http::Request;
-use fermi::{Atom, AtomRef};
-use serde_json::json;
-use std::sync::Mutex;
-use url::Url;
-use serde::{Deserialize, Serialize};
-use reqwest::{Error, Client, Response};
-use dioxus_router::prelude::*;
-use std::collections::HashMap;
-use chrono::{DateTime, Local};
-use std::future::Future;
-use std::thread::JoinHandle;
-use std::future::IntoFuture;
 
-use crate::sim::{Sim, results::CombinedResult, args::Args};
+
+use dioxus::prelude::*;
+
+
+
+use fermi::{AtomRef};
+
+
+
+use serde::{Deserialize, Serialize};
+
+
+
+use chrono::{DateTime, Local};
+
+
+
+
+use crate::sim::{results::CombinedResult, args::Args};
 pub struct Job {
     pub id : usize,
     pub name : String,
