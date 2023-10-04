@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 
 
 
-use fermi::{AtomRef};
+//use fermi::{AtomRef};
 
 
 
@@ -70,4 +70,4 @@ impl Default for RunState {
     }
 }
 
-pub static RUN_STATE: AtomRef<RunState> = fermi::AtomRef(|_| RunState::default());
+//pub static RUN_STATE: AtomRef<RunState> = fermi::AtomRef(|_| RunState::default());

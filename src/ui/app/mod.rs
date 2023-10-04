@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 
 
 
-use fermi::{use_init_atom_root};
+//use fermi::{use_init_atom_root};
 
 
 
@@ -111,7 +111,7 @@ fn Output(cx: Scope) -> Element {
 pub static RUN_STATE: Mutex<RunState> = Mutex::new(RunState::new());
 
 pub fn app(cx: Scope) -> Element {
-    use_init_atom_root(cx);
+    //use_init_atom_root(cx);
     use_shared_state_provider(cx, || {
         EditState::default() 
     });
