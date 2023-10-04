@@ -1,5 +1,3 @@
-# raid_optimize
-
 ![image](./data/logo.jpg)
 
 This project is dedicated to the creation of a dynamic simulator tailored for raid-style games, offering an immersive 5 vs 5 hero battle simulation experience. At its core, the project focuses on the development of a robust codebase that generates accurate results. Owing to the multitude of statistics, skills, and effects involved, predicting the outcome of a battle is far from straightforward. However, this simulator addresses this challenge, offering reliable statistical predictions regarding the strength of different team compositions.
