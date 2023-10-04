@@ -1,4 +1,4 @@
-use chrono::{Utc, DateTime};
+use chrono::{Local, DateTime};
 use dioxus::prelude::UseFuture;
 use fermi::Atom;
 
@@ -11,8 +11,8 @@ use crate::sim::{Sim, results::CombinedResult, args::Args};
 pub struct Job {
     pub id : usize,
     pub name : String,
-    pub start_time : Option<DateTime<Utc>>,
-    //pub end_time : Option<DateTime<Utc>>,
+    pub start_time : Option<DateTime<Local>>,
+    //pub end_time : Option<DateTime<Local>>,
     //pub run_time : Option<u64>, // TODO
     pub args : Args,
     //pub sim : Sim,
@@ -23,8 +23,8 @@ pub struct Job {
 
 #[derive(Debug,Clone)]
 pub struct JobResult<T> {
-    pub start_time : Option<DateTime<Utc>>,
-    pub end_time : Option<DateTime<Utc>>,
+    pub start_time : Option<DateTime<Local>>,
+    pub end_time : Option<DateTime<Local>>,
     pub result : T,
 }
 
@@ -64,7 +64,7 @@ pub fn start_job(scheduler : &mut Scheduler, job : &Job) {
                 end_time : None,
                 result : CombinedResult::default(),
             };
-            ret.start_time = Some(Utc::now());
+            ret.start_time = Some(Local::now());
             let sim = Sim::new(args);
             let result = sim.run();
             ret.result = result;

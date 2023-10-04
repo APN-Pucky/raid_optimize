@@ -4,12 +4,15 @@ use dioxus::prelude::*;
 use axum::extract::Host;
 use axum::body::Body;
 use axum::http::Request;
+use fermi::{use_atom_root, use_init_atom_root};
 use serde_json::json;
 use url::Url;
 use serde::{Deserialize, Serialize};
 use reqwest::{Error, Client, Response};
 use dioxus_router::prelude::*;
 use std::collections::HashMap;
+use std::sync::Arc;
+use std::sync::Mutex;
 
 use crate::ui::app::{ input::StartState, edit::EditState, run::RunState};
 use crate::ui::app::input::Start;
@@ -105,13 +108,16 @@ fn Output(cx: Scope) -> Element {
     }
 }
 
+pub static RUN_STATE: Mutex<RunState> = Mutex::new(RunState::new());
 
 pub fn app(cx: Scope) -> Element {
+    use_init_atom_root(cx);
     use_shared_state_provider(cx, || {
         EditState::default() 
     });
     use_shared_state_provider(cx, || {
-        RunState::default() 
+        &RUN_STATE
+        //RunState::default() 
     });
     use_shared_state_provider(cx, || {
         StartState::default() 

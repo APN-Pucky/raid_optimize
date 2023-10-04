@@ -12,10 +12,9 @@ use dioxus_router::prelude::*;
 use std::collections::HashMap;
 use axum_server::HttpConfig;
 
-use crate::ui::{login::check_login, user::{UserData, Login}};
+use crate::ui::{login::{check_login, UserData, Login}};
 
 pub mod login;
-pub mod user;
 
 pub mod app;
 
@@ -45,7 +44,7 @@ pub async fn main() {
                 "#.to_string();
                     }
                     Login::SubscribeStar => {
-                        nav = format!("<a>Welcome {} <a/>",user.name);
+                        nav = format!("<a>Welcome {} <a/>",user.name.unwrap());
                     }
                 }
 
@@ -138,6 +137,10 @@ pub async fn main() {
                           .inputs {{
                             background-color: #d8d8d8;
                           }}
+                          .resize {{
+                            resize: both;
+                            overflow: auto;
+                          }}
                         
                           select, input {{
                             width: 100%;
@@ -164,7 +167,7 @@ pub async fn main() {
 
                             display: flex;
                             width: 100%;
-                            height: 50vh; /* Set the height to fill the viewport */
+                            //height: 50vh; /* Set the height to fill the viewport */
                         }}
                           .half {{
                             flex: 1; /* This makes both halves take up equal space */
@@ -206,12 +209,11 @@ pub async fn main() {
 
     println!("Listening on http://{addr}");
 
-    //let path = "http://127.0.0.1:3030";
-
-    //match open::that(path) {
-    //    Ok(()) => println!("Opened '{}' successfully.", path),
-    //    Err(err) => eprintln!("An error occurred when opening '{}': {}", path, err),
-    //}
+    let path = "http://127.0.0.1:3030";
+    match open::that(path) {
+        Ok(()) => println!("Opened '{}' successfully.", path),
+        Err(err) => eprintln!("An error occurred when opening '{}': {}", path, err),
+    }
 
     axum_server::bind(addr)
         .serve(app.into_make_service())

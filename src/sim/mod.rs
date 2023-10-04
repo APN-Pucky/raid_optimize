@@ -10,12 +10,14 @@ use prettytable::Row;
 
 use crate::data::hero::Hero;
 use crate::data::instance::Instance;
+use crate::error;
 use crate::player::ManualPlayer;
 use crate::player::Player;
 use crate::player::RandomPlayer;
 use crate::wave::Wave;
 use crate::wave::Result;
 use crate::wave::stat::Stat;
+use tokio::sync::mpsc::UnboundedSender;
 
 use self::args::Args;
 use self::results::CombinedResult;
@@ -139,7 +141,7 @@ impl Sim {
     */
 
 
-    pub fn run(&self) -> CombinedResult {
+    pub fn run(&self , tx :UnboundedSender<CombinedResult> ) -> CombinedResult {
         let vecit : Vec<u32> = (0..self.args.threads as u32).collect::<Vec<_>>();
         let iter = self.args.iterations / (self.args.threads as u64) ;
         //let bar = ProgressBar::new(self.args.iterations);
@@ -178,12 +180,19 @@ impl Sim {
             let mut instance = a.iter_mut().chain(e.iter_mut()).collect::<Vec<_>>();
             let mut players : Vec<Box<dyn Player>> = vec![ap,ep]; 
             let mut wave = Wave::new(&mut instance, &mut players ,!self.args.no_stats);
-            for _ in 0..iter {
+            for x in 0..iter {
                 cr.add_result(&wave.run());
                 wave.reset();
-                //if (x+1) % 1000 == 0 { // plus one because we start at 0 and want the score added after the iteration
-                //    bar.inc(1000);
-                //}
+                if (x+1) % 1000 == 0 { // plus one because we start at 0 and want the score added after the iteration
+                    match tx.send(cr) {
+                        Ok(_) => {},
+                        Err(e) => {
+                            error!("Error sending result: {}", e);
+                        }
+                    }
+                    cr = CombinedResult::default();
+                    //bar.inc(1000);
+                }
             }
             cr
         }).collect::<Vec<_>>();

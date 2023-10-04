@@ -1,4 +1,5 @@
 use axum::{extract::{ws::WebSocketUpgrade, self,Path}, response::Html, routing::get, Router, Extension, Server};
+use chrono::Duration;
 use axum::http::Uri;
 use dioxus::prelude::*;
 use axum::extract::Host;
@@ -13,8 +14,8 @@ use std::collections::HashMap;
 use std::future::IntoFuture;
 use fermi::use_atom_state;
 use strum::IntoEnumIterator;
-use chrono::{DateTime, Utc};
-use crate::data::faction::Faction;
+use chrono::{DateTime, Local};
+use crate::{data::faction::Faction, ui::app::run::RUN_STATE};
 use crate::data::mark::Mark;
 use crate::data::class::Class;
 use crate::data::rarity::Rarity;
@@ -22,11 +23,15 @@ use crate::data::skill::SkillData;
 use crate::{ui::app::{run::{Job, Status,RunState}, edit::EditState}, sim::args::Args,sim::Sim};
 use crate::sim::{results::CombinedResult};
 use crate::wave::heroes::liz::scorched_soul::ScorchedSoul;
+use std::sync::Arc;
+use std::sync::Mutex;
 //use crate::scheduler::{SCHEDULER,start_job};
 //use crate::scheduler;
 use crate::{ui::app::run, data::{heroes::Heroes, load_heroes, hero::Hero}, wave::print};
 use quick_xml::se::to_string;
-
+use tokio::sync::mpsc;
+use crate::ui::login::{Login, LOGGED_IN};
+static MAX_JOBS : usize = 4;
 pub struct StartState {
     pub name : String,
     pub args : Args,
@@ -133,7 +138,9 @@ macro_rules! hero_positive_number {
 pub(crate) fn Start(cx: Scope) -> Element {
     let start = use_shared_state::<StartState>(cx).unwrap();
     let edit = use_shared_state::<EditState>(cx).unwrap();
-    let run = use_shared_state::<RunState>(cx).unwrap();
+    let run = use_shared_state::<&Mutex<RunState>>(cx).unwrap();
+    //let run = use_atom_ref(&cx,RUN_STATE);
+    //let run = use_atom_state(cx, &RUN_STATE);
     if edit.read().auto_safe {
         save_to_file(&edit.read().heroes);
     }
@@ -141,7 +148,7 @@ pub(crate) fn Start(cx: Scope) -> Element {
         div { 
             class : "container2",
       div {
-        class : "half",
+        class : "resize",
         h2 {"Input"}
         div {
             class : "form-group",
@@ -240,23 +247,46 @@ pub(crate) fn Start(cx: Scope) -> Element {
                 }
             }
         }
-        div {
-            class : "form-group",
-            label { "Threads: " }
-            input {
-                r#type : "number",
-                min : 0,
-                value: "{start.read().args.threads}",
-                oninput: move |evt| {
-                    if let Ok(t) = evt.value.parse::<u64>() {
-                        start.write().args.threads = t;
+        if LOGGED_IN.lock().unwrap().login == Login::None {
+            rsx!{
+                div {
+                class : "form-group",
+                label { "Threads (Log in to unlock): " }
+                    input { 
+                        readonly: true,
+                        disabled: true,
+                        r#type : "number",
+                        min : 1,
+                        max : 1,
+                        value : 1
+                    }
+                }
+            }
+        }
+        else {
+            rsx!{
+                div {
+                    class : "form-group",
+                    label { "Threads: " }
+                    input {
+                        r#type : "number",
+                        min : 1,
+                        value: "{start.read().args.threads}", 
+                        oninput: move |evt| {
+                            if let Ok(t) = evt.value.parse::<u64>() {
+                                start.write().args.threads = t;
+                            }
+                        }
                     }
                 }
             }
         }
         div {
             button { 
-                onclick: move |_| {
+                onclick : move |_| {
+                    if LOGGED_IN.lock().unwrap().login == Login::None  && run.read().lock().unwrap().jobs.iter().filter(|j| j.status == Status::Running).count() >= MAX_JOBS {
+                        return;
+                    }
                     {
                         // set allies and enemies in args
                         let al = start.read().allies.iter().map(|i| edit.read().heroes.heroes.iter().find(|&h| h.id == *i).unwrap().clone()).collect();
@@ -269,48 +299,66 @@ pub(crate) fn Start(cx: Scope) -> Element {
                     let ret = cx.spawn( {
                         let run = run.to_owned();
                         async move {
-                        let id = run.read().jobs.len();
-                        //let name = name.to_owned();
-                        //let args = args.to_owned();
+                        let id = run.read().lock().unwrap().jobs.len();
+                        //let id = run.read().jobs.len();
                         let sim = Sim::new( args.clone());
-                        run.write().jobs.push( Job  {
+                        //run.write().jobs.push( Job  {
+                        run.write().lock().unwrap().jobs.push( Job  {
                             id,
                             name,
                             status : Status::Running,
-                            start_time : Some(Utc::now()),
+                            start_time : Some(Local::now()),
                             end_time : None,
                             args,
-                            result : None,
+                            result : CombinedResult::default(),
                         });
+                        let (tx, mut rx) = mpsc::unbounded_channel::<CombinedResult>();
                         let handler : tokio::task::JoinHandle<CombinedResult> =  //std::thread::spawn(move || 
                             tokio::task::spawn_blocking(move || {
                                 println!("running");
-                                let ret = sim.run();
+                                let ret = sim.run(tx);
                                 println!("done");
                                 ret
                             });
-                        //)
+
                         println!("awaiting");
-                        if let Ok(ret) = handler.await {
-                            println!("writing");
-                            run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().end_time= Some(Utc::now());
-                            run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().result = Some(ret);
-                            run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().status= Status::Ended;
+                        while let Some(cr) = rx.recv().await {
+                            //println!("received");
+                            //CombinedResult::add_combined_result(&mut run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().result, &cr)
+                            CombinedResult::add_combined_result(&mut run.write().lock().unwrap().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().result, &cr)
+                            //run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().result.add_combined_result(cr);
                         }
-                        else {
-                            run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().status= Status::Failed;
-                        }
+                        //run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().end_time= Some(Local::now());
+                        //run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().status= Status::Ended;
+                        run.write().lock().unwrap().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().end_time= Some(Local::now());
+                        run.write().lock().unwrap().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().status= Status::Ended;
+                        //)
+                        //if let Ok(ret) = handler.await {
+                        //    println!("writing");
+                        //    run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().end_time= Some(Local::now());
+                        //    run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().result = Some(ret);
+                        //    run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().status= Status::Ended;
+                        //}
+                        //else {
+                        //    run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().status= Status::Failed;
+                        //}
                         //handler.is_finished();
                             //run.write().jobs.iter_mut().filter(|j| j.id == id).nth(0).unwrap().result = Some(ret);
                         }
                     });
                 },
-                "Run" 
+                if LOGGED_IN.lock().unwrap().login == Login::None {
+                    format!("Run {}/{} (Log in to unlock)",run.read().lock().unwrap().jobs.iter().filter(|j| j.status == Status::Running).count()+1, MAX_JOBS)
+                }
+                else {
+                    "Run".to_string()
+                }
             }
         }
+        
     }
     div {
-        class : "half",
+        class : "resize",
         div {
             class: "container",
             div {
@@ -395,7 +443,7 @@ pub(crate) fn Start(cx: Scope) -> Element {
                         onclick: move |_| {
                             save_to_file(&edit.read().heroes);
                         },
-                        "save"
+                        "Save"
                     }
                     input {
                         id : "auto_safe",
@@ -604,43 +652,65 @@ pub(crate) fn Start(cx: Scope) -> Element {
                     th { "ID" }
                     th { "Name" }
                     th { "Start" }
-                    th { "End" }
+                    th { "Progress" }
+                    th { "ETA/Time" }
                     th { "Status" }
                     th { "Wins" }
                     th { "Stalls" }
                     th { "Losses" }
                 }
-                for job in run.read().jobs.iter().rev() {
-                    match job.result {
-                        Some(result) => {
+                for job in run.read().lock().unwrap().jobs.iter().rev() {
                             rsx! {
                                 tr {
                                     td { "{job.id}" }
                                     td { "{job.name}" }
-                                    td { "{job.start_time.unwrap().to_rfc2822()}" }
-                                    td { "{job.end_time.unwrap().to_rfc2822()}" }
+                                    match job.start_time {
+                                        Some(end) => rsx!{
+                                            td { "{end.to_rfc2822()}" }},
+                                        None => rsx!{ td {""}}
+                                    }
+                                    td { 
+                                        progress {
+                                            value : "{job.result.wins + job.result.stalls + job.result.losses}",
+                                            max : "{job.args.iterations}"
+                                        }
+                                        
+                                    }
+                                    if let Some(end) = job.end_time {
+                                            let duration : Duration = end - job.start_time.unwrap();
+                                            let days = duration.num_seconds() / (60 * 60 * 24);
+                                            let hours = (duration.num_seconds() / (60 * 60)) % 24;
+                                            let minutes = (duration.num_seconds() / 60) % 60;
+                                            let seconds = duration.num_seconds() % 60;
+                                            rsx!{td{ format!("{}d {}h {}m {}s", days, hours, minutes,seconds)}}
+                                        }
+                                        else {
+                                            // compute ETA
+                                            if job.result.wins + job.result.stalls + job.result.losses == 0 {
+                                                rsx!{ td {"?"}}
+                                            }
+                                            else {
+                                                let mut duration :Duration = Local::now().signed_duration_since(job.start_time.unwrap());
+                                                duration = duration /((job.result.wins + job.result.stalls + job.result.losses) as i32) * ((job.args.iterations - (job.result.wins + job.result.stalls + job.result.losses)) as i32);
+                                                let days = duration.num_seconds() / (60 * 60 * 24);
+                                                let hours = (duration.num_seconds() / (60 * 60)) % 24;
+                                                let minutes = (duration.num_seconds() / 60) % 60;
+                                                let seconds = duration.num_seconds() % 60;
+                                                rsx!{td { format!("{}d {}h {}m {}s", days, hours, minutes,seconds) }}
+                                            }
+                                        }
+                                    //match job.end_time {
+                                    //    Some(end) => rsx!{
+                                    //        td { "{end.to_rfc2822()}" }},
+                                    //    None =>  
+                                    //            rsx!{td {""}}
+                                    //}
                                     td { "{job.status}" }
-                                    td { "{result.wins}" }
-                                    td { "{result.stalls}" }
-                                    td { "{result.losses}" }
+                                    td { "{job.result.wins}" }
+                                    td { "{job.result.stalls}" }
+                                    td { "{job.result.losses}" }
                                 }
                             }
-                        },
-                        None => {
-                            rsx! {
-                                tr {
-                                    td { "{job.id}" }
-                                    td { "{job.name}" }
-                                    td { "{job.start_time.unwrap().to_rfc2822()}" }
-                                    td { "" }
-                                    td { "{job.status}" }
-                                    td { "" }
-                                    td { "" }
-                                    td { "" }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }

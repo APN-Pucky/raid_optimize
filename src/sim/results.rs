@@ -17,9 +17,9 @@ pub fn get_mean_and_standard_deviation(sum : f64, sum_sq:f64, n: u64) -> (f64, f
 #[derive(Debug,Clone,Copy)]
 pub struct CombinedResult {
     pub iterations: u64,
-    pub wins: u32,
-    pub losses: u32,
-    pub stalls: u32,
+    pub wins: u64,
+    pub losses: u64,
+    pub stalls: u64,
     //pub statistics: Vec<CombinedStatistics>, // TODO strong type allies and emeies ?
 }
 
