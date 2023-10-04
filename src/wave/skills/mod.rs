@@ -98,12 +98,66 @@ impl Wave<'_> {
 
 
     pub fn execute_skill(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
-        self.execute_generic_skill(skill, actor, target);
-        self.execute_skill_tifya(skill, actor, target);
-        self.execute_skill_space(skill, actor, target);
-        self.execute_skill_liz(skill, actor, target);
-        self.execute_skill_seth(skill, actor, target);
-        self.execute_skill_natalie(skill, actor, target);
+        let attacker = actor;
+        let defender = target;
+        //self.execute_generic_skill(skill, actor, target);
+        //self.execute_skill_tifya(skill, actor, target);
+        //self.execute_skill_space(skill, actor, target);
+        match skill.data {
+            SkillData::Generic{..} => {self.execute_generic_skill(skill, actor, target)}
+            SkillData::Tricks(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::FissionOfLife(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::Nightmare(s)=> {
+                s.execute(self,skill,attacker,defender);
+            }, 
+            SkillData::ScaletMultiStrike(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::LeavesStorm(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::ScarletSlash(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::Resurrection(s)  => {
+                s.execute(self,skill,attacker,defender);
+
+            },
+            SkillData::FireHeal(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::ScorchedSoul(s) => {
+                s.execute(self,skill,attacker,defender);
+                //self.inflict_hp_burning(attacker,defender, hp_burning_chance, hp_burning_turns);
+            },
+            SkillData::TideBigHit(s)  => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::CrystalOfLife(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::DeepSeaPower(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::BloodthirstyScythe(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::EnergyBurst(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::ScytheStrike(s) => {
+                s.execute(self,skill,attacker,defender);
+            },
+            SkillData::None => {}
+            _ => {}
+        }
+        //self.execute_skill_liz(skill, actor, target);
+        //self.execute_skill_seth(skill, actor, target);
+        //self.execute_skill_natalie(skill, actor, target);
         self.execute_skill_hazier(skill, actor, target);
         self.execute_skill_geeliman(skill, actor, target);
         //self.execute_skill_margarita(skill, actor, target);

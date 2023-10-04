@@ -1,29 +1,10 @@
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_debuff} }};
 
-impl Wave<'_> {
-    pub fn execute_skill_tifya(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
-        //let wave = self;
-        let attacker = actor;
-        let defender = target;
-        match skill.data {
-            SkillData::ScarletSlash {  attack_damage_ratio, .. } => {
-                self.attack_single(attacker, defender,  self.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-                self.attack_single(attacker, defender,  self.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-            },
-            SkillData::LeavesStorm {  attack_damage_ratio, .. } => {
-                self.attack_enemy_team(attacker,   self.get_attack_damage(attacker)  *attack_damage_ratio * (1. + 0.02 *self.effects[actor].get(Effect::ScarletSakura) as f32) , skill);
-            },
-            SkillData::ScaletMultiStrike{  attack_damage_ratio, .. } => {
-                self.attack_single(attacker, defender,  self.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-                self.attack_single(attacker, defender,  self.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-                self.attack_single(attacker, defender,  self.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-                self.attack_single(attacker, defender,  self.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-                self.attack_single(attacker, defender,  self.get_attack_damage(attacker)  *attack_damage_ratio, skill);
-            },
-            _ => {}
-        }
-    }
+pub mod scarlet_multi_strike;
+pub mod leaves_storm;
+pub mod scarlet_slash;
 
+impl Wave<'_> {
     pub fn on_critical_strike_tifya(&mut self, actor:InstanceIndex, skill :&Skill) {
         match skill.data {
             SkillData::ScarletSlash{..} => {
@@ -85,3 +66,5 @@ impl Wave<'_> {
             }
     }
 }
+#[cfg(test)]
+mod tests;

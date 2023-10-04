@@ -9,7 +9,7 @@ impl Wave<'_> {
         // apply heal
         let n = self.effects[actor].get(Effect::Heal);
         if n> 0 {
-            let nn= self.effects[actor].get_last_inflictor(Effect::Bleed);
+            let nn= self.effects[actor].get_last_inflictor(Effect::Heal);
             let heal = self.get_max_health(actor) * 0.05 * n as f32;
             self.heal(nn,actor,heal);
         }
@@ -32,7 +32,7 @@ impl Wave<'_> {
         // apply HP burning
         let n = self.effects[actor].get(Effect::HPBurning);
         if n > 0 {
-            let inflictor = self.effects[actor].get_last_inflictor(Effect::Bleed);
+            let inflictor = self.effects[actor].get_last_inflictor(Effect::HPBurning);
             let mut hp_burn_dmg : f32 = self.get_max_health(actor) * 0.08 * n as f32;
             let mastery = self.get_mastery(inflictor);
             hp_burn_dmg *= 1.0 + mastery;

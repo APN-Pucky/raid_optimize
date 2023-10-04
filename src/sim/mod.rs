@@ -24,6 +24,8 @@ use self::results::CombinedResult;
 
 pub mod args;
 pub mod results;
+#[cfg(test)]
+mod tests;
 
 
 
@@ -47,101 +49,7 @@ impl Sim {
         }
     }
 
-    /* 
-    pub fn print_results(&self) {
-        println!("win%:\t{:>6.2} ({} / {})", self.result.wins as f64 / self.result.iterations as f64*100., self.result.wins, self.result.iterations);
-        println!("stall%:\t{:>6.2} ({} / {})", self.result.stalls as f64 / self.result.iterations as f64*100., self.result.stalls, self.result.iterations);
-        println!("loss%:\t{:>6.2} ({} / {})", self.result.losses as f64 / self.result.iterations as f64*100., self.result.losses, self.result.iterations);
-    }
-
-
-    pub fn print_statistics(&self, bar : bool) {
-        let barlen = 20.0;
-        let mut atable = Table::new();
-        let mut row = Vec::new();
-
-
-        row.push(Cell::new("Allies"));
-        for hero in self.args.allies.iter() {
-            row.push(Cell::new(&hero.name));
-        }
-        atable.set_titles(Row::new(row));
-
-        for (key,_v) in self.result.statistics[0].hm.iter() {
-            let mut row = Vec::new();
-            row.push(Cell::new(&format!("{}",key)));
-            let mut index = 0;
-            let mut max : f64 = 0.0;
-            for _her in self.args.allies.iter() {
-                let value =self.result.get_mean(index,key) ;
-                if value > max {
-                    max = value;
-                }
-                index += 1;
-            }
-            index = 0;
-            for _her in self.args.allies.iter() {
-                //let value = self.result.statistics[index].hm[key];
-                let mean = self.result.get_mean(index, key);
-                let std = self.result.get_std(index, key);
-                let s: String = if bar {
-                        "=".repeat((mean/max*barlen) as usize) + &" ".repeat(((max-mean)/max*barlen) as usize)
-                    }
-                    else {
-                        format!("{:.2} +- {:.2}",mean, std)
-                    };
-                row.push(Cell::new(&s));
-                index += 1;
-            }
-            atable.add_row(Row::new(row));
-        }
-        atable.set_format(*prettytable::format::consts::FORMAT_NO_LINESEP_WITH_TITLE);
-        atable.printstd();
-
-
-        let mut etable = Table::new();
-        row = Vec::new();
-        row.push(Cell::new("Enemies"));
-        for hero in self.args.enemies.iter() {
-            // append to vec
-            row.push(Cell::new(&hero.name));
-        }
-        etable.set_titles(Row::new(row));
-        for (key,_value) in self.result.statistics[self.args.allies.len()].hm.iter() {
-            let mut row = Vec::new();
-            row.push(Cell::new(&format!("{}",key)));
-            let mut index = self.args.allies.len();
-            let mut max : f64 = 0.0;
-            for _her in self.args.enemies.iter() {
-                let value =self.result.get_mean(index,key) ;
-                if value > max {
-                    max = value;
-                }
-                index += 1;
-            }
-            index = self.args.allies.len();
-            for _her in self.args.enemies.iter() {
-                //let value = self.result.statistics[index].hm[key];
-                let mean = self.result.get_mean(index, key);
-                let std = self.result.get_std(index, key);
-                let s : String = if bar {
-                        "=".repeat((mean/max*barlen) as usize) + &" ".repeat(((max-mean)/max*barlen) as usize)
-                    }
-                    else {
-                        format!("{:.2} +- {:.2}",mean, std)
-                    };
-                row.push(Cell::new(&s));
-                index += 1;
-            }
-            etable.add_row(Row::new(row));
-        }
-        etable.set_format(*prettytable::format::consts::FORMAT_NO_LINESEP_WITH_TITLE);
-        etable.printstd();
-    }
-    */
-
-
-    pub fn run(&self , tx :UnboundedSender<CombinedResult> ) {
+    pub fn run(&self , tx :UnboundedSender<CombinedResult> )   {
         let vecit : Vec<u32> = (0..self.args.threads as u32).collect::<Vec<_>>();
         let iter = self.args.iterations / (self.args.threads as u64) ;
         //let bar = ProgressBar::new(self.args.iterations);
@@ -208,4 +116,6 @@ impl Sim {
         //    Self::add_statistics(&mut self.statistics, &wave.get_statistics());
         //}
     }
+
+
 }

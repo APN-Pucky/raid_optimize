@@ -45,7 +45,8 @@ impl Wave<'_> {
             let mut min : f32 = (0..self.len())
                 .filter(|a| self.is_alive(*a))
                 .map(|a| (self.turn_meter_threshold - self.get_turn_meter(a) )/(self.get_speed(a)))
-                .min_by(|a,b| a.partial_cmp(b).unwrap()).unwrap();
+                .fold(self.turn_meter_threshold, |a,b| a.min(b));
+                //.min_by(|a,b| a.partial_cmp(b).unwrap()).unwrap();
                 //.reduce( |a, b| a.min(b)).unwrap();
             if min < 0.0 {
                 min = 0.0;

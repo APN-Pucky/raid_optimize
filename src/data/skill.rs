@@ -2,7 +2,21 @@ use std::fmt;
 
 use crate::wave::InstanceIndex;
 use crate::wave::Wave;
+use crate::wave::heroes::liz::fire_heal::FireHeal;
+use crate::wave::heroes::liz::resurrection::Resurrection;
 use crate::wave::heroes::liz::scorched_soul::ScorchedSoul;
+use crate::wave::heroes::natalie::bloodthirsty_scythe::BloodthirstyScythe;
+use crate::wave::heroes::natalie::energy_burst::EnergyBurst;
+use crate::wave::heroes::natalie::scythe_strike::ScytheStrike;
+use crate::wave::heroes::seth::crystal_of_life::CrystalOfLife;
+use crate::wave::heroes::seth::deep_sea_power::DeepSeaPower;
+use crate::wave::heroes::seth::tide_big_hit::TideBigHit;
+use crate::wave::heroes::space::fission_of_life::FissionOfLife;
+use crate::wave::heroes::space::nightmare::Nightmare;
+use crate::wave::heroes::space::tricks::Tricks;
+use crate::wave::heroes::tifya::leaves_storm::LeavesStorm;
+use crate::wave::heroes::tifya::scarlet_multi_strike::ScarletMultiStrike;
+use crate::wave::heroes::tifya::scarlet_slash::ScarletSlash;
 use strum_macros::EnumIter;
 
 
@@ -130,79 +144,27 @@ pub enum SkillData {
     //    hp_burning_chance: f32,
     //    hp_burning_turns: u32
     //},
-    FireHeal {
-        heal_attack_ratio: f32,
-        heal_max_hp_ratio: f32,
-        block_debuff_turns: u32,
-    },
-    Resurrection {
-        shield_max_hp_ratio: f32,
-        shield_turns: u32,
-        cleanse_dot_debuffs: u32,
-        restore_max_hp_ratio: f32,
-    },
+    FireHeal (FireHeal),
+    Resurrection (Resurrection),
     // Natalie
-    ScytheStrike {
-        attack_damage_ratio : f32,
-        bleed_chance: f32,
-        bleed_turns: u32
-    },
-    BloodthirstyScythe {
-        attack_damage_ratio : f32,
-        bleed_chance: f32,
-        bleed_turns: u32,
-    },
-    EnergyBurst {
-        attack_damage_ratio : f32,
-        bleed_turns: u32,
-        reduce_effect_resistance_chance :f32,
-        reduce_effect_resistance_turns : u32
-    },
+    ScytheStrike(ScytheStrike),
+    BloodthirstyScythe(BloodthirstyScythe) ,
+    EnergyBurst(EnergyBurst) ,
     //Seth
-    TideBigHit {
-        max_hp_damage_ratio : f32,
-        suffocated_chance : f32,
-        suffocated_turns : u32,
-    },
-    DeepSeaPower {
-        max_hp_shield_ratio : f32,
-        shield_turns : u32,
-        tenacity_increase_turns : u32,
-    },
-    CrystalOfLife {
-        max_hp_restore_ratio : f32,
-        ripple_turns : u32,
-        attack_up_turns : u32,
-    },
+    TideBigHit(TideBigHit),
+    DeepSeaPower(DeepSeaPower),
+    CrystalOfLife(CrystalOfLife),
     // Space
-    Tricks { 
-        attack_damage_ratio : f32,
-        turn_meter_reduction_ratio: f32, 
-    },
-    Nightmare {
-        attack_damage_ratio : f32,
-        reduce_speed_chance : f32,
-        reduce_speed_turns : u32,
-        increase_speed_turns : u32,
-    },
+    Tricks(Tricks),
+    Nightmare(Nightmare),
     Resplendence {
         turn_meter_ratio: f32,
     },
-    FissionOfLife {
-        restore_max_hp_ratio : f32,
-        heal_turns : u32,
-        increase_turn_meter_ratio : f32,
-    },
+    FissionOfLife(FissionOfLife),
     // Tifya
-    ScarletSlash {
-        attack_damage_ratio : f32,
-    },
-    LeavesStorm {
-        attack_damage_ratio : f32,
-    },
-    ScaletMultiStrike {
-        attack_damage_ratio : f32,
-    },
+    ScarletSlash(ScarletSlash),
+    LeavesStorm(LeavesStorm),
+    ScaletMultiStrike(ScarletMultiStrike),
     //Hazier
     DarknightStrike {
         attack_damage_ratio : f32

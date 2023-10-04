@@ -44,7 +44,7 @@ impl Wave<'_> {
 
     fn inflict_bleed(&mut self, actor : InstanceIndex, target:InstanceIndex, turns :u32) {
         if self.inflict_any(actor, target, Effect::Bleed, turns) {
-            let dmg_vec = vec![0.14,0.18,0.22,0.26,0.30,0.30,0.30,0.30,0.30,0.30];
+            let dmg_vec = vec![0.00,0.14,0.18,0.22,0.26,0.30,0.30,0.30,0.30,0.30,0.30];
             let bleed_dmg = self.get_attack_damage(actor) * dmg_vec[(self.effects[target].get(Effect::Bleed)) as usize];
             self.damage_bleed(actor,target,bleed_dmg);
         }
