@@ -12,6 +12,7 @@ pub struct Heroes {
 #[cfg(test)]
 mod tests {
     use itertools::assert_equal;
+    use quick_xml::de::from_str;
 
     use crate::data::load_heroes;
 

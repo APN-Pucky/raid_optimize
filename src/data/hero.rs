@@ -87,6 +87,7 @@ impl fmt::Display for Hero {
 #[cfg(test)]
 mod tests {
     use itertools::assert_equal;
+    use quick_xml::{se::to_string, de::from_str};
 
     use super::*;
 

@@ -501,6 +501,8 @@ fn get_alive_enemies<const LEN:usize>( wave :&Wave,actor :InstanceIndex,) -> Opt
 
 #[cfg(test)]
 mod tests {
+    use quick_xml::{de::from_str, se::to_string};
+
     use super::*;
 
     #[test]

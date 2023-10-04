@@ -126,6 +126,8 @@ fn turns_default() -> u32 {
 
 #[cfg(test)]
 mod tests {
+    use quick_xml::{se::to_string, de::from_str};
+
     use super::*;
 
 
