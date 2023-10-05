@@ -19,7 +19,7 @@ impl Default for DarknightStrike{
 }
 
 impl DarknightStrike{
-    pub const TYPE : SkillType = SkillType::Active;
+    pub const TYPE : SkillType = SkillType::Basic;
     pub const SELECT : Select = Select::AllEnemies;
 
     pub fn execute(&self, wave : &mut Wave,  skill : &Skill, attacker:InstanceIndex, defender:InstanceIndex, ) {

@@ -1,4 +1,4 @@
-
+// TODO needs Exclusive
 use crate::wave::heroes::Cooldown;
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
 
@@ -13,9 +13,9 @@ pub struct BloodthirstyScythe{
 impl Default for BloodthirstyScythe{
     fn default() -> Self {
         Self {
-                cooldown : 4,
+                cooldown : 3,
                 attack_damage_ratio : 1.4,
-                bleed_chance: 0.5,
+                bleed_chance: 0.8,
                 bleed_turns: 2,
         }
     }
@@ -24,7 +24,7 @@ impl Default for BloodthirstyScythe{
 impl BloodthirstyScythe{
 
     pub const TYPE : SkillType = SkillType::Active;
-    pub const SELECT : Select = Select::SingleEnemy;
+    pub const SELECT : Select = Select::AllEnemies;
 
     pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
         let damage = wave.get_attack_damage(actor) * self.attack_damage_ratio;

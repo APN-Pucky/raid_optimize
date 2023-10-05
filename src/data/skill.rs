@@ -469,7 +469,10 @@ macro_rules! gen_match {
 }
 
 gen_match!(         
-        [SharpInstinct],
+        [
+        SharpInstinct,
+        IncessantChatter
+        ],
         //[Resplendence {turn_meter_ratio : f32}],
         [
         BasicAttack
@@ -610,7 +613,7 @@ mod tests {
     fn read_xml() {
         let skill: Vec<Skill>= from_str(
             r#"
-            <Skill><ScorchedSoul><cooldown>3</cooldown><attack_damage_ratio>1</attack_damage_ratio><hp_burning_chance>0.5</hp_burning_chance><hp_burning_turns>2</hp_burning_turns></ScorchedSoul></Skill>
+            <ScorchedSoul><cooldown>3</cooldown><attack_damage_ratio>1</attack_damage_ratio><hp_burning_chance>0.5</hp_burning_chance><hp_burning_turns>2</hp_burning_turns></ScorchedSoul>
             "#,
             /* 
             <skill>

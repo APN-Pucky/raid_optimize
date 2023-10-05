@@ -21,7 +21,6 @@
         <tenacity>0.0</tenacity>
         <damage_reflection>0.0</damage_reflection>
         <skill>
-            <cooldown>0</cooldown>
             <type>Basic</type>
             <select>SingleEnemy</select>
             
@@ -33,7 +32,6 @@
             
         </skill>
         <skill>
-            <cooldown>4</cooldown>
             <type>Active</type>
             <select>SingleEnemy</select>
             
@@ -45,7 +43,6 @@
             
         </skill>
         <skill>
-            <cooldown>4</cooldown>
             <type>Active</type>
             <select>AllEnemies</select>
             
@@ -80,7 +77,6 @@
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
         <skill>
-            <cooldown>0</cooldown>
             
             <TideBigHit>
                 <max_hp_damage_ratio>0.18</max_hp_damage_ratio>
@@ -90,7 +86,6 @@
             
         </skill>
         <skill>
-            <cooldown>5</cooldown>
             
             <DeepSeaPower>
                 <max_hp_shield_ratio>0.25</max_hp_shield_ratio>
@@ -100,7 +95,6 @@
             
         </skill>
         <skill>
-            <cooldown>5</cooldown>
             
             <CrystalOfLife>
                 <max_hp_restore_ratio>0.22</max_hp_restore_ratio>
@@ -132,7 +126,6 @@
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
         <skill>
-            <cooldown>0</cooldown>
             
             <ScorchedSoul>
                 <attack_damage_ratio>1.80</attack_damage_ratio>
@@ -142,7 +135,6 @@
             
         </skill>
         <skill>
-            <cooldown>4</cooldown>
             
             <FireHeal>
                 <heal_attack_ratio>0.8</heal_attack_ratio>
@@ -152,7 +144,6 @@
             
         </skill>
         <skill>
-            <cooldown>5</cooldown>
             
             <Resurrection>
                 <restore_max_hp_ratio>0.1</restore_max_hp_ratio>
@@ -185,7 +176,6 @@
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
         <skill>
-            <cooldown>0</cooldown>
             
             <Tricks>
                 <attack_damage_ratio>1.60</attack_damage_ratio>
@@ -194,7 +184,6 @@
             
         </skill>
         <skill>
-            <cooldown>4</cooldown>
             
             <Nightmare>
                 <attack_damage_ratio>2.0</attack_damage_ratio>
@@ -212,7 +201,6 @@
             
         </skill>
         <skill>
-            <cooldown>5</cooldown>
             
             <FissionOfLife>
                 <restore_max_hp_ratio>0.1</restore_max_hp_ratio>
@@ -244,7 +232,6 @@
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
         <skill>
-            <cooldown>0</cooldown>
             <select>SingleEnemy</select>
             <type>Basic</type>
             
@@ -254,7 +241,6 @@
             
         </skill>
         <skill>
-            <cooldown>3</cooldown>
             <select>AllEnemies</select>
             <type>Active</type>
             
@@ -269,7 +255,6 @@
             
         </skill>
         <skill>
-            <cooldown>4</cooldown>
             <select>SingleEnemy</select>
             <type>Active</type>
             
@@ -301,7 +286,6 @@
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
         <skill>
-            <cooldown>0</cooldown>
             <type>Basic</type>
             <select>SingleEnemy</select>
             
@@ -311,7 +295,6 @@
             
         </skill>
         <skill>
-            <cooldown>6</cooldown>
             <select>SingleSelf</select>
             <type>Active</type>
             
@@ -647,11 +630,9 @@
             
         </skill>
         <skill>
-            <cooldown>3</cooldown>
-            <type>Active</type>
-            <select>AllAllies</select>
             
                 <SoulSurge>
+                    <cooldown>3</cooldown>
                     <toxic_swamp_turns>3</toxic_swamp_turns>
                     <rose_poison_chance>1.0</rose_poison_chance>
                     <speed_up_turns>2</speed_up_turns>
@@ -659,10 +640,8 @@
             
         </skill>
         <skill>
-            <cooldown>1</cooldown>
-            <type>Passive</type>
-            
                 <SoulRing>
+                    <cooldown>1</cooldown>
                     <rose_poison_chance>1.0</rose_poison_chance>
                     <effect_res_down_chance>1.0</effect_res_down_chance>
                     <effect_res_down_turns>2</effect_res_down_turns>
@@ -670,11 +649,9 @@
             
         </skill>
         <skill>
-            <cooldown>3</cooldown>
-            <type>Active</type>
-            <select>AllEnemies</select>
             
                 <SoulSeal>
+                    <cooldown>3</cooldown>
                     <attack_damage_ratio>4.0</attack_damage_ratio>
                     <attack_damage_ratio_per_poison>1.2</attack_damage_ratio_per_poison>
                     <rose_per_poison>4</rose_per_poison>
@@ -706,11 +683,12 @@
         <tenacity>0</tenacity>
         <damage_reflection>0</damage_reflection>
         <skill>
-            <cooldown>0</cooldown>
-            <type>Basic</type>
-            <select>SingleEnemy</select>
+
             
             <Generic>
+                <type>Basic</type>
+                <select>SingleEnemy</select>
+                <cooldown>0</cooldown>
                 <name>LightOfHealing</name>
                 <subskill target="SingleEnemy" type="Damage" ratio="1.2" scale="AttackDamage"  />
                 <subskill target="LowestHealthAlly" type="Restore" ratio="0.05" scale="TargetMaxHealth"/>
@@ -745,6 +723,7 @@
             <select>AllAllies</select>
             
                 <SacredLight>
+                    <cooldown>4</cooldown>
                     <max_hp_restore_ratio>0.095</max_hp_restore_ratio>
                     <loose_hp_ratio>0.35</loose_hp_ratio>
                     <consolidation_turns>2</consolidation_turns>

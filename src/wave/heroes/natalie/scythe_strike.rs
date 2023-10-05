@@ -1,7 +1,7 @@
 
 
 use crate::wave::heroes::Cooldown;
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, Select, SkillType}, effect::{Effect}, }, };
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, Select, SkillType}, effect::Effect, }, };
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct ScytheStrike {
@@ -16,14 +16,14 @@ impl Default for ScytheStrike{
         Self {
             cooldown : 0,
             attack_damage_ratio : 1.4,
-            bleed_chance: 0.5,
+            bleed_chance: 0.8,
             bleed_turns:2, 
         }
     }
 }
 
 impl ScytheStrike{
-    pub const TYPE : SkillType = SkillType::Active;
+    pub const TYPE : SkillType = SkillType::Basic;
     pub const SELECT : Select = Select::SingleEnemy;
 
     pub fn execute(&self, wave : &mut Wave,  skill : &Skill, attacker:InstanceIndex, defender:InstanceIndex, ) {

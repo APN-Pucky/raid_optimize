@@ -31,7 +31,7 @@ pub struct Hero {
     pub piercing: f32,
     pub tenacity: f32,
     pub damage_reflection : f32,
-    #[serde(rename="skill")]
+    #[serde(rename="$value",default)]
     pub skills: Vec<Skill>,
     //#[serde(rename="passive")]
     //pub passives : Vec<Passive>,
@@ -86,6 +86,7 @@ impl fmt::Display for Hero {
 
 #[cfg(test)]
 mod tests {
+    use crate::wave::heroes::natalie::bloodthristy_desire::BloodthirstyDesire;
     use itertools::assert_equal;
     use quick_xml::{se::to_string, de::from_str};
 
@@ -116,7 +117,7 @@ mod tests {
             piercing: 0.15,
             tenacity: 0.15,
             damage_reflection : 0.15,
-            skills: vec![],
+            skills: vec![Skill::BloodthirstyDesire(BloodthirstyDesire::default())],
         };
         //String buffer writter
         //let mut buffer = Vec::new();
@@ -179,25 +180,18 @@ mod tests {
                 <piercing>0.15</piercing>
                 <tenacity>0.15</tenacity>
                 <damage_reflection>0.15</damage_reflection>
-                <skill>
-                    <type>Passive</type>
-                    <BloodthirstyDesire />
-                </skill>
-                <skill>
+                <BloodthirstyDesire />
+                <ScorchedSoul>
                     <cooldown>3</cooldown>
-                    <ScorchedSoul>
-                        <attack_damage_ratio>1.0</attack_damage_ratio>
-                        <hp_burning_chance>0.5</hp_burning_chance>
-                        <hp_burning_turns>2</hp_burning_turns>
-                    </ScorchedSoul>
-                </skill>
-                <skill>
+                    <attack_damage_ratio>1.0</attack_damage_ratio>
+                    <hp_burning_chance>0.5</hp_burning_chance>
+                    <hp_burning_turns>2</hp_burning_turns>
+                </ScorchedSoul>
+                <Generic>
                     <cooldown>3</cooldown>
-                    <Generic>
-                        <name>test</name>
-                        <subskill target="SingleEnemy" type="Damage" ratio="1.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
-                    </Generic>
-                </skill>
+                    <name>test</name>
+                    <subskill target="SingleEnemy" type="Damage" ratio="1.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
+                </Generic>
             </hero>
             "#)
 
@@ -218,5 +212,6 @@ mod tests {
         assert_eq!(hero.leech, 0.15);
         assert_eq!(hero.piercing, 0.15);
         assert_eq!(hero.tenacity, 0.15);
+        assert_eq!(hero.skills.len(), 3);
     }
 }
