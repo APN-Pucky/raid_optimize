@@ -470,6 +470,7 @@ macro_rules! gen_match {
 
 gen_match!(         
         [
+        CounterAttack,
         SharpInstinct,
         IncessantChatter
         ],

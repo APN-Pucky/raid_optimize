@@ -223,8 +223,8 @@ impl Wave<'_> {
         if reflect {
             self.reflect_damage(target,actor,dmg * self.get_damage_reflect(target));
         }
-        if self.has_effect(target,Effect::CounterAttack) {
-            self.attack_single(target,actor,self.get_attack_damage(target), &Skill::BasicAttack(BasicAttack::default()));
+        if self.has_effect(target,Effect::CounterAttack) && skill != &Skill::CounterAttack {
+            self.attack_single(target,actor,self.get_attack_damage(target), &Skill::CounterAttack);
         }
     }
 
