@@ -32,8 +32,13 @@ impl Effects {
         self.em[key].pop();
     }
 
-    pub fn get_last_inflictor(&self, key: Effect) -> InstanceIndex {
-        self.em[key].last().unwrap().2
+    pub fn get_last_inflictor(&self, key: Effect) -> Option<InstanceIndex> {
+        if let Some(tp) = self.em[key].last() {
+            Some(tp.2)
+        }
+        else {
+            None
+        }
     }
 
     pub fn clear(&mut self) {

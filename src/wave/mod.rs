@@ -83,7 +83,7 @@ pub struct Result {
 }
 
 impl Wave<'_> {
-    pub fn new<'a>(instances: &'a mut  Vec<&mut Instance<'a>>, players:&'a mut Vec<Box<dyn Player>>, track_statistics : bool) -> Wave<'a>  {
+    pub fn new<'a>(instances: &'a mut  Vec<&mut Instance<'a>>, players:&'a mut Vec<Box<dyn Player>>, track_statistics : bool, turn_limit : u32, turn_meter_threshold :f32) -> Wave<'a>  {
         println!("Wave::new, {}",track_statistics);
         // ensure right instance indices
         instances.iter_mut().enumerate().for_each(|(i,a)| a.index = i);
@@ -117,8 +117,8 @@ impl Wave<'_> {
             turn_meter ,
             health  ,
             turns: 0,
-            turn_limit: 300,
-            turn_meter_threshold:  1000.0 ,
+            turn_limit,
+            turn_meter_threshold ,
             track_statistics,
             team_acted,
             team_bonds : bonds,
@@ -236,7 +236,7 @@ impl Wave<'_> {
             .filter(|&a| self.get_turn_meter(a) >= self.turn_meter_threshold)
             // get instance with highest speed
             //.reduce( |a, b| if a.get_speed() > b.get_speed() {a} else {b})
-            .max_by(|a,b| self.get_speed(*a).partial_cmp(&self.get_speed(*b)).unwrap())
+            .max_by(|a,b| self.get_speed(*a).partial_cmp(&self.get_speed(*b)).unwrap()) // TODO remove unwrap here!
     }
 
     pub fn get_non_passive_skills(&self, actor: InstanceIndex) -> Vec<&Skill> {

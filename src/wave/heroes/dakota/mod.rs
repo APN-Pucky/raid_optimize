@@ -20,17 +20,21 @@ impl Wave<'_> {
 
     pub fn on_inflict_dakota(&mut self, _actor : InstanceIndex, target:InstanceIndex, effect : Effect, turns :&mut u32) {
         if self.has_effect(target,Effect::ToxicSwamp) && effect == Effect::Poison {
-            let inflictor = self.effects[target].get_last_inflictor(Effect::ToxicSwamp);
-            if self.is_alive(inflictor) {
-                debug!("{} has ToxicSwamp, Poison prolonged by one turn", self.name(target));
-                // increase turns by one
-                *turns = *turns+1;
-                match self.heroes[inflictor].skills[..] {
-                    [Skill::SoulSurge (SoulSurge{rose_poison_chance,..}) , ..] => {
-                        self.inflict_single(inflictor, target, Effect::RosePoison, rose_poison_chance, 999)
+            if let Some(inflictor) = self.effects[target].get_last_inflictor(Effect::ToxicSwamp) {
+                if self.is_alive(inflictor) {
+                    debug!("{} has ToxicSwamp, Poison prolonged by one turn", self.name(target));
+                    // increase turns by one
+                    *turns = *turns+1;
+                    match self.heroes[inflictor].skills[..] {
+                        [Skill::SoulSurge (SoulSurge{rose_poison_chance,..}) , ..] => {
+                            self.inflict_single(inflictor, target, Effect::RosePoison, rose_poison_chance, 999)
+                        }
+                        _ => {}
                     }
-                    _ => {}
                 }
+            }
+            else {
+                warn!("No inflictor for ToxicSwamp on {}", self.name(target));
             }
         }
     }

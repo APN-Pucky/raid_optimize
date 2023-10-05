@@ -89,7 +89,7 @@ pub fn typ_default() -> SkillType {
     SkillType::None
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(Deserialize, Serialize,strum_macros::Display, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Select {
     Everyone,
     SingleAlly,

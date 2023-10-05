@@ -87,7 +87,7 @@ impl Sim {
 
             let mut instance = a.iter_mut().chain(e.iter_mut()).collect::<Vec<_>>();
             let mut players : Vec<Box<dyn Player>> = vec![ap,ep]; 
-            let mut wave = Wave::new(&mut instance, &mut players ,self.args.stats);
+            let mut wave = Wave::new(&mut instance, &mut players ,self.args.stats,self.args.turn_limit,self.args.turn_meter_threshold);
             for x in 0..iter {
                 cr.add_result(&wave.run());
                 wave.reset();

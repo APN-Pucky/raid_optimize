@@ -16,6 +16,9 @@ pub struct Args {
     //pub bar           : bool,
     pub manual_ally   : bool,
     pub manual_enemy  : bool,
+
+    pub turn_limit : u32,
+    pub turn_meter_threshold : f32,
 }
 
 impl Default for Args {
@@ -32,6 +35,8 @@ impl Default for Args {
             //bar : false,
             manual_ally : false,
             manual_enemy : false,
+            turn_limit : 300,
+            turn_meter_threshold : 1000.0,
         }
     }
 }
@@ -49,6 +54,8 @@ pub fn args_from_input(input:Input) ->Args {
         //bar : input.bar,
         manual_ally : input.manual_ally,
         manual_enemy : input.manual_enemy,
+        turn_limit : 300,
+        turn_meter_threshold : 1000.,
     };
 
     for name in input.allies.split(',').map(|s| s.trim()) {
