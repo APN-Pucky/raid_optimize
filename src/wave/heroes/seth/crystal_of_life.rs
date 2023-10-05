@@ -1,7 +1,11 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect}, }, };
+use derive_macro::Cooldown;
 
-#[derive(Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
-pub struct CrystalOfLife{
+use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
+
+#[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
+pub struct CrystalOfLife {
+    pub cooldown : u32,
     pub max_hp_restore_ratio : f32,
     pub ripple_turns : u32,
     pub attack_up_turns : u32,
@@ -10,6 +14,7 @@ pub struct CrystalOfLife{
 impl Default for CrystalOfLife{
     fn default() -> Self {
         Self {
+            cooldown : 5,
             max_hp_restore_ratio : 0.22,
             ripple_turns : 2,
             attack_up_turns : 2,
@@ -18,6 +23,8 @@ impl Default for CrystalOfLife{
 }
 
 impl CrystalOfLife{
+    pub const TYPE : SkillType = SkillType::Active;
+    pub const SELECT : Select = Select::AllEnemies;
     pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
         let rest_hp = wave.get_max_health(actor)  * self.max_hp_restore_ratio ;
         wave.restore_ally_team(actor,rest_hp);

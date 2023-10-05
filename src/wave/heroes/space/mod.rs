@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::Effect, }, debug, };
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::Effect, }, debug, };
 
 use self::resplendence::Resplendence;
 
@@ -13,7 +13,7 @@ impl Wave<'_> {
         (0..self.len())
                 .for_each(|i| 
                     match self.heroes[i].skills[..] {
-                        [ Skill { data : SkillData::Resplendence(Resplendence{turn_meter_ratio}), ..} ,.. ] => {
+                        [ Skill::Resplendence(Resplendence{turn_meter_ratio,..}) ,.. ] => {
                             debug!("{} has Resplendence", self.fmt(i));
                             self.set_turn_meter(i,self.turn_meter_threshold * turn_meter_ratio);
                         },

@@ -1,7 +1,11 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect}, }, };
+use derive_macro::Cooldown;
 
-#[derive(Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
-pub struct BurstingKnowledge{
+use crate::wave::heroes::Cooldown;
+use crate::{wave::{Wave, InstanceIndex,}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
+
+#[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
+pub struct BurstingKnowledge {
+        pub cooldown : u32,
         pub attack_damage_ratio : f32,
         pub wisdom_runestones : u32,
         pub piercing_rate: f32,
@@ -10,6 +14,7 @@ pub struct BurstingKnowledge{
 impl Default for BurstingKnowledge{
     fn default() -> Self {
         Self {
+            cooldown : 4,
             attack_damage_ratio : 1.2,
             wisdom_runestones : 4,
             piercing_rate: 0.,
@@ -17,7 +22,10 @@ impl Default for BurstingKnowledge{
     }
 }
 
-impl BurstingKnowledge{
+impl BurstingKnowledge {
+    pub const TYPE : SkillType = SkillType::Active;
+    pub const SELECT : Select = Select::AllEnemies;
+
     pub fn execute(&self, wave : &mut Wave,  skill : &Skill, attacker:InstanceIndex, target:InstanceIndex, ) {
            // counter number of effects arcane
            let mut n = self.wisdom_runestones + wave.effects[attacker].get(Effect::Arcane);

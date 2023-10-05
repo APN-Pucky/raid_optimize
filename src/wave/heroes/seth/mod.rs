@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::Effect, }, };
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::Effect, }, };
 
 pub mod deep_sea_power;
 pub mod crystal_of_life;

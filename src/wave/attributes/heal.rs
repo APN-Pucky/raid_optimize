@@ -1,5 +1,5 @@
 
-use crate::{debug, indent, data::{skill::{Skill, SkillData, }, faction::Faction}};
+use crate::{debug, indent, data::{skill::{Skill, }, faction::Faction}};
 
 use super::{InstanceIndex, Wave};
 
@@ -31,7 +31,7 @@ impl Wave<'_> {
                 debug!("{} has {} bond with HolyLightParliament -> healing_effect * {}", self.name(actor), xfact, xfact);
                 fact *= xfact;
             }        
-            if let [ Skill { data : SkillData::ForceOfMercy { healing_effect, .. } , .. }, ..] = self.heroes[actor].skills[..] {
+            if let [ Skill::ForceOfMercy { healing_effect, .. } , ..] = self.heroes[actor].skills[..] {
                 if self.health[actor] < 0.5* self.get_max_health(actor) {
                     debug!("{} has ForceOfMercy -> healing_effect * {}", self.name(actor), healing_effect);
                     fact *= healing_effect;

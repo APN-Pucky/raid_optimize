@@ -1,3 +1,5 @@
+use crate::data::skill::{SkillType, Skill, Select};
+
 pub mod space;
 pub mod tifya;
 pub mod liz;
@@ -11,9 +13,38 @@ pub mod dakota;
 pub mod maya;
 pub mod alahan;
 
+pub trait Typed {
+    const TYPE : SkillType;
+    //fn get_type()-> SkillType;
+}
+
+pub trait Selector {
+    const SELECT : Select;
+    //fn get_select()-> Select;
+}
+
+pub trait Cooldown {
+    fn get_cooldown(&self)-> u32;
+}
+
 pub trait Execute {
     fn execute(&self, wave : &mut crate::wave::Wave<'_>, skill : &crate::data::skill::Skill, actor : crate::wave::InstanceIndex, target : crate::wave::InstanceIndex);
 }
+
+pub trait Skilled : Cooldown + Selector + Typed + Execute {
+
+}
+
+pub trait PassiveSkill {
+    const TYPE : SkillType = SkillType::Passive;
+    const SELECT : Select = Select::None;
+
+    fn execute(&self, wave : &mut crate::wave::Wave<'_>, skill : &crate::data::skill::Skill, actor : crate::wave::InstanceIndex, target : crate::wave::InstanceIndex) {
+        panic!("Passive skill should not be executed");
+    }
+}
+
+
 
 #[cfg(test)]
 pub mod tests {

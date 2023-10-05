@@ -1,5 +1,5 @@
 
-use crate::{debug, indent, data::{effect::Effect, skill::{Skill, SkillData, }, faction::Faction}, wave::heroes::geeliman::bursting_knowledge::BurstingKnowledge};
+use crate::{debug, indent, data::{effect::Effect, skill::{Skill, }, faction::Faction}, wave::heroes::geeliman::bursting_knowledge::BurstingKnowledge};
 
 use super::{InstanceIndex, Wave};
 

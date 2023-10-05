@@ -1,7 +1,11 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect, is_buff}, }, debug, indent, };
+use derive_macro::Cooldown;
 
-#[derive(Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
+use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect, is_buff}, }, debug, indent, };
+
+#[derive(Cooldown,Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct DarknightArbitrament{
+        pub cooldown : u32,
         pub attack_damage_ratio : f32,
         pub crit_rate_turns : u32,
         pub crit_damage_turns : u32,
@@ -10,6 +14,7 @@ pub struct DarknightArbitrament{
 impl Default for DarknightArbitrament {
     fn default() -> Self {
         Self {
+            cooldown : 4,
             attack_damage_ratio : 5.,
             crit_rate_turns : 2,
             crit_damage_turns : 2,
@@ -18,6 +23,9 @@ impl Default for DarknightArbitrament {
 }
 
 impl DarknightArbitrament{
+    pub const TYPE : SkillType = SkillType::Active;
+    pub const SELECT : Select = Select::AllEnemies;
+
     pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
         wave.inflict_single(actor,actor,Effect::CritRateUpI,1.0,self.crit_rate_turns);
         wave.inflict_single(actor,actor,Effect::CritDamageUpI,1.0,self.crit_damage_turns);

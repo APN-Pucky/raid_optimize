@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillData}, effect::{Effect, is_attribute_debuff, is_dot}}, roll};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect, is_attribute_debuff, is_dot}}, roll};
 
 
 impl Wave<'_> {

@@ -1,7 +1,12 @@
 use std::fmt;
+use strum_macros::EnumIter;
 
+use crate::wave::heroes::PassiveSkill;
 use crate::wave::InstanceIndex;
 use crate::wave::Wave;
+use crate::wave::heroes::alahan::commendation::Commendation;
+use crate::wave::heroes::alahan::spirit_call::SpiritCall;
+use crate::wave::heroes::alahan::spirit_fountain::SpiritFountain;
 use crate::wave::heroes::geeliman::bursting_knowledge::BurstingKnowledge;
 use crate::wave::heroes::hazier::darknight_arbitrament::DarknightArbitrament;
 use crate::wave::heroes::hazier::darknight_strike::DarknightStrike;
@@ -22,7 +27,10 @@ use crate::wave::heroes::space::tricks::Tricks;
 use crate::wave::heroes::tifya::leaves_storm::LeavesStorm;
 use crate::wave::heroes::tifya::scarlet_multi_strike::ScarletMultiStrike;
 use crate::wave::heroes::tifya::scarlet_slash::ScarletSlash;
-use strum_macros::EnumIter;
+use crate::wave::heroes::Cooldown;
+use crate::wave::heroes::Execute;
+use crate::wave::heroes::Typed;
+use crate::wave::heroes::Selector;
 
 
 use super::subskill::SubSkill;
@@ -80,45 +88,58 @@ pub enum Select {
     None,
 }
 
-
-#[derive(Debug, PartialEq, Deserialize, Serialize, Clone )]
-pub struct Skill {
-    #[serde(default="cooldown_default")]
-    pub cooldown : u32,
-    #[serde(default="typ_default", rename="type",with = "quick_xml::serde_helpers::text_content")]
-    pub typ : SkillType,
-    #[serde(default="select_default",with = "quick_xml::serde_helpers::text_content")]
-    pub select: Select,
-    #[serde(rename = "$value")]
-    pub data : SkillData,
-}
-
-impl fmt::Display for Skill{
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.data)
+impl Default for Select {
+    fn default() -> Self {
+        Select::None
     }
 }
 
-pub const NONE_SKILL: Skill = Skill {
-    cooldown : 0,
-    typ : SkillType::None,
-    select : Select::None,
-    data : SkillData::None,
-};
 
-pub const BASIC_ATTACK: Skill = Skill {
-    cooldown : 0,
-    typ : SkillType::Basic,
-    select : Select::SingleEnemy,
-    data : SkillData::BasicAttack (
-        BasicAttack{
-            attack_damage_ratio : 1.0,
-        }
-    ),
-};
+//#[derive(Debug, PartialEq, Deserialize, Serialize, Clone )]
+//pub struct Skill {
+//    //#[serde(default="cooldown_default")]
+//    //pub cooldown : u32,
+//    //#[serde(default="typ_default", rename="type",with = "quick_xml::serde_helpers::text_content")]
+//    //pub typ : SkillType,
+//    //#[serde(default="select_default",with = "quick_xml::serde_helpers::text_content")]
+//    //pub select: Select,
+//    #[serde(rename = "$value")]
+//    pub data : SkillData,
+//}
+
+//impl fmt::Display for Skill{
+//    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+//        write!(f, "{}", self.data)
+//    }
+//}
+
+//pub const NONE_SKILL: Skill = Skill {
+//    //cooldown : 0,
+//    //typ : SkillType::None,
+//    //select : Select::None,
+//    data : SkillData::None,
+//};
+//
+//pub const BASIC_ATTACK: Skill = Skill {
+//    //cooldown : 0,
+//    //typ : SkillType::Basic,
+//    //select : Select::SingleEnemy,
+//    data : SkillData::BasicAttack (
+//        BasicAttack{
+//            cooldown : 0,
+//            attack_damage_ratio : 1.0,
+//        }
+//    ),
+//};
+
 #[derive(Default,Debug, PartialEq, Deserialize, Serialize, Clone )]
 pub struct BasicAttack {
+    cooldown : u32,
     attack_damage_ratio : f32,
+}
+impl BasicAttack {
+    pub const TYPE : SkillType = SkillType::Basic;
+    pub const SELECT : Select = Select::SingleEnemy;
 }
 //#[derive(Default,Debug, PartialEq, Deserialize, Serialize, Clone )]
 //pub struct ScorchedSoul{
@@ -127,156 +148,153 @@ pub struct BasicAttack {
 //    hp_burning_turns: u32
 //}
 
-#[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
-pub enum SkillData {
-    None,
-    // Stabilized
-    // Tested
-    // Prototyped
-    Generic {
-        name : String,
-        #[serde(rename="subskill")]
-        subskills : Vec<SubSkill>,
-    },
-    BasicAttack(BasicAttack), 
-    //BasicAttack {
-    //    attack_damage_ratio : f32,
-    //},
-    //Liz
-    ScorchedSoul(ScorchedSoul),
-    //ScorchedSoul {
-    //    attack_damage_ratio : f32,
-    //    hp_burning_chance: f32,
-    //    hp_burning_turns: u32
-    //},
-    FireHeal (FireHeal),
-    Resurrection (Resurrection),
-    // Natalie
-    ScytheStrike(ScytheStrike),
-    BloodthirstyScythe(BloodthirstyScythe) ,
-    EnergyBurst(EnergyBurst) ,
-    //Seth
-    TideBigHit(TideBigHit),
-    DeepSeaPower(DeepSeaPower),
-    CrystalOfLife(CrystalOfLife),
-    // Space
-    Tricks(Tricks),
-    Nightmare(Nightmare),
-    Resplendence(Resplendence) ,
-    FissionOfLife(FissionOfLife),
-    // Tifya
-    ScarletSlash(ScarletSlash),
-    LeavesStorm(LeavesStorm),
-    ScaletMultiStrike(ScarletMultiStrike),
-    //Hazier
-    DarknightStrike(DarknightStrike) ,
-    EyeForAnEye (EyeForAnEye),
-    DarknightArbitrament(DarknightArbitrament) ,
-    //Geeliman
-    BurstingKnowledge(BurstingKnowledge) ,
-    //Alahan
-    SpiritCall {
-        attack_damage_ratio: f32,
-        restore_hp_damage_ratio: f32,
-        remove_all_buffs: bool,
-        heal_lowest_ally : bool,
-        increase_hp : bool,
-    },
-    SpiritFountain {
-        heal_turns: u32,
-        cleanse_attribute_debuffs: bool,
-    },
-    Commendation {
-        max_hp_restore_ratio: f32,
-        attack_up_turns : u32,
-    },
-    Detach {
-        attack_damage_ratio : f32,
-        stun_chance: f32,
-        stun_turns: u32,
-        steal_shield: bool,
-        shield_max_hp_ratio: f32,
-        shield_turns: u32,
-    },
-    //Marville
-    FishWaterball {
-        attack_damage_ratio : f32,
-        act_chance: f32,
-    },
-    CleanOcean {
-        restore_max_hp_ratio : f32,
-        cleanse_dot_layers : u32,
-        consolidation_turns : u32,
-        block_removal_turns  : u32,
-    },
-    FishGuardian {
-        restore_fish_shoal: u32,
-        max_hp_restore_ratio : f32,
-        damage_reduction : f32
-    },
-    FishDive {
-        restore_fish_shoal: u32,
-    },
-    //Dakota
-    SoulSurge {
-        toxic_swamp_turns : u32,
-        rose_poison_chance : f32,
-        speed_up_turns : u32,
-    },
-    SoulRing {
-        effect_res_down_chance : f32,
-        effect_res_down_turns : u32,
-    },
-    SoulSeal {
-        attack_damage_ratio : f32,
-        attack_damage_ratio_per_poison : f32,
-        increase_atk_turns : u32,
-        rose_per_poison : u32,
-        poison_turns : u32
-    },
-    // Maya
-    LightOfPurifying {
-        heal_allies : u32,
-        max_hp_restore_ratio : f32,
-        heal_turns : u32,
-        cleanse_dot_layers: u32,
-    },
-    ForceOfMercy {
-        max_hp_restore_ratio : f32,
-        healing_effect : f32,
-    },
-    SacredLight {
-        max_hp_restore_ratio : f32,
-        loose_hp_ratio : f32,
-        consolidation_turns : u32,
-        shield_turns : u32,
-        shield_max_hp_ratio : f32,
-        block_debuff_turns : u32,
-    },
 
-
-    //Natalie
-    BloodthirstyDesire,
-    //Seth
-    DeepSeaBloodline,
-    //Space
-
-    //Tifya
-    SharpInstinct,
-    //Hazier
-    BloodlustStrike {
-        leech : f32,
-        damage_reduction_buffs : f32,
-        damage_reduction_nobuffs : f32,
-    },
-    IncessantChatter, // TODO
-    //Margarita
-    CounterattackCommand {
-        blades : u32,
-        crit_damage_turns : u32,
-        attack_damage_ratio : f32,
-    },
-}
+//#[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
+//pub enum SkillData {
+//    None,
+//    // Stabilized
+//    // Tested
+//    // Prototyped
+//
+//    BasicAttack(BasicAttack), 
+//    //BasicAttack {
+//    //    attack_damage_ratio : f32,
+//    //},
+//    //Liz
+//    ScorchedSoul(ScorchedSoul),
+//    //ScorchedSoul {
+//    //    attack_damage_ratio : f32,
+//    //    hp_burning_chance: f32,
+//    //    hp_burning_turns: u32
+//    //},
+//    FireHeal (FireHeal),
+//    Resurrection (Resurrection),
+//    // Natalie
+//    ScytheStrike(ScytheStrike),
+//    BloodthirstyScythe(BloodthirstyScythe) ,
+//    EnergyBurst(EnergyBurst) ,
+//    //Seth
+//    TideBigHit(TideBigHit),
+//    DeepSeaPower(DeepSeaPower),
+//    CrystalOfLife(CrystalOfLife),
+//    // Space
+//    Tricks(Tricks),
+//    Nightmare(Nightmare),
+//    Resplendence(Resplendence) ,
+//    FissionOfLife(FissionOfLife),
+//    // Tifya
+//    ScarletSlash(ScarletSlash),
+//    LeavesStorm(LeavesStorm),
+//    ScaletMultiStrike(ScarletMultiStrike),
+//    //Hazier
+//    DarknightStrike(DarknightStrike) ,
+//    EyeForAnEye (EyeForAnEye),
+//    DarknightArbitrament(DarknightArbitrament) ,
+//    //Geeliman
+//    BurstingKnowledge(BurstingKnowledge) ,
+//    //Alahan
+//    SpiritCall {
+//        attack_damage_ratio: f32,
+//        restore_hp_damage_ratio: f32,
+//        remove_all_buffs: bool,
+//        heal_lowest_ally : bool,
+//        increase_hp : bool,
+//    },
+//    SpiritFountain {
+//        heal_turns: u32,
+//        cleanse_attribute_debuffs: bool,
+//    },
+//    Commendation {
+//        max_hp_restore_ratio: f32,
+//        attack_up_turns : u32,
+//    },
+//    Detach {
+//        attack_damage_ratio : f32,
+//        stun_chance: f32,
+//        stun_turns: u32,
+//        steal_shield: bool,
+//        shield_max_hp_ratio: f32,
+//        shield_turns: u32,
+//    },
+//    //Marville
+//    FishWaterball {
+//        attack_damage_ratio : f32,
+//        act_chance: f32,
+//    },
+//    CleanOcean {
+//        restore_max_hp_ratio : f32,
+//        cleanse_dot_layers : u32,
+//        consolidation_turns : u32,
+//        block_removal_turns  : u32,
+//    },
+//    FishGuardian {
+//        restore_fish_shoal: u32,
+//        max_hp_restore_ratio : f32,
+//        damage_reduction : f32
+//    },
+//    FishDive {
+//        restore_fish_shoal: u32,
+//    },
+//    //Dakota
+//    SoulSurge {
+//        toxic_swamp_turns : u32,
+//        rose_poison_chance : f32,
+//        speed_up_turns : u32,
+//    },
+//    SoulRing {
+//        effect_res_down_chance : f32,
+//        effect_res_down_turns : u32,
+//    },
+//    SoulSeal {
+//        attack_damage_ratio : f32,
+//        attack_damage_ratio_per_poison : f32,
+//        increase_atk_turns : u32,
+//        rose_per_poison : u32,
+//        poison_turns : u32
+//    },
+//    // Maya
+//    LightOfPurifying {
+//        heal_allies : u32,
+//        max_hp_restore_ratio : f32,
+//        heal_turns : u32,
+//        cleanse_dot_layers: u32,
+//    },
+//    ForceOfMercy {
+//        max_hp_restore_ratio : f32,
+//        healing_effect : f32,
+//    },
+//    SacredLight {
+//        max_hp_restore_ratio : f32,
+//        loose_hp_ratio : f32,
+//        consolidation_turns : u32,
+//        shield_turns : u32,
+//        shield_max_hp_ratio : f32,
+//        block_debuff_turns : u32,
+//    },
+//
+//
+//    //Natalie
+//    BloodthirstyDesire,
+//    //Seth
+//    DeepSeaBloodline,
+//    //Space
+//
+//    //Tifya
+//    SharpInstinct,
+//    //Hazier
+//    BloodlustStrike {
+//        leech : f32,
+//        damage_reduction_buffs : f32,
+//        damage_reduction_nobuffs : f32,
+//    },
+//    IncessantChatter, // TODO
+//    //Margarita
+//    CounterattackCommand {
+//        blades : u32,
+//        crit_damage_turns : u32,
+//        attack_damage_ratio : f32,
+//    },
+//}
 
 pub fn get_selection(wave :& Wave, select: Select, actor :InstanceIndex, ) -> Vec<InstanceIndex> {
     match select{
@@ -343,7 +361,7 @@ pub fn get_selection(wave :& Wave, select: Select, actor :InstanceIndex, ) -> Ve
 //}
 
 pub fn is_passive(skill : &Skill) -> bool {
-    return skill.typ == SkillType::Passive;
+    return get_type(skill) == SkillType::Passive;
 }
 
 pub fn is_reducable(skill : &Skill) -> bool {
@@ -354,7 +372,7 @@ pub fn is_reducable(skill : &Skill) -> bool {
 }
 
 pub fn is_basic_attack(skill :&Skill) -> bool {
-    return skill.typ == SkillType::Basic;
+    return get_type(skill) == SkillType::Basic;
     //match skill {
     //    Skill::Generic{basic_attack,..} => *basic_attack,
     //    Skill::ScorchedSoul{basic_attack,..} => *basic_attack,
@@ -380,40 +398,135 @@ pub fn is_basic_attack(skill :&Skill) -> bool {
     //}
 }
 
-pub fn get_cooldown(skill: &Skill) ->u32 {
-    return skill.cooldown;
-    //match skill {
-    //    //Liz
-    //    Skill::ScorchedSoul{cooldown,..} => *cooldown,
-    //    Skill::FireHeal { cooldown, ..} => *cooldown,
-    //    Skill::Resurrection { cooldown, .. } => *cooldown,
-    //    //Natalie
-    //    Skill::ScytheStrike { cooldown,.. } => *cooldown,
-    //    Skill::BloodthirstyScythe { cooldown,.. } => *cooldown,
-    //    Skill::EnergyBurst { cooldown,.. } => *cooldown,
-    //    //Seth
-    //    Skill::TideBigHit { cooldown,..} => *cooldown,
-    //    Skill::DeepSeaPower { cooldown, ..} => *cooldown,
-    //    Skill::CrystalOfLife { cooldown, ..} => *cooldown,
-    //    //Space
-    //    Skill::Tricks{cooldown,..} => *cooldown,
-    //    Skill::Nightmare { cooldown, ..} => *cooldown,
-    //    Skill::FissionOfLife { cooldown, ..} => *cooldown,
-    //    //Tifya
-    //    Skill::ScarletSlash { cooldown, ..} => *cooldown,
-    //    Skill::LeavesStorm { cooldown, ..} => *cooldown,
-    //    Skill::ScaletMultiStrike { cooldown, ..} => *cooldown,
-    //    //Hazier
-    //    Skill::DarknightStrike { cooldown,..} => *cooldown,
-    //    Skill::EyeForAnEye { cooldown, basic_attack, counterattack_turns: counter_attack_turns, damage_immunity_turns, control_immunity_turns } => *cooldown,
-    //    Skill::DarknightArbitrament { cooldown, ..} => *cooldown,
-    //    //Geeliman
-    //    Skill::BurstingKnowledge { cooldown, ..} => *cooldown,
-    //    //
-    //    Skill::BasicAttack{cooldown,..} => *cooldown,
-    //    Skill::Generic{ cooldown, ..} => *cooldown,
-    //}
+macro_rules! gen_match {
+    ( [$($Passive:ident),*],[$($Passive_extra:ident {$($Passive_extra1:ident : $Passive_extra2:ident),*}),*]  , [$($Special:ident),*] ) => {
+        #[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
+        pub enum Skill {
+            None,
+            Generic {
+                cooldown : u32,
+                name : String,
+                #[serde(default="select_default",with = "quick_xml::serde_helpers::text_content")]
+                select: Select,
+                #[serde(rename="subskill")]
+                subskills : Vec<SubSkill>,
+            },
+            $($Passive,)*
+            $($Passive_extra {$($Passive_extra1 : $Passive_extra2),*},)*
+            $($Special ($Special),)*
+        }
+
+        impl Wave<'_> {
+            pub fn execute_skill(&mut self, skill : &Skill,  actor :InstanceIndex, target :InstanceIndex, ) {
+                match skill {
+                    Skill::None => {},
+                    Skill::Generic {  ..} => {self.execute_generic_skill(skill, actor, target)},
+                    $(Skill::$Passive => {panic!("No exec on passsive")})*
+                    $(Skill::$Passive_extra {..} => {panic!("No exec on passsive")})*
+                    $(Skill::$Special (s) => {s.execute(self,skill,actor,target)})*
+                }
+                self.cooldown_s(actor,skill);
+            }
+        }
+
+        pub fn get_type(skill :&Skill)-> SkillType {
+            match skill {
+                Skill::None => SkillType::None,
+                Skill::Generic { cooldown, ..} => return SkillType::Active,
+                $(Skill::$Passive => {return SkillType::Passive})*
+                $(Skill::$Passive_extra {..} => {return SkillType::Passive})*
+                $(Skill::$Special ($Special {..}) => return $Special::TYPE,)*
+            }
+        } 
+
+        pub fn get_select(skill :&Skill)-> Select{
+            match skill {
+                Skill::None => Select::None,
+                Skill::Generic {select, ..} => *select,
+                $(Skill::$Passive => {return Select::None})*
+                $(Skill::$Passive_extra {..} => {return Select::None})*
+                $(Skill::$Special ($Special {..}) => return $Special::SELECT,)*
+            }
+        }
+
+        pub fn get_cooldown(skill:&Skill) -> u32 {
+            match skill {
+                Skill::None => 0,
+                Skill::Generic { cooldown, ..} => return *cooldown,
+                $(Skill::$Passive => {return 0})*
+                $(Skill::$Passive_extra {..} => {return 0})*
+                $(Skill::$Special (s) => return s.get_cooldown(),)*
+            }
+        }
+    }
 }
+
+gen_match!(         
+        [SharpInstinct],
+        [Resplendence {turn_meter_ratio : f32}],
+        [
+        //BasicAttack,
+        BloodthirstyScythe
+        ,BurstingKnowledge
+        //,Resplendence
+        ,ScorchedSoul      
+        ,FireHeal          
+        ,Resurrection      
+        ,ScytheStrike
+        //,EnergyBurst       
+        //,TideBigHit        
+        //,DeepSeaPower      
+        //,CrystalOfLife     
+        //,Tricks            
+        //,Nightmare         
+        //,FissionOfLife     
+        ,ScarletSlash      
+        ,LeavesStorm       
+        ,ScarletMultiStrike 
+        ,DarknightStrike   
+        ,EyeForAnEye       
+        ,DarknightArbitrament
+        ,SpiritCall
+        ,SpiritFountain
+        ,Commendation 
+        ]
+    );
+
+
+//pub fn get_cooldown(skill: &Skill) ->u32 {
+//    return skill.cooldown;
+//    //match skill {
+//    //    //Liz
+//    //    Skill::ScorchedSoul       {cooldown,..} => *cooldown,
+//    //    Skill::FireHeal           { cooldown, ..} => *cooldown,
+//    //    Skill::Resurrection       { cooldown, .. } => *cooldown,
+//    //    //Natalie
+//    //    Skill::ScytheStrike       { cooldown,.. } => *cooldown,
+//    //    Skill::BloodthirstyScythe { cooldown,.. } => *cooldown,
+//    //    Skill::EnergyBurst        { cooldown,.. } => *cooldown,
+//    //    //Seth
+//    //    Skill::TideBigHit { cooldown,..} => *cooldown,
+//    //    Skill::DeepSeaPower { cooldown, ..} => *cooldown,
+//    //    Skill::CrystalOfLife { cooldown, ..} => *cooldown,
+//    //    //Space
+//    //    Skill::Tricks{cooldown,..} => *cooldown,
+//    //    Skill::Nightmare { cooldown, ..} => *cooldown,
+//    //    Skill::FissionOfLife { cooldown, ..} => *cooldown,
+//    //    //Tifya
+//    //    Skill::ScarletSlash { cooldown, ..} => *cooldown,
+//    //    Skill::LeavesStorm { cooldown, ..} => *cooldown,
+//    //    Skill::ScaletMultiStrike { cooldown, ..} => *cooldown,
+//    //    //Hazier
+//    //    Skill::DarknightStrike { cooldown,..} => *cooldown,
+//    //    Skill::EyeForAnEye { cooldown, basic_attack, counterattack_turns: counter_attack_turns, damage_immunity_turns, control_immunity_turns } => *cooldown,
+//    //    Skill::DarknightArbitrament { cooldown, ..} => *cooldown,
+//    //    //Geeliman
+//    //    Skill::BurstingKnowledge { cooldown, ..} => *cooldown,
+//    //    //
+//    //    Skill::BasicAttack{cooldown,..} => *cooldown,
+//    //    Skill::Generic{ cooldown, ..} => *cooldown,
+//    //}
+//}
 
 // TODO why option and not just empty array?!?!?
 
