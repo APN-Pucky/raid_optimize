@@ -87,8 +87,8 @@ impl Wave<'_> {
     pub fn get_piercing(&self, actor : InstanceIndex , skill : &Skill) -> f32 {
         let mut fact = 1.0;
         indent!({
-        match skill.data {
-            SkillData::BurstingKnowledge (BurstingKnowledge{ piercing_rate ,..} ) =>  {
+        match skill {
+            Skill::BurstingKnowledge (BurstingKnowledge{ piercing_rate ,..} ) =>  {
                 fact = fact + piercing_rate;
                 debug!("{} uses BurstingKnowledge -> piercing * {}", self.name(actor), piercing_rate);
             },

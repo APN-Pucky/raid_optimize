@@ -1,4 +1,4 @@
-use crate::{debug, indent, data::{skill::{Skill, get_selection}, faction::Faction}};
+use crate::{debug, indent, data::{skill::{Skill, get_selection, get_select}, faction::Faction}};
 
 use super::{InstanceIndex, Wave};
 
@@ -70,7 +70,7 @@ impl Wave<'_> {
             debug!("{} chooses {:?}", self.name(actor), skill);
             indent!({
                 // get targets
-                let ts = get_selection(self,skill.select, actor); 
+                let ts = get_selection(self,get_select(skill), actor); 
                 if !ts.is_empty() {
                     let target : InstanceIndex = self.get_player_of_instance(actor).pick_target(self, actor, &skill, &ts);
                     //

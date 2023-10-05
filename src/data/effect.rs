@@ -114,8 +114,6 @@ pub fn is_attribute_debuff(effect : Effect) -> bool {
         Effect::AttackDownII => true,
         Effect::TenacityDownI => true,
         Effect::TenacityDownII => true,
-        Effect::SpeedDownI => true,
-        Effect::SpeedDownII => true,
         Effect::EffectHitDownI => true,
         Effect::EffectHitDownII => true,
         Effect::DefenseDownI => true,

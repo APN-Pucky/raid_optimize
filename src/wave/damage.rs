@@ -1,9 +1,9 @@
 use enum_map::EnumMap;
 use rand::Rng;
 
-use crate::{debug, wave::stat::Stat, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack, NONE_SKILL, BASIC_ATTACK}, effect::Effect}};
+use crate::{debug, wave::{stat::Stat, heroes::marville::fish_guardian::FishGuardian}, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack,  }, effect::Effect}};
 
-use super::{Wave, InstanceIndex};
+use super::{Wave, InstanceIndex, heroes::{hazier::bloodlust_strike::BloodlustStrike, BasicAttack}};
 
 impl Wave<'_> {
     pub fn attack_enemy_team(&mut self, actor : InstanceIndex, damage : f32,skill:&Skill) {
@@ -76,13 +76,13 @@ impl Wave<'_> {
     pub fn damage_hp_burning(&mut self,actor : InstanceIndex,target:InstanceIndex, dmg: f32) {
         debug!("{} takes {} damage from hp_burning from {}", self.name(target), dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,dmg,&NONE_SKILL,false,false,false);
+        self.damage(actor,target,dmg,&Skill::None,false,false,false);
     }
 
     pub fn damage_bleed(&mut self,actor : InstanceIndex,target:InstanceIndex, bleed_dmg: f32) {
         debug!("{} takes {} damage from bleed from {}", self.name(target), bleed_dmg,self.name(actor));
         //TODO track stat
-        self.damage(actor,target,bleed_dmg,&NONE_SKILL,false,false,false);
+        self.damage(actor,target,bleed_dmg,&Skill::None,false,false,false);
     }
 
     pub fn loose_health(&mut self, actor:InstanceIndex, damage: f32) {
@@ -121,7 +121,7 @@ impl Wave<'_> {
                     let mut red = 0.0;
                     for i in self.get_ally_indices(target) {
                         match self.heroes[i].skills[..] {
-                            [Skill {data : SkillData::FishGuardian {max_hp_restore_ratio , damage_reduction,.. },..},..] => {
+                            [ Skill::FishGuardian(FishGuardian {max_hp_restore_ratio , damage_reduction,.. }),..] => {
                                 red = damage_reduction;
                                 self.heal(target,i,self.get_max_health(target)* max_hp_restore_ratio);
                                 self.effects[i].remove_layer(Effect::FishShoal);
@@ -163,8 +163,8 @@ impl Wave<'_> {
                 }
             }
             for p in &self.heroes[actor].skills {
-                match p.data {
-                    SkillData::BloodlustStrike {damage_reduction_buffs,damage_reduction_nobuffs,..} => {
+                match p {
+                    Skill::BloodlustStrike (BloodlustStrike{damage_reduction_buffs,damage_reduction_nobuffs,..}) => {
                         if self.has_buff(target) {
                             damage = damage * ( 1.0 - damage_reduction_buffs);
                         }
@@ -224,7 +224,7 @@ impl Wave<'_> {
             self.reflect_damage(target,actor,dmg * self.get_damage_reflect(target));
         }
         if self.has_effect(target,Effect::CounterAttack) {
-            self.attack_single(target,actor,self.get_attack_damage(target), &BASIC_ATTACK);
+            self.attack_single(target,actor,self.get_attack_damage(target), &Skill::BasicAttack(BasicAttack::default()));
         }
     }
 
@@ -232,8 +232,8 @@ impl Wave<'_> {
         let mut fleech = self.get_leech(actor);
         if crit {
             for p in &self.heroes[actor].skills {
-                match p.data {
-                    SkillData::BloodlustStrike {leech,..} => {
+                match p {
+                    Skill::BloodlustStrike (BloodlustStrike{leech,..}) => {
                         fleech += leech;
                     }
                     _ => {}
@@ -257,7 +257,7 @@ impl Wave<'_> {
             indent!({
                 self.add_stat(actor,Stat::DamageReflected, damage);
                 self.add_stat(target,Stat::DamageReflecteded, damage);
-                self.damage(actor,target,damage,&NONE_SKILL,false,false,false);
+                self.damage(actor,target,damage,&Skill::None,false,false,false);
             })
         }
         if damage < 0. {

@@ -1,5 +1,3 @@
-use derive_macro::Cooldown;
-
 use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
 use crate::{wave::{Wave, InstanceIndex,  }, data::{skill::{Skill, Select, SkillType}, effect::{Effect}, }, };
 
@@ -29,11 +27,11 @@ impl Default for Detach {
 }
 
 impl Detach {
-    const TYPE : SkillType = SkillType::Active;
-    const SELECT : Select = Select::AllEnemies;
+    pub const TYPE : SkillType = SkillType::Active;
+    pub const SELECT : Select = Select::AllEnemies;
 
-    fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
-                        // remove all enemies shields
+    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
+                // remove all enemies shields
                 for e in wave.get_enemies_indices(actor) {
                     if self.steal_shield {
                         wave.steal_shield(actor, e);

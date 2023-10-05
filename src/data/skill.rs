@@ -1,6 +1,22 @@
 use std::fmt;
 use strum_macros::EnumIter;
 
+use crate::wave::heroes::alahan::detach::Detach;
+
+use crate::wave::heroes::marville::fish_dive::FishDive;
+use crate::wave::heroes::marville::fish_guardian::FishGuardian;
+use crate::wave::heroes::marville::fish_waterball::FishWaterball;
+use crate::wave::heroes::marville::clean_ocean::CleanOcean;
+use crate::wave::heroes::natalie::bloodthristy_desire::BloodthirstyDesire;
+use crate::wave::heroes::hazier::bloodlust_strike::BloodlustStrike;
+use crate::wave::heroes::maya::force_of_mercy::ForceOfMercy;
+use crate::wave::heroes::maya::light_of_purifying::LightOfPurifying;
+use crate::wave::heroes::maya::sacred_light::SacredLight;
+use crate::wave::heroes::BasicAttack;
+use crate::wave::heroes::dakota::soul_ring::SoulRing;
+use crate::wave::heroes::dakota::soul_seal::SoulSeal;
+use crate::wave::heroes::dakota::soul_surge::SoulSurge;
+use crate::wave::heroes::margarita::counterattack_command::CounterattackCommand;
 use crate::wave::heroes::PassiveSkill;
 use crate::wave::InstanceIndex;
 use crate::wave::Wave;
@@ -73,10 +89,6 @@ pub fn typ_default() -> SkillType {
     SkillType::None
 }
 
-pub fn data_default() -> SkillData {
-    SkillData::None
-}
-
 #[derive(Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Select {
     Everyone,
@@ -132,15 +144,7 @@ impl Default for Select {
 //    ),
 //};
 
-#[derive(Default,Debug, PartialEq, Deserialize, Serialize, Clone )]
-pub struct BasicAttack {
-    cooldown : u32,
-    attack_damage_ratio : f32,
-}
-impl BasicAttack {
-    pub const TYPE : SkillType = SkillType::Basic;
-    pub const SELECT : Select = Select::SingleEnemy;
-}
+
 //#[derive(Default,Debug, PartialEq, Deserialize, Serialize, Clone )]
 //pub struct ScorchedSoul{
 //    attack_damage_ratio : f32,
@@ -366,7 +370,7 @@ pub fn is_passive(skill : &Skill) -> bool {
 
 pub fn is_reducable(skill : &Skill) -> bool {
     match skill {
-        Skill { data: SkillData::FishDive {..},..} => false,
+        Skill::FishDive {..} => false,
         _ => true,
     }
 }
@@ -399,7 +403,9 @@ pub fn is_basic_attack(skill :&Skill) -> bool {
 }
 
 macro_rules! gen_match {
-    ( [$($Passive:ident),*],[$($Passive_extra:ident {$($Passive_extra1:ident : $Passive_extra2:ident),*}),*]  , [$($Special:ident),*] ) => {
+    ( [$($Passive:ident),*],
+    //[$($Passive_extra:ident {$($Passive_extra1:ident : $Passive_extra2:ident),*}),*],
+      [$($Special:ident),*] ) => {
         #[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
         pub enum Skill {
             None,
@@ -412,7 +418,7 @@ macro_rules! gen_match {
                 subskills : Vec<SubSkill>,
             },
             $($Passive,)*
-            $($Passive_extra {$($Passive_extra1 : $Passive_extra2),*},)*
+            //$($Passive_extra {$($Passive_extra1 : $Passive_extra2),*},)*
             $($Special ($Special),)*
         }
 
@@ -422,7 +428,7 @@ macro_rules! gen_match {
                     Skill::None => {},
                     Skill::Generic {  ..} => {self.execute_generic_skill(skill, actor, target)},
                     $(Skill::$Passive => {panic!("No exec on passsive")})*
-                    $(Skill::$Passive_extra {..} => {panic!("No exec on passsive")})*
+                    //$(Skill::$Passive_extra {..} => {panic!("No exec on passsive")})*
                     $(Skill::$Special (s) => {s.execute(self,skill,actor,target)})*
                 }
                 self.cooldown_s(actor,skill);
@@ -434,7 +440,7 @@ macro_rules! gen_match {
                 Skill::None => SkillType::None,
                 Skill::Generic { cooldown, ..} => return SkillType::Active,
                 $(Skill::$Passive => {return SkillType::Passive})*
-                $(Skill::$Passive_extra {..} => {return SkillType::Passive})*
+                //$(Skill::$Passive_extra {..} => {return SkillType::Passive})*
                 $(Skill::$Special ($Special {..}) => return $Special::TYPE,)*
             }
         } 
@@ -444,7 +450,7 @@ macro_rules! gen_match {
                 Skill::None => Select::None,
                 Skill::Generic {select, ..} => *select,
                 $(Skill::$Passive => {return Select::None})*
-                $(Skill::$Passive_extra {..} => {return Select::None})*
+                //$(Skill::$Passive_extra {..} => {return Select::None})*
                 $(Skill::$Special ($Special {..}) => return $Special::SELECT,)*
             }
         }
@@ -454,8 +460,9 @@ macro_rules! gen_match {
                 Skill::None => 0,
                 Skill::Generic { cooldown, ..} => return *cooldown,
                 $(Skill::$Passive => {return 0})*
-                $(Skill::$Passive_extra {..} => {return 0})*
+                //$(Skill::$Passive_extra {..} => {return 0})*
                 $(Skill::$Special (s) => return s.get_cooldown(),)*
+                //$(Skill::$Special ($Special {cooldown,..}) => return *cooldown,)*
             }
         }
     }
@@ -463,23 +470,26 @@ macro_rules! gen_match {
 
 gen_match!(         
         [SharpInstinct],
-        [Resplendence {turn_meter_ratio : f32}],
+        //[Resplendence {turn_meter_ratio : f32}],
         [
-        //BasicAttack,
-        BloodthirstyScythe
+        BasicAttack
+        ,BloodthirstyScythe
         ,BurstingKnowledge
-        //,Resplendence
+        ,Resplendence
         ,ScorchedSoul      
         ,FireHeal          
         ,Resurrection      
         ,ScytheStrike
-        //,EnergyBurst       
-        //,TideBigHit        
-        //,DeepSeaPower      
-        //,CrystalOfLife     
-        //,Tricks            
-        //,Nightmare         
-        //,FissionOfLife     
+        ,EnergyBurst       
+        ,TideBigHit        
+        ,DeepSeaPower      
+        ,CrystalOfLife     
+        ,Tricks            
+        ,Nightmare         
+        ,FissionOfLife     
+        ,SoulRing
+        ,SoulSurge
+        ,SoulSeal
         ,ScarletSlash      
         ,LeavesStorm       
         ,ScarletMultiStrike 
@@ -489,6 +499,17 @@ gen_match!(
         ,SpiritCall
         ,SpiritFountain
         ,Commendation 
+        ,CounterattackCommand
+        ,ForceOfMercy
+        ,SacredLight
+        ,LightOfPurifying
+        ,BloodlustStrike
+        ,BloodthirstyDesire
+        ,FishDive
+        ,FishGuardian
+        ,FishWaterball
+        ,CleanOcean
+        ,Detach
         ]
     );
 
@@ -571,16 +592,15 @@ mod tests {
 
     #[test]
     fn write_xml() {
-        let skill= Skill {
-            cooldown : 3,
-            typ : SkillType::Active,
-            select: Select::SingleEnemy,
-            data : SkillData::ScorchedSoul (ScorchedSoul{
+        let skill= 
+            //typ : SkillType::Active,
+            //select: Select::SingleEnemy,
+            Skill::ScorchedSoul (ScorchedSoul{
+                cooldown : 3,
                 attack_damage_ratio : 1.0,
                 hp_burning_chance: 0.5,
                 hp_burning_turns: 2
-            }),
-        };
+            });
 
         let xml = to_string(&skill).unwrap();
         //panic!("{}",xml);
@@ -590,7 +610,7 @@ mod tests {
     fn read_xml() {
         let skill: Vec<Skill>= from_str(
             r#"
-            <Skill><cooldown>3</cooldown><type>Active</type><select>SingleEnemy</select><ScorchedSoul><attack_damage_ratio>1</attack_damage_ratio><hp_burning_chance>0.5</hp_burning_chance><hp_burning_turns>2</hp_burning_turns></ScorchedSoul></Skill>
+            <Skill><ScorchedSoul><cooldown>3</cooldown><attack_damage_ratio>1</attack_damage_ratio><hp_burning_chance>0.5</hp_burning_chance><hp_burning_turns>2</hp_burning_turns></ScorchedSoul></Skill>
             "#,
             /* 
             <skill>
@@ -605,8 +625,8 @@ mod tests {
         )
         .unwrap();
 
-        match skill[0].data {
-            SkillData::ScorchedSoul(ScorchedSoul{attack_damage_ratio,hp_burning_chance, hp_burning_turns ,..}) => {
+        match skill[0] {
+            Skill::ScorchedSoul(ScorchedSoul{attack_damage_ratio,hp_burning_chance, hp_burning_turns ,..}) => {
                 assert_eq!(attack_damage_ratio, 1.0);
                 assert_eq!(hp_burning_chance, 0.5);
                 assert_eq!(hp_burning_turns, 2);

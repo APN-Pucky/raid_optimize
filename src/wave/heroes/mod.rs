@@ -1,4 +1,8 @@
 use crate::data::skill::{SkillType, Skill, Select};
+use derive_macro::Cooldown;
+
+
+use super::{InstanceIndex, Wave};
 
 pub mod space;
 pub mod tifya;
@@ -44,7 +48,27 @@ pub trait PassiveSkill {
     }
 }
 
+#[derive(Cooldown,Debug, PartialEq, Deserialize, Serialize, Clone )]
+pub struct BasicAttack {
+    pub cooldown : u32,
+    pub attack_damage_ratio : f32,
+}
+impl Default for BasicAttack {
+    fn default() -> Self {
+        BasicAttack {
+            cooldown : 0,
+            attack_damage_ratio : 1.0,
+        }
+    }
+}
+impl BasicAttack {
+    pub const TYPE : SkillType = SkillType::Basic;
+    pub const SELECT : Select = Select::SingleEnemy;
 
+    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
+        wave.attack_single(actor,defender, wave.get_attack_damage(actor) * self.attack_damage_ratio, skill);
+    }
+}
 
 #[cfg(test)]
 pub mod tests {

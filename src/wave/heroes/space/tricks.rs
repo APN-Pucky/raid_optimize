@@ -1,5 +1,3 @@
-use derive_macro::Cooldown;
-
 use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
 

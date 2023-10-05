@@ -12,7 +12,7 @@ impl Wave<'_> {
             Skill::ScarletSlash(ScarletSlash{..}) => {
                 self.inflict_buff_single(actor, actor, Effect::ScarletSakura, 999)
             }
-            Skill::ScaletMultiStrike(ScarletMultiStrike {.. }) => {
+            Skill::ScarletMultiStrike(ScarletMultiStrike {.. }) => {
                 self.inflict_buff_single(actor, actor, Effect::ScarletSakura, 999)
             }
             _ => {}

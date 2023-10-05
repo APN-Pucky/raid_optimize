@@ -1,5 +1,4 @@
 use crate::{wave::{Wave, InstanceIndex, heroes::{PassiveSkill, Cooldown}, }, data::{skill::{Skill, SkillType, Select, get_cooldown}, effect::{Effect}, }, };
-use derive_macro::Cooldown;
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct Commendation {
