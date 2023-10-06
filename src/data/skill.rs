@@ -408,8 +408,6 @@ macro_rules! gen_match {
       [$($Special:ident),*] ) => {
         #[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
         pub enum Skill {
-            $($Special ($Special),)*
-            $($Passive,)*
             None,
             Generic {
                 cooldown : u32,
@@ -419,6 +417,8 @@ macro_rules! gen_match {
                 #[serde(rename="subskill")]
                 subskills : Vec<SubSkill>,
             },
+            $($Special ($Special),)*
+            $($Passive,)*
             //$($Passive_extra {$($Passive_extra1 : $Passive_extra2),*},)*
         }
 
@@ -476,44 +476,44 @@ gen_match!(
         ],
         //[Resplendence {turn_meter_ratio : f32}],
         [
-        BloodthirstyScythe
+        BasicAttack
+        ,BloodthirstyScythe
         ,BurstingKnowledge
-        ,Resplendence
-        ,ScorchedSoul      
-        ,FireHeal          
-        ,Resurrection      
-        ,ScytheStrike
-        ,EnergyBurst       
-        ,TideBigHit        
-        ,DeepSeaPower      
+        ,BloodlustStrike
+        ,BloodthirstyDesire
+        ,CleanOcean
         ,CrystalOfLife     
-        ,Tricks            
-        ,Nightmare         
+        ,Commendation 
+        ,CounterattackCommand
+        ,DarknightStrike   
+        ,DarknightArbitrament
+        ,DeepSeaPower      
+        ,Detach
+        ,EnergyBurst       
+        ,EyeForAnEye       
         ,FissionOfLife     
+        ,FireHeal          
+        ,FishDive
+        ,FishGuardian
+        ,FishWaterball
+        ,ForceOfMercy
+        ,LeavesStorm       
+        ,LightOfPurifying
+        ,Nightmare         
+        ,Resplendence
+        ,Resurrection      
+        ,ScorchedSoul      
+        ,ScytheStrike
+        ,SacredLight
         ,SoulRing
         ,SoulSurge
         ,SoulSeal
         ,ScarletSlash      
-        ,LeavesStorm       
         ,ScarletMultiStrike 
-        ,DarknightStrike   
-        ,EyeForAnEye       
-        ,DarknightArbitrament
         ,SpiritCall
         ,SpiritFountain
-        ,Commendation 
-        ,CounterattackCommand
-        ,ForceOfMercy
-        ,SacredLight
-        ,LightOfPurifying
-        ,BloodlustStrike
-        ,BloodthirstyDesire
-        ,FishDive
-        ,FishGuardian
-        ,FishWaterball
-        ,CleanOcean
-        ,Detach
-        ,BasicAttack
+        ,TideBigHit        
+        ,Tricks    
         ]
     );
 
