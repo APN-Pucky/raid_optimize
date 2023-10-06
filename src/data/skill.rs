@@ -408,6 +408,8 @@ macro_rules! gen_match {
       [$($Special:ident),*] ) => {
         #[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
         pub enum Skill {
+            $($Special ($Special),)*
+            $($Passive,)*
             None,
             Generic {
                 cooldown : u32,
@@ -417,9 +419,7 @@ macro_rules! gen_match {
                 #[serde(rename="subskill")]
                 subskills : Vec<SubSkill>,
             },
-            $($Passive,)*
             //$($Passive_extra {$($Passive_extra1 : $Passive_extra2),*},)*
-            $($Special ($Special),)*
         }
 
         impl Wave<'_> {
@@ -476,8 +476,7 @@ gen_match!(
         ],
         //[Resplendence {turn_meter_ratio : f32}],
         [
-        BasicAttack
-        ,BloodthirstyScythe
+        BloodthirstyScythe
         ,BurstingKnowledge
         ,Resplendence
         ,ScorchedSoul      
@@ -514,6 +513,7 @@ gen_match!(
         ,FishWaterball
         ,CleanOcean
         ,Detach
+        ,BasicAttack
         ]
     );
 

@@ -2,7 +2,7 @@ use crate::{wave::{Wave, InstanceIndex, heroes::{PassiveSkill, Cooldown}, }, dat
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct Commendation {
-    cooldown : u32,
+    pub cooldown : u32,
     pub max_hp_restore_ratio: f32,
     pub attack_up_turns : u32,
 }
