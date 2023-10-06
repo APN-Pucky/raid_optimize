@@ -257,9 +257,11 @@ impl Wave<'_> {
             }
             // game over
             // TODO hard coded team indices... of 0
-            let win = self.get_enemies_indices(0).iter().all(|&e| !self.is_alive(e));
-            let loss = self.get_ally_indices(0).iter().all(|&a| !self.is_alive(a));
-            let mut stall = self.turns >= self.turn_limit;
+            let enemy_alive = !self.get_enemies_indices(0).iter().all(|&e| !self.is_alive(e));
+            let ally_alive = !self.get_ally_indices(0).iter().all(|&a| !self.is_alive(a));
+            let win = ally_alive && !enemy_alive;
+            let loss = !ally_alive && enemy_alive;
+            let mut stall = self.turns >= self.turn_limit || (!ally_alive && !enemy_alive ); // => both dead from eg. counterattack also stall
             if win || loss || stall {
                 if win {
                     log::debug!("Win");

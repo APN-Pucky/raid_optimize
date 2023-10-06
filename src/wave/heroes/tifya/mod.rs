@@ -68,5 +68,6 @@ impl Wave<'_> {
             }
     }
 }
-#[cfg(test)]
-mod tests;
+
+use super::test_hero;
+test_hero!(Tifya);

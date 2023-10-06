@@ -29,3 +29,6 @@ impl Wave<'_> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests;

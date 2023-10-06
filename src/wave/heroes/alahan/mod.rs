@@ -40,3 +40,6 @@ impl Wave<'_> {
 
     }
 }
+
+use super::test_hero;
+test_hero!(Alahan);

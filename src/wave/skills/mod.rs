@@ -64,7 +64,7 @@ impl Wave<'_> {
 
     pub fn reduce_cooldowns(&mut self,actor: InstanceIndex) {
         debug!("Reducing cooldowns for {} ({}):", self.name(actor), self.cooldowns[actor].len());
-        self.cooldowns[actor].iter_mut().filter(|i| is_reducable(&self.heroes[actor].skills[**i as SkillIndex] )).for_each(|c| *c = c.saturating_sub(1));
+        self.cooldowns[actor].iter_mut().enumerate().filter(|(i,_)| is_reducable(&self.heroes[actor].skills[*i as SkillIndex] )).for_each(|(_,c)| *c = c.saturating_sub(1));
         indent!({
             for (i,c) in self.cooldowns[actor].iter().enumerate() {
                 debug!("{}: {}", self.get_skill(actor,i), c);
