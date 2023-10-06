@@ -89,7 +89,7 @@ pub fn typ_default() -> SkillType {
     SkillType::None
 }
 
-#[derive(Deserialize, Serialize,strum_macros::Display, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(EnumIter, Deserialize, Serialize,strum_macros::Display, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Select {
     Everyone,
     SingleAlly,
@@ -402,6 +402,26 @@ pub fn is_basic_attack(skill :&Skill) -> bool {
     //}
 }
 
+#[derive( Debug, PartialEq, Deserialize, Serialize, Clone)]
+pub struct Generic {
+    pub cooldown : u32,
+    pub name : String,
+    #[serde(default="select_default",with = "quick_xml::serde_helpers::text_content")]
+    pub select: Select,
+    #[serde(rename="subskill")]
+    pub subskills : Vec<SubSkill>,
+}
+impl Default for Generic {
+    fn default() -> Self {
+        Generic {
+            cooldown : 0,
+            name : "Generic".to_string(),
+            select : Select::None,
+            subskills : vec![],
+        }
+    }
+}
+
 macro_rules! gen_match {
     ( [$($Passive:ident),*],
     //[$($Passive_extra:ident {$($Passive_extra1:ident : $Passive_extra2:ident),*}),*],
@@ -409,14 +429,7 @@ macro_rules! gen_match {
         #[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
         pub enum Skill {
             None,
-            Generic {
-                cooldown : u32,
-                name : String,
-                #[serde(default="select_default",with = "quick_xml::serde_helpers::text_content")]
-                select: Select,
-                #[serde(rename="subskill")]
-                subskills : Vec<SubSkill>,
-            },
+            Generic ( Generic),
             $($Special ($Special),)*
             $($Passive,)*
             //$($Passive_extra {$($Passive_extra1 : $Passive_extra2),*},)*
@@ -426,7 +439,7 @@ macro_rules! gen_match {
             pub fn execute_skill(&mut self, skill : &Skill,  actor :InstanceIndex, target :InstanceIndex, ) {
                 match skill {
                     Skill::None => {},
-                    Skill::Generic {  ..} => {self.execute_generic_skill(skill, actor, target)},
+                    Skill::Generic (Generic{  ..}) => {self.execute_generic_skill(skill, actor, target)},
                     $(Skill::$Passive => {panic!("No exec on passsive")})*
                     //$(Skill::$Passive_extra {..} => {panic!("No exec on passsive")})*
                     $(Skill::$Special (s) => {s.execute(self,skill,actor,target)})*
@@ -438,7 +451,7 @@ macro_rules! gen_match {
         pub fn get_type(skill :&Skill)-> SkillType {
             match skill {
                 Skill::None => SkillType::None,
-                Skill::Generic { cooldown, ..} => return SkillType::Active,
+                Skill::Generic (Generic{ cooldown, ..}) => return SkillType::Active,
                 $(Skill::$Passive => {return SkillType::Passive})*
                 //$(Skill::$Passive_extra {..} => {return SkillType::Passive})*
                 $(Skill::$Special ($Special {..}) => return $Special::TYPE,)*
@@ -448,7 +461,7 @@ macro_rules! gen_match {
         pub fn get_select(skill :&Skill)-> Select{
             match skill {
                 Skill::None => Select::None,
-                Skill::Generic {select, ..} => *select,
+                Skill::Generic (Generic{select, ..}) => *select,
                 $(Skill::$Passive => {return Select::None})*
                 //$(Skill::$Passive_extra {..} => {return Select::None})*
                 $(Skill::$Special ($Special {..}) => return $Special::SELECT,)*
@@ -458,7 +471,7 @@ macro_rules! gen_match {
         pub fn get_cooldown(skill:&Skill) -> u32 {
             match skill {
                 Skill::None => 0,
-                Skill::Generic { cooldown, ..} => return *cooldown,
+                Skill::Generic (Generic{ cooldown, ..}) => return *cooldown,
                 $(Skill::$Passive => {return 0})*
                 //$(Skill::$Passive_extra {..} => {return 0})*
                 $(Skill::$Special (s) => return s.get_cooldown(),)*
@@ -471,8 +484,8 @@ macro_rules! gen_match {
 gen_match!(         
         [
         CounterAttack,
-        SharpInstinct,
-        IncessantChatter
+        IncessantChatter,
+        SharpInstinct
         ],
         //[Resplendence {turn_meter_ratio : f32}],
         [

@@ -1,44 +1,23 @@
 use enum_map::Enum;
 
+use strum_macros::EnumIter;
 
 
-#[derive(Debug,Enum, PartialEq, Eq ,strum_macros::Display,Copy,Clone,Deserialize, Serialize, )]
+#[derive(EnumIter, Debug,Enum, PartialEq, Eq ,strum_macros::Display,Copy,Clone,Deserialize, Serialize, )]
 pub enum Effect {
-    WetI,
-    WetII,
-    ColdI,
-    ColdII,
-    ColdIII,
-    Bleed,
-    Heal,
-    HPBurning,
-    Suffocated,
-    BlockDebuff,
-    EffectResistanceUpI,
-    EffectResistanceUpII,
-    EffectResistanceDownI,
-    EffectResistanceDownII,
-    RippleII,
+    None,
+
     AttackUpI,
     AttackUpII,
     AttackDownI,
     AttackDownII,
-    TenacityUpI,
-    TenacityUpII,
-    TenacityDownI,
-    TenacityDownII,
-    SpeedDownI,
-    SpeedDownII,
-    SpeedUpI,
-    SpeedUpII,
-    EffectHitUpI,
-    EffectHitUpII,
-    EffectHitDownI,
-    EffectHitDownII,
-    DefenseUpI,
-    DefenseUpII,
-    DefenseDownI,
-    DefenseDownII,
+
+    Bleed,
+    BlockDebuff,
+
+    ColdI,
+    ColdII,
+    ColdIII,
     CritRateUpI,
     CritRateUpII,
     CritRateDownI,
@@ -47,6 +26,44 @@ pub enum Effect {
     CritDamageDownII,
     CritDamageUpI,
     CritDamageUpII,
+
+    EffectHitUpI,
+    EffectHitUpII,
+    EffectHitDownI,
+    EffectHitDownII,
+
+    EffectResistanceUpI,
+    EffectResistanceUpII,
+    EffectResistanceDownI,
+    EffectResistanceDownII,
+
+
+    Heal,
+    HPBurning,
+
+    WetI,
+    WetII,
+
+    Suffocated,
+
+
+    SpeedDownI,
+    SpeedDownII,
+    SpeedUpI,
+    SpeedUpII,
+
+    TenacityUpI,
+    TenacityUpII,
+    TenacityDownI,
+    TenacityDownII,
+
+    RippleII,
+
+    DefenseUpI,
+    DefenseUpII,
+    DefenseDownI,
+    DefenseDownII,
+
 
     
     //Debuff
@@ -78,7 +95,6 @@ pub enum Effect {
     //Faction
     FactionHiddenWaveAttack, // Counter for faction hidden wave
     FactionHiddenWaveSkill, // Counter for faction hidden wave
-    None,
 }
 
 pub fn get_max(effect:Effect) -> u32 {

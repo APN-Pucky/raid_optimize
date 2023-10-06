@@ -1,10 +1,11 @@
 
+use strum_macros::EnumIter;
 
 use super::{effect::Effect};
 
 
 
-#[derive(Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(EnumIter,strum_macros::Display,Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Target {
     Everyone,
     SingleAlly,
@@ -71,14 +72,14 @@ pub fn merge_targets(t1 : Target,t2:Target) -> Target {
     }
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(EnumIter,strum_macros::Display,Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Scale {
     AttackDamage,
     MaxHealth,
     TargetMaxHealth,
     None,
 }
-#[derive(Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(EnumIter,strum_macros::Display,Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Type {
     Damage,
     Restore,
@@ -103,6 +104,21 @@ pub struct SubSkill {
     #[serde(default="turns_default",rename= "@turns")]
     pub turns : u32,
 }
+
+impl Default for SubSkill {
+    fn default() -> Self {
+        Self {
+            target : target_default(),
+            ratio : ratio_default(),
+            typ : Type::Damage,
+            scale : scale_default(),
+            effect : effect_default(),
+            chance : chance_default(),
+            turns : turns_default(),
+        }
+    }
+}
+
 fn target_default() -> Target {
     Target::SingleEnemy
 }
