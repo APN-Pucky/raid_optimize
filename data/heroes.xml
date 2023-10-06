@@ -781,35 +781,4 @@
             </SacredLight>
         
     </hero>
-    <hero>
-        <id>99</id>
-        <name>Maya</name>
-        <mark>
-            Blue
-        </mark>
-        <class>
-            Support
-        </class>
-        <faction>
-            HolyLightParliament
-        </faction>
-        <rarity>
-            Common
-        </rarity>
-        <health>65124</health>
-        <attack>7017</attack>
-        <defense>5715</defense>
-        <speed>1083</speed>
-        <crit_rate>0.1</crit_rate>
-        <crit_damage>1.5</crit_damage>
-        <effect_hit>0.02</effect_hit>
-        <effect_resistance>0</effect_resistance>
-        <mastery>0</mastery>
-        <healing_effect>0.429</healing_effect>
-        <leech>0</leech>
-        <piercing>0</piercing>
-        <tenacity>0</tenacity>
-        <damage_reflection>0</damage_reflection>
-        
-    </hero>
 </heroes>

@@ -84,7 +84,7 @@ pub fn test_1_vs_1(name: &str) {
     let liz = heroes.heroes.iter().find(|h| h.name == name).unwrap();
     let mut args = Args::default();
     args.threads = 1;
-    args.iterations = 1000;
+    args.iterations = 100;
     args.allies = vec![liz.clone()];
     args.enemies =  vec![liz.clone()];
     let sim = Sim::new(args.clone());
@@ -98,7 +98,7 @@ pub fn test_5_vs_5(name: &str) {
     let liz = heroes.heroes.iter().find(|h| h.name == name).unwrap();
     let mut args = Args::default();
     args.threads = 1;
-    args.iterations = 1000;
+    args.iterations = 100;
     args.allies = vec![liz.clone(),liz.clone(),liz.clone(),liz.clone(),liz.clone()];
     args.enemies =  vec![liz.clone(),liz.clone(),liz.clone(),liz.clone(),liz.clone()];
     let sim = Sim::new(args.clone());

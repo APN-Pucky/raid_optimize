@@ -64,6 +64,9 @@ impl Wave<'_> {
                     debug!("{}", s);
                 }
             });
+            if skills.len() == 0 {
+                panic!("{} has no active skills: {:#?}", self.name(actor), self.heroes[actor])
+            }
 
             let skill :&Skill = self.get_player_of_instance(actor).pick_skill(self, actor,&skills);
 
