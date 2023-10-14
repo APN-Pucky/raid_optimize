@@ -1,4 +1,4 @@
-use crate::{data::{effect::{Effect, is_debuff, is_buff}}};
+use crate::data::{effect::{Effect, is_debuff, is_buff}};
 
 use super::{Wave, InstanceIndex};
 use enum_map::EnumMap;
@@ -33,12 +33,13 @@ impl Effects {
     }
 
     pub fn get_last_inflictor(&self, key: Effect) -> Option<InstanceIndex> {
-        if let Some(tp) = self.em[key].last() {
-            Some(tp.2)
-        }
-        else {
-            None
-        }
+        self.em[key].last().map(|tp| tp.2)
+        //if let Some(tp) = self.em[key].last() {
+        //    Some(tp.2)
+        //}
+        //else {
+        //    None
+        //}
     }
 
     pub fn clear(&mut self) {
