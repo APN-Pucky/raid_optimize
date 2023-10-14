@@ -24,44 +24,29 @@ impl Wave<'_> {
                 for i in self.get_indices_iter() {
                     if self.teams[i] == self.teams[actor] {
                         if i != actor {
-                            match self.heroes[i].skills[..] {
-                                [Skill::SharpInstinct,..] => {
-                                    for s in &self.heroes[i].skills {
-                                        match s {
-                                            Skill::LeavesStorm { .. } => {
-                                                self.execute_skill(&s,i,i)
-                                            }
-                                            _ => {}
-                                        }
+                            if let [Skill::SharpInstinct,..] = self.heroes[i].skills[..] {
+                                for s in &self.heroes[i].skills {
+                                    if let Skill::LeavesStorm { .. } =s {
+                                            self.execute_skill(&s,i,i)
                                     }
                                 }
-                                _ => {}
                             }
                         }
                         else {
-                            match self.heroes[actor].skills[..] {
-                                [Skill::SharpInstinct,..] => {
-                                    for s in &self.heroes[actor].skills {
-                                        match s {
-                                            Skill::LeavesStorm { .. } => {
-                                                self.inflict_buff_single(actor, actor, Effect::Stealth,1);
-                                                self.execute_skill(&s,i,i)
-                                            }
-                                            _ => {}
-                                        }
+                            if let [Skill::SharpInstinct,..] = self.heroes[actor].skills[..] {
+                                for s in &self.heroes[actor].skills {
+                                    if let Skill::LeavesStorm { .. } = s {
+                                        self.inflict_buff_single(actor, actor, Effect::Stealth,1);
+                                        self.execute_skill(&s,i,i)
                                     }
                                 }
-                                _ => {}
                             }
                         }
                     }
                     if self.teams[i] != self.teams[actor] {
-                        match self.heroes[i].skills[..] {
-                            [Skill::SharpInstinct,..] => {
-                                self.cleanse(i, &is_debuff, 999);
-                                self.act(i);
-                            }
-                            _ => {}
+                        if let [Skill::SharpInstinct,..] = self.heroes[i].skills[..] {
+                            self.cleanse(i, &is_debuff, 999);
+                            self.act(i);
                         }
                     }
                 }

@@ -7,8 +7,8 @@ use crate::{wave::{Wave, TeamIndex, InstanceIndex}, data::skill::Skill};
 pub trait Player {
     fn get_name(&self) -> String;
     fn get_team(&self) -> TeamIndex;
-    fn pick_skill<'a>(&self, wave : &Wave, actor : InstanceIndex, skills: &Vec<&'a Skill>) -> &'a Skill;
-    fn pick_target(&self, wave : &Wave, actor : InstanceIndex, skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex; 
+    fn pick_skill<'a>(&self, wave : &Wave, actor : InstanceIndex, skills: &[&'a Skill]) -> &'a Skill;
+    fn pick_target(&self, wave : &Wave, actor : InstanceIndex, skill : &Skill, targets: &[InstanceIndex]) -> InstanceIndex; 
 }
 
 pub struct RandomPlayer {
@@ -22,12 +22,12 @@ impl Player for RandomPlayer {
     fn get_name(&self) -> String {
         format!("RandomPlayer {}", self.team_index)
     }
-    fn pick_target(&self, _wave : &Wave, _actor : InstanceIndex, _skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex{
+    fn pick_target(&self, _wave : &Wave, _actor : InstanceIndex, _skill : &Skill, targets: &[InstanceIndex]) -> InstanceIndex{
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..targets.len());
         targets[index]
     }
-    fn pick_skill<'a>(&self, _wave : &Wave, _actor : InstanceIndex, skills: &Vec<&'a Skill>) -> &'a Skill{
+    fn pick_skill<'a>(&self, _wave : &Wave, _actor : InstanceIndex, skills: &[&'a Skill]) -> &'a Skill{
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..skills.len());
         skills[index]
@@ -86,7 +86,7 @@ impl Player for ManualPlayer {
     fn get_name(&self) -> String {
         format!("ManualPlayer {}", self.team_index)
     }
-    fn pick_target(&self, wave : &Wave, actor : InstanceIndex, skill : &Skill, targets: &Vec<InstanceIndex>) -> InstanceIndex{
+    fn pick_target(&self, wave : &Wave, actor : InstanceIndex, skill : &Skill, targets: &[InstanceIndex]) -> InstanceIndex{
         println!("Pick target for {} using skill {:?}", wave.heroes[actor].name, skill);
         for (i, target) in targets.iter().enumerate() {
             println!(" {}: {}", i, wave.name(*target));
@@ -114,7 +114,7 @@ impl Player for ManualPlayer {
     }
 
 
-    fn pick_skill<'a>(&self, wave : &Wave, actor :InstanceIndex, skills: &Vec<&'a Skill>) -> &'a Skill{
+    fn pick_skill<'a>(&self, wave : &Wave, actor :InstanceIndex, skills: &[&'a Skill]) -> &'a Skill{
         println!("Pick skill for {}", wave.heroes[actor].name);
         for (i, skill) in skills.iter().enumerate() {
             println!(" {}: {:?}", i, skill);

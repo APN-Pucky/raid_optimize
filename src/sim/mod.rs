@@ -95,7 +95,7 @@ impl Sim {
                     match tx.send(cr) {
                         Ok(_) => {},
                         Err(_e) => {
-                            return ();
+                            return;
                         }
                     }
                     cr = CombinedResult::default();

@@ -14,7 +14,7 @@ pub fn get_mean_and_standard_deviation(sum : f64, sum_sq:f64, n: u64) -> (f64, f
     (get_mean(sum, n), get_standard_deviation(sum, sum_sq, n))
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug,Clone,Default)]
 pub struct CombinedResult {
     pub iterations: u64,
     pub wins: u64,
@@ -24,17 +24,17 @@ pub struct CombinedResult {
 }
 
 
-impl Default for CombinedResult {
-    fn default() -> Self {
-        Self {
-            iterations: 0,
-            wins: 0,
-            losses: 0,
-            stalls: 0,
-            statistics: Vec::new(),
-        }
-    }
-}
+//impl Default for CombinedResult {
+//    fn default() -> Self {
+//        Self {
+//            iterations: 0,
+//            wins: 0,
+//            losses: 0,
+//            stalls: 0,
+//            statistics: Vec::new(),
+//        }
+//    }
+//}
 #[derive(Debug,Clone,Copy)]
 pub struct CombinedStatistics {
     pub hm: EnumMap<Stat, f64>,

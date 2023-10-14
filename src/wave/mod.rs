@@ -83,7 +83,7 @@ pub struct Result {
 }
 
 impl Wave<'_> {
-    pub fn new<'a>(instances: &'a mut  Vec<&mut Instance<'a>>, players:&'a mut Vec<Box<dyn Player>>, track_statistics : bool, turn_limit : u32, turn_meter_threshold :f32) -> Wave<'a>  {
+    pub fn new<'a>(instances: &'a mut  [&mut Instance<'a>], players:&'a mut Vec<Box<dyn Player>>, track_statistics : bool, turn_limit : u32, turn_meter_threshold :f32) -> Wave<'a>  {
         // ensure right instance indices
         instances.iter_mut().enumerate().for_each(|(i,a)| a.index = i);
         let heroes  = instances.iter().map(|i| i.hero).collect::<Vec<_>>();
@@ -127,11 +127,11 @@ impl Wave<'_> {
         w
     }
 
-    //Deprecated?
-    #[deprecated]
-    pub fn len(&self) -> usize {
-        self.heroes.len()
-    }
+    ////Deprecated?
+    //#[deprecated]
+    //pub fn len(&self) -> usize {
+    //    self.heroes.len()
+    //}
 
     pub fn reset(&mut self) {
         self.turns = 0;
@@ -294,7 +294,7 @@ impl Wave<'_> {
                 if stall {
                     debug!("Stall");
                 }
-                if win && stall || loss && stall {
+                if (loss || win) && stall {
                     // last turn victory excludes stall
                     stall = false;
                 }

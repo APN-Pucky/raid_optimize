@@ -113,30 +113,30 @@ fn turns_default() -> u32 {
 
 
 
-pub fn merge_targets(t1 : Target,t2:Target) -> Target {
-    // test if it makes sense
-    if (Target::SingleAlly == t1 || Target::AllAllies== t1) && (Target::SingleEnemy == t2 || Target::AllEnemies == t2) {
-        panic!("Cannot merge targets {:?} and {:?}",t1,t2);
-    }
-    if (Target::SingleEnemy == t1 || Target::AllEnemies== t1) && (Target::SingleAlly == t2 || Target::AllAllies == t2) {
-        panic!("Cannot merge targets {:?} and {:?}",t1,t2);
-    }
-    // return 
-    if Target::SingleAlly == t1 || Target::SingleAlly == t2 {
-        t1
-    } else if Target::SingleEnemy == t1 || Target::SingleEnemy == t2 {
-        t1
-    } else if Target::AllEnemies == t1 || Target::AllEnemies == t2 {
-        t1
-    } else if Target::AllAllies == t1 || Target::AllAllies == t2 {
-        t1
-    } else if Target::Everyone == t1 || Target::Everyone == t2 {
-        t1
-    }
-    else {
-        panic!("Cannot merge targets {:?} and {:?}",t1,t2);
-    }
-}
+//pub fn merge_targets(t1 : Target,t2:Target) -> Target {
+//    // test if it makes sense
+//    if (Target::SingleAlly == t1 || Target::AllAllies== t1) && (Target::SingleEnemy == t2 || Target::AllEnemies == t2) {
+//        panic!("Cannot merge targets {:?} and {:?}",t1,t2);
+//    }
+//    if (Target::SingleEnemy == t1 || Target::AllEnemies== t1) && (Target::SingleAlly == t2 || Target::AllAllies == t2) {
+//        panic!("Cannot merge targets {:?} and {:?}",t1,t2);
+//    }
+//    // return 
+//    if Target::SingleAlly == t1 || Target::SingleAlly == t2 {
+//        t1
+//    } else if Target::SingleEnemy == t1 || Target::SingleEnemy == t2 {
+//        t1
+//    } else if Target::AllEnemies == t1 || Target::AllEnemies == t2 {
+//        t1
+//    } else if Target::AllAllies == t1 || Target::AllAllies == t2 {
+//        t1
+//    } else if Target::Everyone == t1 || Target::Everyone == t2 {
+//        t1
+//    }
+//    else {
+//        panic!("Cannot merge targets {:?} and {:?}",t1,t2);
+//    }
+//}
 
 
 #[cfg(test)]

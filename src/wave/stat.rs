@@ -97,3 +97,9 @@ impl Statistics {
         }
     }
 }
+
+impl Default for Statistics {
+    fn default() -> Self {
+        Self::new()
+    }
+}

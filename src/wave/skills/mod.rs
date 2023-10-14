@@ -99,13 +99,10 @@ impl Wave<'_> {
     }
 
     pub fn execute_generic_skill(&mut self, skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
-        match skill {
-            Skill::Generic(Generic{ subskills ,..}) => {
-                for ss in subskills {
-                    self.execute_subskill(&ss, actor, Some(target),skill);
-                }
-            },
-            _ => {}
+        if let Skill::Generic(Generic{ subskills ,..}) = skill {
+            for ss in subskills {
+                self.execute_subskill(&ss, actor, Some(target),skill);
+            }
         }
     }
 

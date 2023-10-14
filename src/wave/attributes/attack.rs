@@ -1,5 +1,5 @@
 
-use crate::{debug, indent, data::{effect::Effect, skill::{Skill, }, faction::Faction}, wave::heroes::geeliman::bursting_knowledge::BurstingKnowledge};
+use crate::{debug, indent, data::{effect::Effect, skill::Skill, faction::Faction}, wave::heroes::geeliman::bursting_knowledge::BurstingKnowledge};
 
 use super::{InstanceIndex, Wave};
 
@@ -87,13 +87,10 @@ impl Wave<'_> {
     pub fn get_piercing(&self, actor : InstanceIndex , skill : &Skill) -> f32 {
         let mut fact = 1.0;
         indent!({
-        match skill {
-            Skill::BurstingKnowledge (BurstingKnowledge{ piercing_rate ,..} ) =>  {
+            if let Skill::BurstingKnowledge (BurstingKnowledge{ piercing_rate ,..} ) =skill  {
                 fact = fact + piercing_rate;
                 debug!("{} uses BurstingKnowledge -> piercing * {}", self.name(actor), piercing_rate);
-            },
-            _ =>  {}
-        }
+            }
         });
         let ret = self.get_hero(actor).piercing * fact;
         debug!("{} piercing of {}", self.name(actor), ret);

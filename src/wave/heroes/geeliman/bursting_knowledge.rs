@@ -1,7 +1,7 @@
 
 
 use crate::wave::heroes::Cooldown;
-use crate::{wave::{Wave, InstanceIndex,}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
+use crate::{wave::{Wave, InstanceIndex,}, data::{skill::{Skill, SkillType, Select}, effect::Effect, }, };
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct BurstingKnowledge {
@@ -45,7 +45,7 @@ impl BurstingKnowledge {
                    }
                    wave.attack_single(attacker,lowest, wave.get_attack_damage(attacker) * self.attack_damage_ratio, skill);
                }
-               n = n-1;
+               n -= 1;
            }
            // clear arcane
            wave.effects[target].clear_single(Effect::Arcane);

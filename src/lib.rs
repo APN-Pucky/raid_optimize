@@ -100,10 +100,10 @@ macro_rules! info{
 #[inline]
 pub fn roll(chance:f32) -> bool {
     if chance >= 1.0 {
-        return true
+        true
     }
     else if chance <= 0.0 {
-        return false
+        false
     }
     else {
         let mut rng = rand::thread_rng();

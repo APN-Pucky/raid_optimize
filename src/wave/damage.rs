@@ -143,14 +143,11 @@ impl Wave<'_> {
                     // find hero with FishGuardian skill
                     let mut red = 0.0;
                     for i in self.get_ally_indices(target) {
-                        match self.heroes[i].skills[..] {
-                            [ Skill::FishGuardian(FishGuardian {max_hp_restore_ratio , damage_reduction,.. }),..] => {
-                                red = damage_reduction;
-                                self.heal(target,i,self.get_max_health(target)* max_hp_restore_ratio);
-                                self.effects[i].remove_layer(Effect::FishShoal);
-                                break;
-                            },
-                            _ => {}
+                        if let [ Skill::FishGuardian(FishGuardian {max_hp_restore_ratio , damage_reduction,.. }),..] =self.heroes[i].skills[..] {
+                            red = damage_reduction;
+                            self.heal(target,i,self.get_max_health(target)* max_hp_restore_ratio);
+                            self.effects[i].remove_layer(Effect::FishShoal);
+                            break;
                         }
                     }
                     let xfact = 1.0-red;
@@ -186,16 +183,13 @@ impl Wave<'_> {
                 debug!("{} has {} bond with SwordHarborGuards and health < 50% -> damage * {}", self.name(target), xfact, xfact);
             }
             for p in &self.heroes[actor].skills {
-                match p {
-                    Skill::BloodlustStrike (BloodlustStrike{damage_reduction_buffs,damage_reduction_nobuffs,..}) => {
-                        if self.has_buff(target) {
-                            damage = damage * ( 1.0 - damage_reduction_buffs);
-                        }
-                        else {
-                            damage = damage * ( 1.0 - damage_reduction_nobuffs);
-                        }
+                if let Skill::BloodlustStrike (BloodlustStrike{damage_reduction_buffs,damage_reduction_nobuffs,..}) =p {
+                    if self.has_buff(target) {
+                        damage = damage * ( 1.0 - damage_reduction_buffs);
                     }
-                    _ => {}
+                    else {
+                        damage = damage * ( 1.0 - damage_reduction_nobuffs);
+                    }
                 }
             }
 
@@ -255,11 +249,8 @@ impl Wave<'_> {
         let mut fleech = self.get_leech(actor);
         if crit {
             for p in &self.heroes[actor].skills {
-                match p {
-                    Skill::BloodlustStrike (BloodlustStrike{leech,..}) => {
-                        fleech += leech;
-                    }
-                    _ => {}
+                if let Skill::BloodlustStrike (BloodlustStrike{leech,..}) =p {
+                    fleech += leech;
                 }
             }
         }

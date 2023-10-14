@@ -10,15 +10,12 @@ impl Wave<'_> {
 
     pub fn on_trigger_self(&mut self, actor : InstanceIndex, trigger : Trigger) {
         for s in &self.heroes[actor].skills {
-            match s {
-                Skill::Generic(Generic{subskills , ..}) => {
-                    for ss in subskills {
-                        if ss.trigger ==  trigger {
-                            self.execute_subskill(&ss, actor, None,s);
-                        }
+            if let Skill::Generic(Generic{subskills , ..}) =s  {
+                for ss in subskills {
+                    if ss.trigger ==  trigger {
+                        self.execute_subskill(&ss, actor, None,s);
                     }
                 }
-                _ => { }
             }
         }
     }
@@ -26,21 +23,18 @@ impl Wave<'_> {
     pub fn on_trigger_any(&mut self, triggerer: InstanceIndex, trigger : Trigger) {
         for actor in self.get_indices_iter() {
             for s in &self.heroes[actor].skills {
-                match s {
-                    Skill::Generic(Generic{subskills , ..}) => {
-                        for ss in subskills {
-                            if ss.trigger ==  trigger {
-                                self.execute_subskill(&ss, actor, None,s);
-                            }
-                            if trigger == Trigger::AnyDeath && ss.trigger ==Trigger::AllyDeath && self.are_allies(actor,triggerer) {
-                                self.execute_subskill(&ss, actor, None,s);
-                            }
-                            if trigger == Trigger::AnyDeath && ss.trigger ==Trigger::EnemyDeath && self.are_enemies(actor,triggerer) {
-                                self.execute_subskill(&ss, actor, None,s);
-                            }
+                if let Skill::Generic(Generic{subskills , ..}) = s {
+                    for ss in subskills {
+                        if ss.trigger ==  trigger {
+                            self.execute_subskill(&ss, actor, None,s);
+                        }
+                        if trigger == Trigger::AnyDeath && ss.trigger ==Trigger::AllyDeath && self.are_allies(actor,triggerer) {
+                            self.execute_subskill(&ss, actor, None,s);
+                        }
+                        if trigger == Trigger::AnyDeath && ss.trigger ==Trigger::EnemyDeath && self.are_enemies(actor,triggerer) {
+                            self.execute_subskill(&ss, actor, None,s);
                         }
                     }
-                    _ => { }
                 }
             }
         }
@@ -49,7 +43,6 @@ impl Wave<'_> {
     pub fn execute_subskill(&mut self,subskill : &SubSkill, actor :InstanceIndex, target :Option<InstanceIndex>,  skill: &Skill) {
         let wave = self;
         let mut val= 0.0;
-        let targets : Vec<InstanceIndex>;
         let mut effect = Effect::None;
         let mut chance = 0.0;
         let mut turns = 0;
@@ -76,32 +69,32 @@ impl Wave<'_> {
                 turns = subskill.turns;
             },
         }
-        match subskill.target {
+        let targets : Vec<InstanceIndex> = match subskill.target {
             Target::Everyone => {
-                targets = wave.get_indices_iter().collect();
+                wave.get_indices_iter().collect()
             },
             Target::SingleAlly => {
-                targets  = vec![target.expect("SingleAlly needs a target")];
+                vec![target.expect("SingleAlly needs a target")]
             },
             Target::SingleEnemy => {
-                targets  = vec![target.expect("SingleEnemy needs a target")];
+                vec![target.expect("SingleEnemy needs a target")]
             },
             Target::AllEnemies => {
-                targets = wave.get_enemies_indices(actor);
+                wave.get_enemies_indices(actor)
             },
             Target::AllAllies => {
-                targets = wave.get_ally_indices(actor);
+                wave.get_ally_indices(actor)
             },
             Target::SingleSelf => {
-                targets = vec![actor];
+                vec![actor]
             },
             Target:: None => {
-                targets = vec![];
+                vec![]
             },
             Target::LowestHealthAlly => {
-                targets = vec![wave.get_lowest_health_ally(actor)];
+                vec![wave.get_lowest_health_ally(actor)]
             }
-        } 
+        };
         match subskill.typ {
             Type::Damage => {
                 for target in targets.iter() {

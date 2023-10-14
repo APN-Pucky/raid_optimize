@@ -85,21 +85,16 @@ pub fn typ_default() -> SkillType {
     SkillType::None
 }
 
-#[derive(EnumIter, Deserialize, Serialize,strum_macros::Display, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(Default,EnumIter, Deserialize, Serialize,strum_macros::Display, Debug, Clone,Eq, PartialEq,Copy)]
 pub enum Select {
+    #[default]
+    None,
     Everyone,
     SingleAlly,
     SingleEnemy,
     AllEnemies,
     AllAllies,
     SingleSelf,
-    None,
-}
-
-impl Default for Select {
-    fn default() -> Self {
-        Select::None
-    }
 }
 
 
