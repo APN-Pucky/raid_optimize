@@ -172,7 +172,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --debug --all-features --target=${{ matrix.triple.target }}
+          args: --all-features --target=${{ matrix.triple.target }}
           use-cross: ${{ matrix.triple.cross }}
       - name: Move binary to root
         run: mv target/${{ matrix.triple.target }}/debug/raid_optimize* .
