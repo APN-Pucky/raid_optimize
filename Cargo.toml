@@ -44,9 +44,6 @@ open = "^5.0.0"
 octocrab = "^0.31.1"
 semver = "^0.11.0"
 
-#[profile.release]
-#debug = true
-
 [profile.release]
 lto = true
 opt-level = 3
