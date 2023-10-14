@@ -20,6 +20,7 @@ use rand::Rng;
 
 
 thread_local!(static LOG_STACK : std::cell::RefCell<usize> = std::cell::RefCell::new(0));
+
 #[macro_export]
 #[cfg(debug_assertions)]
 macro_rules! indent {

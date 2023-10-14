@@ -145,3 +145,87 @@ jobs:
           asset_name: raid_optimize-${{ github.ref_name }}-${{ matrix.triple.target }}.zip
           asset_content_type: application/zip
 
+
+  debug:
+    needs: [release,test]
+    if: contains(github.ref, 'tags/')
+    name:  ${{ matrix.triple.target }}
+    runs-on: ${{ matrix.triple.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        triple:
+          # Tier 1 platforms
+          - { os: 'ubuntu-latest',  target: 'x86_64-unknown-linux-gnu', cross: false }
+          # - { os: 'ubuntu-latest',  target: 'i686-unknown-linux-gnu',   cross: true }
+          - { os: 'macOS-latest',   target: 'x86_64-apple-darwin',      cross: false }
+          - { os: 'windows-latest', target: 'x86_64-pc-windows-msvc',   cross: false }
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          ssh-key: ${{ secrets.ACCESS_TOKEN }}
+          persist-credentials: true
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --all-features --target=${{ matrix.triple.target }}
+          use-cross: ${{ matrix.triple.cross }}
+      - name: Move binary to root
+        run: mv target/${{ matrix.triple.target }}/debug/raid_optimize* .
+      - name: zip it
+        if: matrix.triple.os != 'windows-latest'
+        run: zip ${{ matrix.triple.target }}.zip raid_optimize README.md -r data
+      - name: zip it
+        run: 7z a ${{ matrix.triple.target }}.zip raid_optimize.exe README.md -r data
+        if: matrix.triple.os == 'windows-latest'
+      
+      - name: Load Release URL File from release job
+        uses: actions/download-artifact@v1
+        with:
+          name: release_url
+      - name: Get Release File Name & Upload URL
+        id: get_release_info
+        run: |
+          value=`cat release_url/release_url.txt`
+          echo ::set-output name=upload_url::$value
+        env:
+          TAG_REF_NAME: ${{ github.ref }}
+          REPOSITORY_NAME: ${{ github.repository }}
+        if: matrix.triple.os != 'windows-latest'
+      - name: Upload Release Asset
+        if: matrix.triple.os != 'windows-latest'
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: ./${{ matrix.triple.target }}.zip
+          asset_name: raid_optimize_debug-${{ github.ref_name }}-${{ matrix.triple.target }}.zip
+          asset_content_type: application/zip
+
+      - name: Get Release File Name & Upload URL
+        id: get_release_info_windows
+        run: |
+          $value = Get-Content release_url/release_url.txt
+          Write-Host "::set-output name=upload_url::$value"
+        env:
+          TAG_REF_NAME: ${{ github.ref }}
+          REPOSITORY_NAME: ${{ github.repository }}
+        if: matrix.triple.os == 'windows-latest'
+      - name: Upload Release Asset
+        if: matrix.triple.os == 'windows-latest'
+        id: upload-release-asset_windows 
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release_info_windows.outputs.upload_url }}
+          asset_path: ./${{ matrix.triple.target }}.zip
+          asset_name: raid_optimize_debug-${{ github.ref_name }}-${{ matrix.triple.target }}.zip
+          asset_content_type: application/zip
+
