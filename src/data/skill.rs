@@ -1,4 +1,4 @@
-use std::fmt;
+
 use strum_macros::EnumIter;
 
 use crate::wave::heroes::alahan::detach::Detach;
@@ -231,7 +231,7 @@ macro_rules! gen_match {
         pub fn get_type(skill :&Skill)-> SkillType {
             match skill {
                 Skill::None => SkillType::None,
-                Skill::Generic (Generic{ cooldown, ..}) => return SkillType::Active,
+                Skill::Generic (Generic{ cooldown: _, ..}) => return SkillType::Active,
                 $(Skill::$Passive => {return SkillType::Passive})*
                 //$(Skill::$Passive_extra {..} => {return SkillType::Passive})*
                 $(Skill::$Special ($Special {..}) => return $Special::TYPE,)*
@@ -403,7 +403,7 @@ mod tests {
                 hp_burning_turns: 2
             });
 
-        let xml = to_string(&skill).unwrap();
+        let _xml = to_string(&skill).unwrap();
         //panic!("{}",xml);
     }
 

@@ -1,4 +1,4 @@
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
+use crate::wave::heroes::{Cooldown};
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
@@ -23,7 +23,7 @@ impl Default for CrystalOfLife{
 impl CrystalOfLife{
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT : Select = Select::AllEnemies;
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, _defender:InstanceIndex, ) {
         let rest_hp = wave.get_max_health(actor)  * self.max_hp_restore_ratio ;
         wave.restore_ally_team(actor,rest_hp);
         wave.inflict_ally_team(actor, Effect::RippleII, 1.0, self.ripple_turns);

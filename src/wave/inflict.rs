@@ -28,10 +28,12 @@ impl Wave<'_> {
             self.add_stat(actor, effect_to_stat(effect) , turns as f32);
             self.effects[target].push(effect, turns, actor);
             self.on_inflicted_margarita( target, effect);
-            if actor == target && self.get_faction(actor) == Faction::DoomLegion {
-                if is_buff(effect) && self.bonds_counter[actor] < 5 {
-                    self.bonds_counter[actor] += 1;
-                }
+            if actor == target && 
+               self.get_faction(actor) == Faction::DoomLegion && 
+               is_buff(effect) && 
+               self.bonds_counter[actor] < 5 
+            {
+                self.bonds_counter[actor] += 1;
             }
             true
         });

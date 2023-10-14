@@ -102,7 +102,7 @@ impl Sim {
                     //bar.inc(1000);
                 }
             }
-            ()
+            //()
         }).collect::<Vec<_>>();
 
         //results.iter().fold(CombinedResult::new(&Vec::new()), |mut acc, x| {

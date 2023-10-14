@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex, heroes::{PassiveSkill, Cooldown, Selector, Typed, Execute, Skilled}, }, data::{skill::{Skill, SkillType, Select, get_cooldown}, effect::{Effect}, }, };
+use crate::{wave::{heroes::{Cooldown, Selector, Typed, Execute, Skilled}, }, data::{skill::{SkillType, Select}, effect::{Effect}, }, };
 
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
@@ -27,7 +27,7 @@ impl Typed for SoulSurge {
     const TYPE : SkillType  = SkillType::Active; 
 }
 impl Execute for SoulSurge {
-    fn execute(&self, wave : &mut crate::wave::Wave<'_>, skill : &crate::data::skill::Skill, actor : crate::wave::InstanceIndex, target : crate::wave::InstanceIndex) {
+    fn execute(&self, wave : &mut crate::wave::Wave<'_>, _skill : &crate::data::skill::Skill, actor : crate::wave::InstanceIndex, _target : crate::wave::InstanceIndex) {
                 wave.inflict_enemy_team(actor, Effect::ToxicSwamp, 1.0, self.toxic_swamp_turns);
                 wave.inflict_ally_team(actor, Effect::SpeedUpII, 1.0, self.speed_up_turns);
     }

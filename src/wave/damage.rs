@@ -3,7 +3,7 @@ use rand::Rng;
 
 use crate::{debug, wave::{stat::Stat, heroes::marville::fish_guardian::FishGuardian}, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack,  }, effect::Effect, subskill::Trigger}};
 
-use super::{Wave, InstanceIndex, heroes::{hazier::bloodlust_strike::BloodlustStrike, BasicAttack}};
+use super::{Wave, InstanceIndex, heroes::{hazier::bloodlust_strike::BloodlustStrike}};
 
 impl Wave<'_> {
     pub fn attack_enemy_team(&mut self, actor : InstanceIndex, damage : f32,skill:&Skill) {
@@ -42,11 +42,11 @@ impl Wave<'_> {
                     self.add_stat(actor,Stat::LostToTenacity, attack  * tenacity );
                     attack = attack * crit_rate;
                     debug!("{} critical attacks {} ({}%={}%-{}%)", self.name(actor),self.name(target),crit_rate*100.,crit*100.,tenacity*100.);
-                    if self.get_faction(actor) == Faction::NamelessBrotherhood {
-                        if rng.gen::<f32>() < 0.5 {
-                            p += self.get_bond(actor,Faction::NamelessBrotherhood);
-                            debug!("{} has {} bond with NamelessBrotherhood -> piercing + {}", self.name(actor), self.get_bond(actor,Faction::NamelessBrotherhood), self.get_bond(actor,Faction::NamelessBrotherhood));
-                        }
+                    if self.get_faction(actor) == Faction::NamelessBrotherhood &&
+                       rng.gen::<f32>() < 0.5 
+                    {
+                        p += self.get_bond(actor,Faction::NamelessBrotherhood);
+                        debug!("{} has {} bond with NamelessBrotherhood -> piercing + {}", self.name(actor), self.get_bond(actor,Faction::NamelessBrotherhood), self.get_bond(actor,Faction::NamelessBrotherhood));
                     }
                     self.on_critical_strike_tifya(actor,skill);
                 }
@@ -164,26 +164,26 @@ impl Wave<'_> {
                 damage = damage *r;
                 debug!("{} has {}*{} DoomLegion buffs -> damage * {}", self.name(target), n,xfact, r);
             }
-            if self.get_faction(actor) == Faction::EternalSect {
-                if self.has_debuff(target) {
-                    let xfact = self.get_bond(actor,Faction::EternalSect);
-                    damage = damage * xfact;
-                    debug!("{} has {} bond with EternalSect and {} has debuff -> damage * {}", self.name(actor), xfact, self.name(target), xfact);
-                }
+            if self.get_faction(actor) == Faction::EternalSect && 
+               self.has_debuff(target) 
+            {
+                let xfact = self.get_bond(actor,Faction::EternalSect);
+                damage = damage * xfact;
+                debug!("{} has {} bond with EternalSect and {} has debuff -> damage * {}", self.name(actor), xfact, self.name(target), xfact);
             }
-            if self.get_faction(actor) == Faction::SwordHarborGuards {
-                if self.health[actor] > 0.5 * self.get_max_health(actor) {
-                    let xfact = 1.0 + self.get_bond(actor,Faction::SwordHarborGuards);
-                    damage = damage * xfact;
-                    debug!("{} has {} bond with SwordHarborGuards and health > 50% -> damage * {}", self.name(actor), xfact, xfact);
-                }
+            if self.get_faction(actor) == Faction::SwordHarborGuards  &&
+               self.health[actor] > 0.5 * self.get_max_health(actor) 
+            {
+                let xfact = 1.0 + self.get_bond(actor,Faction::SwordHarborGuards);
+                damage = damage * xfact;
+                debug!("{} has {} bond with SwordHarborGuards and health > 50% -> damage * {}", self.name(actor), xfact, xfact);
             }
-            if self.get_faction(target) == Faction::SwordHarborGuards {
-                if self.health[target] < 0.5 * self.get_max_health(target) {
-                    let xfact = 1.0 - self.get_bond(target,Faction::SwordHarborGuards);
-                    damage = damage * xfact;
-                    debug!("{} has {} bond with SwordHarborGuards and health < 50% -> damage * {}", self.name(target), xfact, xfact);
-                }
+            if self.get_faction(target) == Faction::SwordHarborGuards &&
+               self.health[target] < 0.5 * self.get_max_health(target) 
+            {
+                let xfact = 1.0 - self.get_bond(target,Faction::SwordHarborGuards);
+                damage = damage * xfact;
+                debug!("{} has {} bond with SwordHarborGuards and health < 50% -> damage * {}", self.name(target), xfact, xfact);
             }
             for p in &self.heroes[actor].skills {
                 match p {

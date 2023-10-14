@@ -25,7 +25,7 @@ impl Default for Bondage {
 }
 
 impl Execute for Bondage {
-    fn execute(&self, wave : &mut Wave,  skill : &Skill, attacker:InstanceIndex, defender:InstanceIndex, ) {
+    fn execute(&self, wave : &mut Wave,  skill : &Skill, attacker:InstanceIndex, _defender:InstanceIndex, ) {
        let actor = attacker;
        wave.attack_enemy_team(attacker, wave.get_attack_damage(attacker)  *self.attack_damage_ratio  , skill);
        wave.inflict_enemy_team(actor, Effect::DeepPoison, self.deep_poison_chance, self.deep_poison_turns);

@@ -1,5 +1,5 @@
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
-use crate::{wave::{Wave, InstanceIndex, heroes::{PassiveSkill }}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
+use crate::wave::heroes::{Cooldown};
+use crate::{wave::{heroes::{PassiveSkill }}, };
 
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct SoulRing {

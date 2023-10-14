@@ -59,7 +59,7 @@ impl<'a> Instance<'a> {
 impl Instance<'_> {
     pub fn new(hero: &Hero, id:u32,ii:InstanceIndex,ti:TeamIndex) -> Instance {
         Instance {
-            hero: hero,
+            hero,
             id,
             index:ii,
             team:ti,

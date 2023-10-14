@@ -121,7 +121,7 @@ impl Wave<'_> {
             track_statistics,
             team_acted,
             team_bonds : bonds,
-            bonds_counter : bonds_counter,
+            bonds_counter,
         };
         w.set_bonds();
         w
@@ -290,8 +290,8 @@ impl Wave<'_> {
                     panic!("Inconsistent result win: {}, loss: {}, stall: {}", win,loss,stall);
                 }
                 return Result {
-                    win: win,
-                    loss: loss,
+                    win,
+                    loss ,
                     stall: self.turns >= self.turn_limit,
                     statistics: self.get_statistics(),
                 }

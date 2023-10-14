@@ -1,5 +1,5 @@
 
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
+use crate::wave::heroes::{Cooldown};
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
@@ -24,7 +24,7 @@ impl Default for DeepSeaPower{
 impl DeepSeaPower{
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT : Select = Select::AllEnemies;
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, _defender:InstanceIndex, ) {
         let max_hp = wave.get_max_health(actor);
         wave.shield_ally_team(actor,self.max_hp_shield_ratio * max_hp  ,self.shield_turns);
         wave.inflict_ally_team(actor, Effect::TenacityUpII, 1.0, self.tenacity_increase_turns);

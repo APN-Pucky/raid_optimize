@@ -19,7 +19,7 @@ impl Default for LeavesStorm {
 }
 
 impl Execute for LeavesStorm {
-    fn execute(&self, wave : &mut Wave,  skill : &Skill, attacker:InstanceIndex, defender:InstanceIndex, ) {
+    fn execute(&self, wave : &mut Wave,  skill : &Skill, attacker:InstanceIndex, _defender:InstanceIndex, ) {
        wave.attack_enemy_team(attacker,   wave.get_attack_damage(attacker)  *self.attack_damage_ratio * (1. + 0.02 *wave.effects[attacker].get(Effect::ScarletSakura) as f32) , skill);
     }
 }

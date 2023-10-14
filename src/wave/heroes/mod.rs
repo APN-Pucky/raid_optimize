@@ -46,7 +46,7 @@ pub trait PassiveSkill {
     const TYPE : SkillType = SkillType::Passive;
     const SELECT : Select = Select::None;
 
-    fn execute(&self, wave : &mut crate::wave::Wave<'_>, skill : &crate::data::skill::Skill, actor : crate::wave::InstanceIndex, target : crate::wave::InstanceIndex) {
+    fn execute(&self, _wave : &mut crate::wave::Wave<'_>, _skill : &crate::data::skill::Skill, _actor : crate::wave::InstanceIndex, _target : crate::wave::InstanceIndex) {
         panic!("Passive skill should not be executed");
     }
 }
@@ -75,14 +75,14 @@ impl BasicAttack {
 
 #[cfg(test)]
 pub mod tests {
-use rand::seq::SliceRandom;
+
 use tokio::sync::mpsc;
 
 use crate::{data::load_heroes, sim::{results::CombinedResult, args::Args, Sim}};
 
 // constant
 pub fn test_1_vs_1(name: &str) {
-    let mut rng = rand::thread_rng();
+    let _rng = rand::thread_rng();
     let heroes = load_heroes("data/heroes.xml".to_string());
     let liz = heroes.heroes.iter().find(|h| h.name == name).unwrap();
     let mut args = Args::default();
@@ -91,12 +91,12 @@ pub fn test_1_vs_1(name: &str) {
     args.allies = vec![liz.clone()];
     args.enemies =  vec![liz.clone()];
     let sim = Sim::new(args.clone());
-    let (tx, mut rx) = mpsc::unbounded_channel::<CombinedResult>();
+    let (tx, _rx) = mpsc::unbounded_channel::<CombinedResult>();
     sim.run(tx);
 }
 
 pub fn test_5_vs_5(name: &str) {
-    let mut rng = rand::thread_rng();
+    let _rng = rand::thread_rng();
     let heroes = load_heroes("data/heroes.xml".to_string());
     let liz = heroes.heroes.iter().find(|h| h.name == name).unwrap();
     let mut args = Args::default();
@@ -105,7 +105,7 @@ pub fn test_5_vs_5(name: &str) {
     args.allies = vec![liz.clone(),liz.clone(),liz.clone(),liz.clone(),liz.clone()];
     args.enemies =  vec![liz.clone(),liz.clone(),liz.clone(),liz.clone(),liz.clone()];
     let sim = Sim::new(args.clone());
-    let (tx, mut rx) = mpsc::unbounded_channel::<CombinedResult>();
+    let (tx, _rx) = mpsc::unbounded_channel::<CombinedResult>();
     sim.run(tx);
 }
 }

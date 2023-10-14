@@ -87,7 +87,7 @@ impl fmt::Display for Hero {
 #[cfg(test)]
 mod tests {
     use crate::wave::heroes::natalie::bloodthristy_desire::BloodthirstyDesire;
-    use itertools::assert_equal;
+    
     use quick_xml::{se::to_string, de::from_str};
 
     use super::*;
@@ -127,7 +127,7 @@ mod tests {
         //    Err(e) => println!("Error: {}", e),
         //};
         //let xml = String::from_utf8(buffer).unwrap();
-        let xml = to_string(&hero).unwrap();
+        let _xml = to_string(&hero).unwrap();
         //panic!("{}", xml);
         /* 
         assert_eq!(xml,            r#"

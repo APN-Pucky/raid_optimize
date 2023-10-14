@@ -1,7 +1,7 @@
 
 use crate::data::effect::{is_dot, is_attribute_debuff};
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
-use crate::{wave::{Wave, InstanceIndex, heroes::{PassiveSkill }}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
+use crate::wave::heroes::{Cooldown};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
 
 #[derive(Cooldown,Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct CleanOcean {
@@ -29,7 +29,7 @@ impl CleanOcean {
     pub const SELECT : Select = Select::AllAllies;
 
 
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, _target:InstanceIndex, ) {
         wave.restore_max_hp_ratio_own_team(actor,self.restore_max_hp_ratio);
         wave.cleanse_team(actor, &is_dot, self.cleanse_dot_layers);
         wave.cleanse_team(actor, &is_attribute_debuff, 999);

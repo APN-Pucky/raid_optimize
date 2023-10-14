@@ -1,7 +1,7 @@
 
 
 use crate::wave::heroes::Cooldown;
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect, is_dot}, }, };
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{is_dot}, }, };
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct Resurrection {
@@ -27,7 +27,7 @@ impl Default for Resurrection {
 impl Resurrection {
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT : Select = Select::AllAllies;
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, _target:InstanceIndex, ) {
         let max_hp = wave.get_max_health(actor);
         wave.restore_max_hp_ratio_own_team(actor,self.restore_max_hp_ratio);
         wave.shield_ally_team(actor,self.shield_max_hp_ratio * max_hp  ,self.shield_turns);

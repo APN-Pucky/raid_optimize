@@ -1,4 +1,4 @@
-use crate::{data::{skill::{Skill, get_cooldown, is_basic_attack, is_passive, is_reducable, Generic, self}, faction::Faction, effect::Effect, subskill::{self, Trigger}}, indent, debug};
+use crate::{data::{skill::{Skill, get_cooldown, is_basic_attack, is_passive, is_reducable, Generic}, faction::Faction, effect::Effect}, indent, debug};
 
 use super::{InstanceIndex, Wave, stat::Stat};
 

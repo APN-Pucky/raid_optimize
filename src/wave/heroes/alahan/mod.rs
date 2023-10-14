@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect, is_attribute_debuff}}};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect}}};
 
 use self::{spirit_call::SpiritCall, commendation::Commendation};
 

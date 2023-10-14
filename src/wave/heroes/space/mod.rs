@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::Effect, }, debug, };
+use crate::{wave::{Wave}, data::{skill::{Skill}, }, debug, };
 
 use self::resplendence::Resplendence;
 

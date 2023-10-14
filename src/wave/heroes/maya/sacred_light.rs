@@ -1,5 +1,5 @@
-use crate::data::effect::is_dot;
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
+
+use crate::wave::heroes::{Cooldown};
 use crate::{wave::{Wave, InstanceIndex,  }, data::{skill::{Skill, Select, SkillType}, effect::{Effect}, }, };
 
 
@@ -32,7 +32,7 @@ impl SacredLight {
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT : Select = Select::AllAllies;
 
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, _target:InstanceIndex, ) {
                 wave.loose_health(actor, self.loose_hp_ratio * wave.get_max_health(actor));
                 // 1st
                 for t in wave.get_ally_indices(actor) {

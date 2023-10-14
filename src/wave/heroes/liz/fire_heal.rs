@@ -26,7 +26,7 @@ impl FireHeal{
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT : Select = Select::SingleAlly;
 
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
         let heal = wave.get_attack_damage(actor)*self.heal_attack_ratio ;
         let max_hp_heal = wave.get_max_health(actor)*self.heal_max_hp_ratio ;
         wave.restore(actor,target, heal + max_hp_heal);

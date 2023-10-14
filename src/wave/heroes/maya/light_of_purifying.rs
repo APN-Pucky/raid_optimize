@@ -1,5 +1,5 @@
 use crate::data::effect::is_dot;
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
+use crate::wave::heroes::{Cooldown};
 use crate::{wave::{Wave, InstanceIndex,  }, data::{skill::{Skill, Select, SkillType}, effect::{Effect}, }, };
 
 use rand::seq::SliceRandom;
@@ -29,7 +29,7 @@ impl LightOfPurifying {
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT : Select = Select::AllAllies;
 
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
                 let t =  target;
                 if wave.health[t] == wave.get_max_health(t) {
                     wave.cleanse(target, &is_dot, self.cleanse_dot_layers);

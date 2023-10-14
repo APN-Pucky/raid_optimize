@@ -1,6 +1,6 @@
 
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
-use crate::{wave::{Wave, InstanceIndex, heroes::{PassiveSkill }}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
+use crate::wave::heroes::{Cooldown};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
 
 #[derive(Cooldown,Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct FishDive {
@@ -20,7 +20,7 @@ impl FishDive {
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT: Select= Select::AllAllies;
 
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, _target:InstanceIndex, ) {
                 wave.restore_to_highest_ally_health_percentage(actor);
                 for i in wave.get_ally_indices(actor) {
                     if wave.has_effect(i, Effect::FishShoal) {

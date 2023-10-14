@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect, is_dot}}};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect}}};
 
 use self::force_of_mercy::ForceOfMercy;
 
@@ -20,7 +20,7 @@ impl Wave<'_> {
     }
 
     pub fn on_fatal_damage_maya(&mut self, actor:InstanceIndex) {
-        if let [  Skill::ForceOfMercy(s) , ..] = self.heroes[actor].skills[..] {
+        if let [  Skill::ForceOfMercy(_s) , ..] = self.heroes[actor].skills[..] {
             // Only once per wave
             if !self.has_effect(actor, Effect::ForceOfMercy) {
                 self.restore_single(actor, actor, self.get_max_health(actor));

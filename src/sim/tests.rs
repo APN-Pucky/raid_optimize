@@ -16,7 +16,7 @@ fn test_run() {
         args.allies = heroes.heroes.choose_multiple(&mut rng,5).cloned().collect();
         args.enemies = heroes.heroes.choose_multiple(&mut rng,5).cloned().collect();
         let sim = super::Sim::new(args.clone());
-        let (tx, mut rx) = mpsc::unbounded_channel::<CombinedResult>();
+        let (tx, _rx) = mpsc::unbounded_channel::<CombinedResult>();
         sim.run(tx);
     }
 }

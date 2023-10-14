@@ -1,5 +1,5 @@
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, Select, SkillType}, effect::{Effect, is_attribute_debuff}, }, };
+use crate::wave::heroes::{Cooldown};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, Select, SkillType}, }, };
 
 #[derive(Cooldown,Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct SpiritCall{
@@ -28,7 +28,7 @@ impl SpiritCall{
     pub const TYPE : SkillType = SkillType::Basic;
     pub const SELECT : Select = Select::SingleEnemy;
 
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
                 let n = wave.get_number_of_buff_layers(target).min(5);
                 if self.remove_all_buffs {
                     wave.remove_all_buffs_single(actor, target);

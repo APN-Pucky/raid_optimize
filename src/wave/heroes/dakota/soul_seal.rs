@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex, heroes::{PassiveSkill, Cooldown, Selector, Typed, Execute, Skilled}, }, data::{skill::{Skill, SkillType, Select, get_cooldown}, effect::{Effect}, }, };
+use crate::{wave::{heroes::{Cooldown, Selector, Typed, Execute, Skilled}, }, data::{skill::{SkillType, Select}, effect::{Effect}, }, };
 
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]

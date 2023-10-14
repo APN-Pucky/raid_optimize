@@ -26,7 +26,7 @@ impl BloodthirstyScythe{
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT : Select = Select::AllEnemies;
 
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, _defender:InstanceIndex, ) {
         let damage = wave.get_attack_damage(actor) * self.attack_damage_ratio;
         wave.attack_enemy_team(actor, damage ,skill);
         wave.inflict_enemy_team(actor, Effect::Bleed, self.bleed_chance, self.bleed_turns);

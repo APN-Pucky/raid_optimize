@@ -17,7 +17,7 @@ impl Default for DivinePrayer{
 }
 
 impl Execute for DivinePrayer{
-    fn execute(&self, wave : &mut Wave,  skill : &Skill, attacker:InstanceIndex, defender:InstanceIndex, ) {
+    fn execute(&self, wave : &mut Wave,  _skill : &Skill, attacker:InstanceIndex, _defender:InstanceIndex, ) {
         for h in wave.get_ally_indices(attacker) {
             wave.increase_turn_meter_ratio(attacker, h, 1.0);
             wave.reset_all_skills(attacker,h);

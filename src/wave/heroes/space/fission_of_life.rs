@@ -1,4 +1,4 @@
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
+use crate::wave::heroes::{Cooldown};
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect}, }, };
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
@@ -23,7 +23,7 @@ impl Default for FissionOfLife{
 impl FissionOfLife{
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT : Select = Select::AllEnemies;
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, _defender:InstanceIndex, ) {
        wave.restore_max_hp_ratio_own_team(actor, self.restore_max_hp_ratio);
        wave.inflict_ally_team(actor, Effect::Heal,1.0, self.heal_turns);
        wave.increase_turn_meter_team(actor, self.increase_turn_meter_ratio);

@@ -160,7 +160,7 @@ mod tests {
             trigger : Trigger::None
         };
 
-        let xml = to_string(&ss).unwrap();
+        let _xml = to_string(&ss).unwrap();
         //panic!("{}",xml);
     }
 

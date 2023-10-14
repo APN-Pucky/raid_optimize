@@ -1,4 +1,4 @@
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
+use crate::wave::heroes::{Cooldown};
 use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, Select, SkillType}, effect::{Effect, is_attribute_debuff}, }, };
 
 #[derive(Cooldown, Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
@@ -22,7 +22,7 @@ impl SpiritFountain{
     pub const TYPE : SkillType = SkillType::Active;
     pub const SELECT : Select = Select::AllAllies;
 
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, defender:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  _skill : &Skill, actor:InstanceIndex, _defender:InstanceIndex, ) {
                 wave.restore_to_highest_ally_health_percentage(actor);
                 if self.cleanse_attribute_debuffs {
                     wave.cleanse_team(actor, &is_attribute_debuff, 999)

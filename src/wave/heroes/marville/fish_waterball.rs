@@ -1,7 +1,7 @@
 use crate::data::effect::is_attribute_debuff;
 use crate::roll;
-use crate::wave::heroes::{Cooldown, Skilled, Typed, Selector, Execute};
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, effect::{Effect, is_buff}, }, debug, indent, };
+use crate::wave::heroes::{Cooldown};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill, SkillType, Select}, }, };
 
 #[derive(Cooldown,Debug, PartialEq, Deserialize, Serialize, Clone,Copy )]
 pub struct FishWaterball {
@@ -24,7 +24,7 @@ impl FishWaterball {
     pub const TYPE : SkillType = SkillType::Basic;
     pub const SELECT: Select= Select::SingleEnemy;
 
-    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
+    pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, _target:InstanceIndex, ) {
         let damage = wave.get_attack_damage(actor) * self.attack_damage_ratio;
         wave.attack_enemy_team(actor, damage ,skill);
         wave.refresh_enemy_team(actor, &is_attribute_debuff);
