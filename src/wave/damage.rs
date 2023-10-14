@@ -106,6 +106,16 @@ impl Wave<'_> {
                 return;
             }
             let mut damage = damage;
+            if self.has_effect(actor, Effect::FeeblenessI) {
+                let xfact = 1.2;
+                damage = damage * xfact;
+                debug!("{} has FeeblenessI -> damage * {}", self.name(target), xfact);
+            }
+            if self.has_effect(actor, Effect::FeeblenessII) {
+                let xfact = 1.4;
+                damage = damage * xfact;
+                debug!("{} has FeeblenessII -> damage * {}", self.name(target), xfact);
+            }
             if self.has_effect(target, Effect::ConsolidationI) {
                     let xfact = 0.80;
                     damage = damage * xfact;
@@ -223,8 +233,8 @@ impl Wave<'_> {
         if reflect {
             self.reflect_damage(target,actor,dmg * self.get_damage_reflect(target));
         }
-        if self.has_effect(target,Effect::CounterAttack) && skill != &Skill::CounterAttack {
-            self.attack_single(target,actor,self.get_attack_damage(target), &Skill::CounterAttack);
+        if self.has_effect(target,Effect::Counterattack) && skill != &Skill::Counterattack {
+            self.attack_single(target,actor,self.get_attack_damage(target), &Skill::Counterattack);
         }
     }
 

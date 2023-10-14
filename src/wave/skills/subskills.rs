@@ -1,11 +1,29 @@
-use crate::{data::{skill::{Skill}, effect::Effect, subskill::{Scale, SubSkill, Target, Type}}};
+use crate::{data::{skill::{Skill, Generic}, effect::Effect, subskill::{Scale, SubSkill, Target, Type, Trigger}}};
 
 use super::{InstanceIndex, Wave};
 
 
 
+
+
 impl Wave<'_> {
-    pub fn execute_subskill(&mut self,subskill : &SubSkill, actor :InstanceIndex, target :InstanceIndex,  skill: &Skill) {
+
+    pub fn on_trigger(&mut self, actor : InstanceIndex, trigger : Trigger) {
+        for s in &self.heroes[actor].skills {
+            match s {
+                Skill::Generic(Generic{subskills , ..}) => {
+                    for ss in subskills {
+                        if ss.trigger ==  trigger {
+                            self.execute_subskill(&ss, actor, None,s);
+                        }
+                    }
+                }
+                _ => { }
+            }
+        }
+    }
+
+    pub fn execute_subskill(&mut self,subskill : &SubSkill, actor :InstanceIndex, target :Option<InstanceIndex>,  skill: &Skill) {
         let wave = self;
         let mut val= 0.0;
         let mut targets : Vec<InstanceIndex> = vec![];
@@ -20,7 +38,7 @@ impl Wave<'_> {
                 val= wave.get_max_health(actor) * subskill.ratio;
             },
             Scale::TargetMaxHealth => {
-                val= wave.get_max_health(target) * subskill.ratio;
+                val= wave.get_max_health(target.expect("TargetMaxHealth needs a target")) * subskill.ratio;
             },
             Scale::None => {},
         }
@@ -38,10 +56,10 @@ impl Wave<'_> {
                 targets = wave.get_indices();
             },
             Target::SingleAlly => {
-                targets  = vec![target];
+                targets  = vec![target.expect("SingleAlly needs a target")];
             },
             Target::SingleEnemy => {
-                targets  = vec![target];
+                targets  = vec![target.expect("SingleEnemy needs a target")];
             },
             Target::AllEnemies => {
                 targets = wave.get_enemies_indices(actor);
@@ -65,6 +83,11 @@ impl Wave<'_> {
                     wave.attack_single(actor,target,val,skill);
                 }
             },
+            Type::Shield => {
+                for target in targets {
+                    wave.shield_single(actor,target,val,turns);
+                }
+            }
             Type::Restore => {
                 for target in targets {
                     wave.restore_single(actor,target,val);

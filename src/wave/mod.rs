@@ -261,7 +261,7 @@ impl Wave<'_> {
             let ally_alive = !self.get_ally_indices(0).iter().all(|&a| !self.is_alive(a));
             let win = ally_alive && !enemy_alive;
             let loss = !ally_alive && enemy_alive;
-            let mut stall = self.turns >= self.turn_limit || (!ally_alive && !enemy_alive ); // => both dead from eg. counterattack also stall
+            let mut stall = self.turns >= self.turn_limit || (!ally_alive && !enemy_alive ); // => both dead from eg. Counterattack also stall
             if win || loss || stall {
                 if win {
                     log::debug!("Win");

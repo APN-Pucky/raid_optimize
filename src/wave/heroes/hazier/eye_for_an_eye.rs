@@ -27,7 +27,7 @@ impl EyeForAnEye {
     pub const SELECT : Select = Select::AllEnemies;
 
     pub fn execute(&self, wave : &mut Wave,  skill : &Skill, actor:InstanceIndex, target:InstanceIndex, ) {
-        wave.inflict_single(actor,actor,Effect::CounterAttack,1.0,  self.counter_attack_turns);
+        wave.inflict_single(actor,actor,Effect::Counterattack,1.0,  self.counter_attack_turns);
         wave.inflict_single(actor,actor,Effect::DamageImmunity,1.0, self.damage_immunity_turns);
         wave.inflict_single(actor,actor,Effect::ControlImmunity,1.0,self.control_immunity_turns);
 

@@ -85,6 +85,13 @@ pub enum Type {
     Restore,
     Inflict,
     RemoveAllBuffs,
+    Shield
+}
+
+#[derive(EnumIter,strum_macros::Display,Deserialize, Serialize, Debug, Clone,Eq, PartialEq,Copy)]
+pub enum Trigger {
+    None,
+    BeginningOfEachTurn,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone, Copy, PartialEq)]
@@ -93,7 +100,7 @@ pub struct SubSkill {
     pub target : Target,
     #[serde(default="ratio_default", rename= "@ratio")]
     pub ratio : f32,
-    #[serde(rename="@type")]
+    #[serde(default="typ_default",rename="@type")]
     pub typ : Type,
     #[serde(default="scale_default",rename="@scale")]
     pub scale : Scale,
@@ -103,6 +110,8 @@ pub struct SubSkill {
     pub chance : f32,
     #[serde(default="turns_default",rename= "@turns")]
     pub turns : u32,
+    #[serde(default="trigger_default",rename= "@trigger")]
+    pub trigger: Trigger,
 }
 
 impl Default for SubSkill {
@@ -110,13 +119,22 @@ impl Default for SubSkill {
         Self {
             target : target_default(),
             ratio : ratio_default(),
-            typ : Type::Damage,
+            typ : typ_default(),
             scale : scale_default(),
             effect : effect_default(),
             chance : chance_default(),
             turns : turns_default(),
+            trigger : trigger_default(),
         }
     }
+}
+
+fn trigger_default() -> Trigger {
+    Trigger::None
+}
+
+fn typ_default() -> Type {
+    Type::Damage
 }
 
 fn target_default() -> Target {
@@ -158,6 +176,7 @@ mod tests {
             effect : Effect::WetI,
             chance : 0.0,
             turns : 0,
+            trigger : Trigger::None
         };
 
         let xml = to_string(&ss).unwrap();

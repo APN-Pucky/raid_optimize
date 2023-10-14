@@ -37,6 +37,8 @@ pub enum Effect {
     EffectResistanceDownI,
     EffectResistanceDownII,
 
+    FeeblenessI,
+    FeeblenessII,
 
     Heal,
     HPBurning,
@@ -75,7 +77,7 @@ pub enum Effect {
     //Buff
     BlockRemoval,
     Stealth,
-    CounterAttack,
+    Counterattack,
     DamageImmunity,
     ControlImmunity, // Needs implementation
     //AttributeBuff

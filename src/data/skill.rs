@@ -483,7 +483,7 @@ macro_rules! gen_match {
 
 gen_match!(         
         [
-        CounterAttack,
+        Counterattack,
         IncessantChatter,
         SharpInstinct
         ],
@@ -556,7 +556,7 @@ gen_match!(
 //    //    Skill::ScaletMultiStrike { cooldown, ..} => *cooldown,
 //    //    //Hazier
 //    //    Skill::DarknightStrike { cooldown,..} => *cooldown,
-//    //    Skill::EyeForAnEye { cooldown, basic_attack, counterattack_turns: counter_attack_turns, damage_immunity_turns, control_immunity_turns } => *cooldown,
+//    //    Skill::EyeForAnEye { cooldown, basic_attack, Counterattack_turns: counter_attack_turns, damage_immunity_turns, control_immunity_turns } => *cooldown,
 //    //    Skill::DarknightArbitrament { cooldown, ..} => *cooldown,
 //    //    //Geeliman
 //    //    Skill::BurstingKnowledge { cooldown, ..} => *cooldown,

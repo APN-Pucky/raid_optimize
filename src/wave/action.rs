@@ -1,4 +1,4 @@
-use crate::{debug, indent, data::{skill::{Skill, get_selection, get_select}, faction::Faction}};
+use crate::{debug, indent, data::{skill::{Skill, get_selection, get_select}, faction::Faction, subskill::Trigger}};
 
 use super::{InstanceIndex, Wave};
 
@@ -15,6 +15,7 @@ impl Wave<'_> {
         //    };
         debug!("before {} acts", self.name(actor));
         indent!({
+            self.on_trigger(actor,Trigger::BeginningOfEachTurn);
             self.on_turn_start_marville(actor);
             // apply effects 
             // apply heal

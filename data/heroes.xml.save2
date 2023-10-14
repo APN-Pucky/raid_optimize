@@ -308,7 +308,7 @@
             <type>Active</type>
             
             <EyeForAnEye>
-                <counterattack_turns>3</counterattack_turns>
+                <Counterattack_turns>3</Counterattack_turns>
                 <damage_immunity_turns>2</damage_immunity_turns>
                 <control_immunity_turns>2</control_immunity_turns>
             </EyeForAnEye>

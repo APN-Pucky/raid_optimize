@@ -1,4 +1,4 @@
-use crate::{data::{skill::{Skill, get_cooldown, is_basic_attack, is_passive, is_reducable, Generic}, faction::Faction, effect::Effect}, indent, debug};
+use crate::{data::{skill::{Skill, get_cooldown, is_basic_attack, is_passive, is_reducable, Generic}, faction::Faction, effect::Effect, subskill::{self, Trigger}}, indent, debug};
 
 use super::{InstanceIndex, Wave};
 
@@ -89,11 +89,15 @@ impl Wave<'_> {
         match skill {
             Skill::Generic(Generic{ subskills ,..}) => {
                 for ss in subskills {
-                    self.execute_subskill(&ss, actor, target,skill);
+                    self.execute_subskill(&ss, actor, Some(target),skill);
                 }
             },
             _ => {}
         }
+    }
+
+    pub fn on_turn_start_generic(&mut self, actor : InstanceIndex) {
+
     }
 
 

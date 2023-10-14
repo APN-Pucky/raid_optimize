@@ -781,4 +781,89 @@
             </SacredLight>
         
     </hero>
+    <hero>
+        <id>12</id>
+        <name>Katherine</name>
+        <mark>
+            Red
+        </mark>
+        <class>
+            Support
+        </class>
+        <faction>
+            SwordHarborGuards
+        </faction>
+        <rarity>
+            Legendary
+        </rarity>
+        <health>41849</health>
+        <attack>3974</attack>
+        <defense>4114</defense>
+        <speed>980</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        
+
+            <Generic>
+            <cooldown>0</cooldown>
+            <type>
+                Basic
+            </type>
+            <select>
+                SingleEnemy
+            </select>
+                <name>Vanguard</name>
+                <subskill target="SingleEnemy" ratio="1.0" type="Damage" scale="AttackDamage" effect="FeeblenessII" chance="1.0" turns="2"/>
+                <subskill target="SingleEnemy" ratio="1.0" type="Damage" scale="AttackDamage" effect="FeeblenessII" chance="1.0" turns="2"/>
+            </Generic>
+        
+        
+
+            <Generic>
+            <cooldown>4</cooldown>
+            <type>
+                Active
+            </type>
+            <select>
+                AllAllies
+            </select>
+                <name>Solid Guardian</name>
+                <subskill target="AllAllies" ratio="0.0" type="Damage" scale="AttackDamage" effect="ConsolidationII" chance="1.0" turns="2"/>
+            </Generic>
+
+
+            <Generic>
+            <cooldown>0</cooldown>
+            <type>
+                Passive
+            </type>
+            <select>
+                AllAllies
+            </select>
+                <name>BurstOfEnergy</name>
+                <subskill trigger="BeginningOfEachTurn" target="AllAllies" ratio="0.08" type="Restore" scale="MaxHealth" effect="None" chance="0.0" turns="0"/>
+            </Generic>
+        
+        
+            <Generic>
+            <cooldown>4</cooldown>
+            <type>
+                Active
+            </type>
+            <select>
+                AllAllies
+            </select>
+                <name>High-spirited</name>
+                <subskill target="AllAllies" ratio="0.4" type="Shield" scale="TargetMaxHealth" effect="Counterattack" chance="1.0" turns="2"/>
+            </Generic>
+        
+    </hero>
 </heroes>
