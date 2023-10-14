@@ -1,4 +1,4 @@
-use crate::{indent, info};
+use crate::{indent, info, debug};
 
 use super::{Wave, InstanceIndex};
 
@@ -23,14 +23,14 @@ impl Wave<'_> {
         format!("{}-{}", self.heroes[actor].name, actor)
     }
 
-    pub fn log_info(&self) {
-        info!("Turn: {}", self.turns); 
+    pub fn log_debug(&self) {
+        debug!("Turn: {}", self.turns); 
         indent!({
             for p in self.players.iter() {
-                info!("{}", p.get_name());
+                debug!("{}", p.get_name());
                 indent!({
                     for a in self.get_team_indices(p.get_team()) {
-                        info!("{}", self.fmt(a));
+                        debug!("{}", self.fmt(a));
                     }
                 })
             }

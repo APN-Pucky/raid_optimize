@@ -25,7 +25,7 @@ pub fn run(input : Input) {
         let hero = get_hero_by_string(&heroes, name);
         match hero {
             Some(h) => {
-                info!("Ally: {}", h);
+                debug!("Ally: {}", h);
                 ally.push(h);
             },
             None => {
@@ -37,7 +37,7 @@ pub fn run(input : Input) {
         let hero = get_hero_by_string(&heroes, name);
         match hero {
             Some(h) => {
-                info!("Enemy: {}", h);
+                debug!("Enemy: {}", h);
                 enemy.push(h);
             },
             None => {

@@ -245,7 +245,7 @@ impl Wave<'_> {
     pub fn run(& mut self) -> Result {
         self.begin();
         loop {
-            self.log_info();
+            self.log_debug();
             self.progress_all_turn_meters();
             
             if let Some(ir) = self.find_actor_index() {
@@ -264,13 +264,13 @@ impl Wave<'_> {
             let mut stall = self.turns >= self.turn_limit || (!ally_alive && !enemy_alive ); // => both dead from eg. Counterattack also stall
             if win || loss || stall {
                 if win {
-                    log::debug!("Win");
+                    debug!("Win");
                 }
                 if loss {
-                    log::debug!("Loss");
+                    debug!("Loss");
                 }
                 if stall {
-                    log::debug!("Stall");
+                    debug!("Stall");
                 }
                 if win && stall || loss && stall {
                     // last turn victory excludes stall
