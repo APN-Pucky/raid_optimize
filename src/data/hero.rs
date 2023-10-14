@@ -45,7 +45,7 @@ impl Default for Hero {
             mark : Mark::Blue,
             class: Class::Attack,
             faction: Faction::DoomLegion,
-            rarity : Rarity::Legendary,
+            rarity : Rarity::Legend,
             health: 0.,
             attack: 0.,
             defense: 0.,
@@ -102,7 +102,7 @@ mod tests {
             mark : Mark::Blue,
             class: Class::Support,
             faction: Faction::WizardsEye,
-            rarity : Rarity::Legendary,
+            rarity : Rarity::Legend,
             health: 15000.,
             attack: 1000.,
             defense: 1000.,
@@ -162,7 +162,7 @@ mod tests {
             <hero>
                 <id>1</id>
                 <name>Elhain</name>
-                <rarity>Legendary</rarity>
+                <rarity>Legend</rarity>
                 <mark>Blue</mark>
                 <class>Support</class>
                 <faction>WizardsEye</faction>
@@ -190,7 +190,7 @@ mod tests {
                 <Generic>
                     <cooldown>3</cooldown>
                     <name>test</name>
-                    <subskill target="SingleEnemy" type="Damage" ratio="1.0" scale="AttackDamage" effect="WetI" chance="0.0" turns="0" />
+                    <subskill target="SingleEnemy" type="Damage" ratio="1.0" scale="Attack" effect="WetI" chance="0.0" turns="0" />
                 </Generic>
             </hero>
             "#)

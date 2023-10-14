@@ -17,6 +17,7 @@ pub mod dakota;
 pub mod maya;
 pub mod alahan;
 pub mod nita;
+pub mod phocas;
 
 pub trait Typed {
     const TYPE : SkillType;

@@ -1,7 +1,7 @@
 use enum_map::EnumMap;
 use rand::Rng;
 
-use crate::{debug, wave::{stat::Stat, heroes::marville::fish_guardian::FishGuardian}, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack,  }, effect::Effect}};
+use crate::{debug, wave::{stat::Stat, heroes::marville::fish_guardian::FishGuardian}, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack,  }, effect::Effect, subskill::Trigger}};
 
 use super::{Wave, InstanceIndex, heroes::{hazier::bloodlust_strike::BloodlustStrike, BasicAttack}};
 
@@ -94,8 +94,15 @@ impl Wave<'_> {
     pub fn loose_health(&mut self, actor:InstanceIndex, damage: f32) {
         if self.health[actor] < damage {
             self.add_stat(actor,Stat::HealthLost, self.health[actor]);
-            self.health[actor] = 0.0;
-            self.on_fatal_damage_maya(actor);
+            if self.has_effect(actor,Effect::Immortal) {
+                debug!("Immortal saves {}",self.name(actor));
+                self.health[actor] = 1.0;
+            }
+            else {
+                self.health[actor] = 0.0;
+                self.on_trigger_any(actor, Trigger::AnyDeath);
+                self.on_fatal_damage_maya(actor);
+            }
         }
         else {
             self.add_stat(actor,Stat::HealthLost, damage);

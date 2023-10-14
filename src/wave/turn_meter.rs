@@ -11,9 +11,17 @@ impl Wave<'_> {
         self.turn_meter[actor] = turn_meter;
     }
 
+    pub fn increase_turn_meter_ratio(&mut self, actor : InstanceIndex, target: InstanceIndex, turn_meter_ratio: f32) {
+        self.reduce_turn_meter(actor, target, turn_meter_ratio*self.turn_meter_threshold);
+    }
+
     pub fn increase_turn_meter(&mut self, actor : InstanceIndex, turn_meter: f32) {
         self.turn_meter[actor] = self.turn_meter_threshold.min( self.turn_meter[actor] + turn_meter);
         debug!("{} turn_meter increased by {} to {}", self.name(actor), turn_meter, self.turn_meter[actor]);
+    }
+
+    pub fn reduce_turn_meter_ratio(&mut self, actor : InstanceIndex, target: InstanceIndex, turn_meter_ratio: f32) {
+        self.reduce_turn_meter(actor, target, turn_meter_ratio*self.turn_meter_threshold);
     }
 
     pub fn reduce_turn_meter(&mut self, actor : InstanceIndex, target: InstanceIndex, turn_meter: f32) {

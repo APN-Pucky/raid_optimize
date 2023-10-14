@@ -15,7 +15,7 @@ impl Wave<'_> {
         //    };
         debug!("before {} acts", self.name(actor));
         indent!({
-            self.on_trigger(actor,Trigger::BeginningOfEachTurn);
+            self.on_trigger_self(actor,Trigger::BeginningOfEachTurn);
             self.on_turn_start_marville(actor);
             self.nita_convert_poison_to_heal(actor);
             // apply effects 

@@ -29,6 +29,10 @@ After downloading the executable from ![the release page](./release) extracting 
 
 ![image](./data/ui.png)
 
+## Debug
+
+You can use the debug executable preferably with `threads=1` and `iterations=1` to see what's happening in the simulation in the terminal.
+
 ## Unlock all features via SubscribeStar
 
 https://www.subscribestar.com/apn-pucky

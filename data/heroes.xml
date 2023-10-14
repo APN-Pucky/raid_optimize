@@ -13,7 +13,7 @@
             HiddenWave
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>61778</health>
         <attack>7430</attack>
@@ -68,7 +68,7 @@
             HiddenWave
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>95772</health>
         <attack>6566</attack>
@@ -184,7 +184,7 @@
             WizardsEye
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>95772</health>
         <attack>6566</attack>
@@ -247,7 +247,7 @@
             Foresters
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>198881</health>
         <attack>18889</attack>
@@ -366,7 +366,7 @@
             WizardsEye
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>696500</health>
         <attack>7640</attack>
@@ -392,7 +392,7 @@
                     SingleEnemy
                 </select>
                 <name>PowerOfKnowledge</name>
-                <subskill target="SingleEnemy" ratio="2.2" type="Damage" scale="AttackDamage" effect="None" chance="0" turns="0"/>
+                <subskill target="SingleEnemy" ratio="2.2" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
                 <subskill target="SingleEnemy" ratio="1" type="Inflict" scale="None" effect="BlockBuff" chance="0.6" turns="1"/>
                 <subskill target="SingleSelf" ratio="1" type="Inflict" scale="None" effect="Arcane" chance="0" turns="999"/>
             </Generic>
@@ -418,7 +418,7 @@
                 AllEnemies
             </select>
                 <name>IntelectualPrison</name>
-                <subskill target="AllEnemies" ratio="2" type="Damage" scale="AttackDamage" effect="SpeedDownII" chance="0.5" turns="2"/>
+                <subskill target="AllEnemies" ratio="2" type="Damage" scale="Attack" effect="SpeedDownII" chance="0.5" turns="2"/>
                 <subskill target="AllEnemies" ratio="1" type="RemoveAllBuffs" scale="None" effect="None" chance="0" turns="0"/>
             </Generic>
         
@@ -436,7 +436,7 @@
             HiddenWave
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>65877</health>
         <attack>7118</attack>
@@ -500,7 +500,7 @@
             DoomLegion
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>94581</health>
         <attack>11699</attack>
@@ -526,7 +526,7 @@
                 SingleEnemy
             </select>
                 <name>SwordAssault</name>
-                <subskill target="SingleEnemy" ratio="1.4" type="Damage" scale="AttackDamage" effect="None" chance="0" turns="0"/>
+                <subskill target="SingleEnemy" ratio="1.4" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
                 <subskill target="SingleSelf" ratio="1" type="Inflict" scale="None" effect="Blade" chance="0" turns="999"/>
             </Generic>
         
@@ -540,7 +540,7 @@
                 SingleEnemy
             </select>
                 <name>BladeStriker</name>
-                <subskill target="SingleEnemy" ratio="5.4" type="Damage" scale="AttackDamage" effect="None" chance="0" turns="0"/>
+                <subskill target="SingleEnemy" ratio="5.4" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
                 <subskill target="SingleSelf" ratio="1" type="Inflict" scale="None" effect="Blade" chance="0" turns="999"/>
                 <subskill target="SingleSelf" ratio="1" type="Inflict" scale="None" effect="Blade" chance="0" turns="999"/>
             </Generic>
@@ -562,10 +562,10 @@
                 AllEnemies
             </select>
                 <name>BladeDance</name>
-                <subskill target="AllEnemies" ratio="1.3" type="Damage" scale="AttackDamage" effect="None" chance="0" turns="0"/>
-                <subskill target="AllEnemies" ratio="1.3" type="Damage" scale="AttackDamage" effect="None" chance="0" turns="0"/>
-                <subskill target="AllEnemies" ratio="1.3" type="Damage" scale="AttackDamage" effect="None" chance="0" turns="0"/>
-                <subskill target="AllEnemies" ratio="1.3" type="Damage" scale="AttackDamage" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="1.3" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="1.3" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="1.3" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="1.3" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
                 <subskill target="SingleSelf" ratio="1" type="Inflict" scale="None" effect="Blade" chance="0" turns="999"/>
                 <subskill target="SingleSelf" ratio="1" type="Inflict" scale="None" effect="Blade" chance="0" turns="999"/>
                 <subskill target="SingleSelf" ratio="1" type="Inflict" scale="None" effect="Blade" chance="0" turns="999"/>
@@ -587,7 +587,7 @@
             SunsetSages
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>76482</health>
         <attack>6998</attack>
@@ -653,7 +653,7 @@
             EternalSect
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>90117</health>
         <attack>8157</attack>
@@ -679,7 +679,7 @@
                 AllEnemies
             </select>
                 <name>SoulWave</name>
-                <subskill target="AllEnemies" ratio="1" type="Damage" scale="AttackDamage" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="1" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
                 <subskill target="AllEnemies" ratio="1" type="Inflict" scale="None" effect="Poison" chance="0.6" turns="2"/>
             </Generic>
         
@@ -749,7 +749,7 @@
                 SingleEnemy
             </select>
                 <name>LightOfHealing</name>
-                <subskill target="SingleEnemy" ratio="1.2" type="Damage" scale="AttackDamage" effect="None" chance="0" turns="0"/>
+                <subskill target="SingleEnemy" ratio="1.2" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
                 <subskill target="LowestHealthAlly" ratio="0.05" type="Restore" scale="TargetMaxHealth" effect="None" chance="0" turns="0"/>
             </Generic>
         
@@ -794,7 +794,7 @@
             SwordHarborGuards
         </faction>
         <rarity>
-            Legendary
+            Legend
         </rarity>
         <health>41849</health>
         <attack>3974</attack>
@@ -821,8 +821,8 @@
                 SingleEnemy
             </select>
                 <name>Vanguard</name>
-                <subskill target="SingleEnemy" ratio="1.0" type="Damage" scale="AttackDamage" effect="FeeblenessII" chance="1.0" turns="2"/>
-                <subskill target="SingleEnemy" ratio="1.0" type="Damage" scale="AttackDamage" effect="FeeblenessII" chance="1.0" turns="2"/>
+                <subskill target="SingleEnemy" ratio="1.0" type="Damage" scale="Attack" effect="FeeblenessII" chance="1.0" turns="2"/>
+                <subskill target="SingleEnemy" ratio="1.0" type="Damage" scale="Attack" effect="FeeblenessII" chance="1.0" turns="2"/>
             </Generic>
         
         
@@ -836,7 +836,7 @@
                 AllAllies
             </select>
                 <name>Solid Guardian</name>
-                <subskill target="AllAllies" ratio="0.0" type="Damage" scale="AttackDamage" effect="ConsolidationII" chance="1.0" turns="2"/>
+                <subskill target="AllAllies" ratio="0.0" type="Damage" scale="Attack" effect="ConsolidationII" chance="1.0" turns="2"/>
             </Generic>
 
 
@@ -929,10 +929,86 @@
                 AllEnemies
             </select>
                 <name>Bury</name>
-                <subskill target="AllEnemies" ratio="1.0" type="Damage" scale="AttackDamage" effect="Poison" chance="0.9" turns="2"/>
-                <subskill target="AllEnemies" ratio="1.0" type="Damage" scale="AttackDamage" effect="Poison" chance="0.9" turns="2"/>
-                <subskill target="AllEnemies" ratio="1.0" type="Damage" scale="AttackDamage" effect="Poison" chance="0.9" turns="2"/>
+                <subskill target="AllEnemies" ratio="1.0" type="Damage" scale="Attack" effect="Poison" chance="0.9" turns="2"/>
+                <subskill target="AllEnemies" ratio="1.0" type="Damage" scale="Attack" effect="Poison" chance="0.9" turns="2"/>
+                <subskill target="AllEnemies" ratio="1.0" type="Damage" scale="Attack" effect="Poison" chance="0.9" turns="2"/>
             </Generic>
+        
+    </hero>
+    <hero>
+        <id>14</id>
+        <name>Phocas</name>
+        <mark>
+            Green
+        </mark>
+        <class>
+            Support 
+        </class>
+        <faction>
+            DoomLegion
+        </faction>
+        <rarity>
+            Legend
+        </rarity>
+        <health>41849</health>
+        <attack>3974</attack>
+        <defense>4114</defense>
+        <speed>980</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+            <Generic>
+                <cooldown>0</cooldown>
+                <type>
+                    Basic
+                </type>
+                <select>
+                    SingleEnemy
+                </select>
+                <name>Demonic Lightning</name>
+                <subskill target="SingleEnemy" ratio="2.0" type="Damage" scale="Defense" effect="AttackDownI" chance="1.0" turns="1"/>
+                <subskill target="SingleEnemy" ratio="0.15" type="ReduceTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
+            </Generic>
+
+            <Generic>
+                <cooldown>3</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    AllAllies
+                </select>
+                <name>Fusion of Fire</name>
+                <subskill target="AllAllies" ratio="0.0" type="Inflict" scale="None" effect="Immortal" chance="1.0" turns="1"/>
+            </Generic>
+
+
+
+            <Generic>
+            <cooldown>0</cooldown>
+            <type>
+                Passive
+            </type>
+            <select>
+                AllAllies
+            </select>
+                <name>FusionOfFire</name>
+                <subskill trigger="EnemyDeath" target="SingleSelf" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
+                <subskill trigger="AllyDeath" target="AllAllies" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
+            </Generic>
+
+        
+            <DivinePrayer>
+                <cooldown>5</cooldown>
+            </DivinePrayer>
         
     </hero>
 </heroes>

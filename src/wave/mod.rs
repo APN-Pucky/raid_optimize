@@ -56,7 +56,7 @@ pub struct Wave<'a> {
     pub team_bonds : Vec<EnumMap<Faction,f32>>,
     */
     pub heroes :  Vec<&'a Hero>, 
-    pub teams : Vec<TeamIndex>,
+    pub teams : Vec<InstanceIndex>,
     pub players : &'a mut Vec<Box<dyn Player>>, //TODO make this also generic 2!
     pub shields: Vec<Vec<(f32,u32,InstanceIndex)>>, // (shield_value, turns)
     pub effects : Vec<Effects>, 
@@ -151,9 +151,17 @@ impl Wave<'_> {
     }
 
     #[inline]
-    pub fn get_indices(&self) -> Vec<InstanceIndex>
-    {
+    pub fn get_indices(&self) -> Vec<InstanceIndex> {
         (0..self.len()).collect::<Vec<_>>()
+    }
+
+    #[inline]
+    pub fn are_allies(&self,i:InstanceIndex,j:InstanceIndex ) -> bool {
+        self.teams[i] == self.teams[j]
+    }
+    #[inline]
+    pub fn are_enemies(&self,i:InstanceIndex,j:InstanceIndex ) -> bool {
+        self.teams[i] != self.teams[j]
     }
 
     //pub fn has_passive(&self, actor:InstanceIndex, passive: Passive) -> bool {

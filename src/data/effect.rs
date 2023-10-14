@@ -29,6 +29,11 @@ pub enum Effect {
 
     DeepPoison,
 
+    DefenseUpI,
+    DefenseUpII,
+    DefenseDownI,
+    DefenseDownII,
+
     EffectHitUpI,
     EffectHitUpII,
     EffectHitDownI,
@@ -44,9 +49,10 @@ pub enum Effect {
 
     Heal,
     HPBurning,
+    
+    Immortal,
 
-    WetI,
-    WetII,
+    RippleII,
 
     Suffocated,
 
@@ -61,13 +67,9 @@ pub enum Effect {
     TenacityDownI,
     TenacityDownII,
 
-    RippleII,
 
-    DefenseUpI,
-    DefenseUpII,
-    DefenseDownI,
-    DefenseDownII,
-
+    WetI,
+    WetII,
 
     
     //Debuff

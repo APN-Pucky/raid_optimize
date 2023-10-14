@@ -3,6 +3,7 @@ use strum_macros::EnumIter;
 
 use crate::wave::heroes::alahan::detach::Detach;
 
+use crate::wave::heroes::phocas::divine_prayer::DivinePrayer;
 use crate::wave::heroes::nita::deep_trap::DeepTrap;
 use crate::wave::heroes::nita::curse::Curse;
 use crate::wave::heroes::nita::bondage::Bondage;
@@ -149,6 +150,7 @@ pub fn is_passive(skill : &Skill) -> bool {
 pub fn is_reducable(skill : &Skill) -> bool {
     match skill {
         Skill::FishDive {..} => false,
+        Skill::DivinePrayer {..} => false,
         _ => true,
     }
 }
@@ -283,6 +285,7 @@ gen_match!(
         ,DeepSeaPower      
         ,DeepTrap
         ,Detach
+        ,DivinePrayer
         ,EnergyBurst       
         ,EyeForAnEye       
         ,FissionOfLife     

@@ -7,34 +7,45 @@ use super::{ Wave, InstanceIndex};
 #[derive(Debug,Enum, PartialEq, Eq, strum_macros::Display,Copy,Clone)]
 pub enum Stat {
     Attacks,
-    Defends,
     Attacked,
     Attack,
-    Shielded,
+
+    Blocked,
+    BlockedBy,
+
     CriticalStrikes,
     CriticalStriked,
     CriticalDamage,
     CriticalDamaged,
-    SavedByTenacity,
-    LostToTenacity,
-    Piercing,
-    Pierced,
+
+    DamageReflected,
+    DamageReflecteded,
     DamageDone,
     DamageTaken,
+    Defends,
+
+    EffectInflicted,
+
     HealthHealed,
     HealthRestored,
     HealthLost,
+
+    LostToTenacity,
     Leeched,
     LeechedOf,
-    TurnMeterReduced,
-    ShieldBlocked,
-    EffectInflicted,
-    DamageReflected,
-    DamageReflecteded,
-    Blocked,
-    BlockedBy,
+
+    Piercing,
+    Pierced,
+
+
     Revives,
     Revived,
+    ResetSkill,
+
+    SavedByTenacity,
+    Shielded,
+    ShieldBlocked,
+    TurnMeterReduced,
 }
 
 pub fn effect_to_stat(e:Effect) -> Stat {

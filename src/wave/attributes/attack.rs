@@ -59,22 +59,22 @@ impl Wave<'_> {
                 fact *= xfact;
             }
             if self.effects[actor].has(Effect::AttackUpI) {
-                let xfact = 1.25;
+                let xfact = 1.20;
                 debug!("{} has AttackUpI -> attack * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
             if self.effects[actor].has(Effect::AttackUpII) {
-                let xfact = 1.5;
+                let xfact = 1.40;
                 debug!("{} has AttackUpII -> attack * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
             if self.effects[actor].has(Effect::AttackDownI) {
-                let xfact = 0.75;
+                let xfact = 0.80;
                 debug!("{} has AttackDownI -> attack * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
             if self.effects[actor].has(Effect::AttackDownII) {
-                let xfact = 0.5;
+                let xfact = 0.60;
                 debug!("{} has AttackDownII -> attack * {}", self.name(actor), xfact);
                 fact *= xfact;
             }
