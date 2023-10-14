@@ -17,13 +17,18 @@ impl Wave<'_> {
         indent!({
             self.on_trigger(actor,Trigger::BeginningOfEachTurn);
             self.on_turn_start_marville(actor);
+            self.nita_convert_poison_to_heal(actor);
             // apply effects 
+            // apply poison 
+            self.dot_poison(actor);
             // apply heal
             self.dot_heal(actor);
             // apply bleed
             self.dot_bleed(actor);
             // apply HP burning
             self.dot_hp_burning(actor);
+
+            // TODO should check for dead?
 
             self.turn_reduce_cooldowns(actor);
         })

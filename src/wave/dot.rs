@@ -1,9 +1,33 @@
-use crate::{debug, data::{effect::Effect}, warn};
+use crate::{debug, data::{effect::Effect, skill::Skill}, warn};
 
-use super::{InstanceIndex, Wave};
-
+use super::{InstanceIndex, Wave, heroes::nita::deep_trap::DeepTrap};
 
 impl Wave<'_> {
+
+    /// Check and apply damage from poison
+    pub fn dot_poison(&mut self, actor : InstanceIndex) {
+        let n = self.effects[actor].get(Effect::Poison);
+        if n > 0 {
+            if let Some(inflictor) = self.effects[actor].get_last_inflictor(Effect::Poison) {
+                let poison_dmg = self.get_attack_damage(inflictor);
+
+                let deep_poison =  
+                    if self.effects[actor].get(Effect::DeepPoison) > 0 {
+                        1.25
+                    }
+                    else {
+                        1.0
+                    };
+                let mastery = self.get_mastery(inflictor);
+
+                self.damage_poison(inflictor,actor,poison_dmg * (1.0 + mastery) * deep_poison);
+            }
+            else
+            {
+                warn!("No inflictor for poison {}", self.name(actor));
+            }
+        }
+    }
 
     pub fn dot_heal(&mut self, actor : InstanceIndex) {
         // apply heal
@@ -21,6 +45,10 @@ impl Wave<'_> {
     }
 
     pub fn dot_bleed(&mut self, actor : InstanceIndex) {
+        if let [Skill::DeepTrap(DeepTrap{..}),..] = self.heroes[actor].skills[..] {
+            debug!("DeepTrap garants immunity against DoT");
+            return
+        }
         // apply bleed
         let n = self.effects[actor].get(Effect::Bleed);
         if n > 0 {
@@ -39,6 +67,10 @@ impl Wave<'_> {
     }
 
     pub fn dot_hp_burning(&mut self, actor : InstanceIndex) {
+        if let [Skill::DeepTrap(DeepTrap{..}),..] = self.heroes[actor].skills[..] {
+            debug!("DeepTrap garants immunity against DoT");
+            return
+        }
         // apply HP burning
         let n = self.effects[actor].get(Effect::HPBurning);
         if n > 0 {

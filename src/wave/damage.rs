@@ -79,6 +79,12 @@ impl Wave<'_> {
         self.damage(actor,target,dmg,&Skill::None,false,false,false);
     }
 
+    pub fn damage_poison(&mut self,actor : InstanceIndex,target:InstanceIndex, poison_dmg: f32) {
+        debug!("{} takes {} damage from poison from {}", self.name(target), poison_dmg,self.name(actor));
+        //TODO track stat
+        self.damage(actor,target,poison_dmg,&Skill::None,false,false,false);
+    }
+
     pub fn damage_bleed(&mut self,actor : InstanceIndex,target:InstanceIndex, bleed_dmg: f32) {
         debug!("{} takes {} damage from bleed from {}", self.name(target), bleed_dmg,self.name(actor));
         //TODO track stat

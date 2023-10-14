@@ -96,11 +96,6 @@ impl Wave<'_> {
         }
     }
 
-    pub fn on_turn_start_generic(&mut self, actor : InstanceIndex) {
-
-    }
-
-
     //pub fn execute_skill(&mut self,  skill : &Skill, actor :InstanceIndex, target :InstanceIndex, ) {
     //    let attacker = actor;
     //    let defender = target;

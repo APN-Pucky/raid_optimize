@@ -5,7 +5,7 @@ use enum_map::EnumMap;
 
 #[derive(Debug)]
 pub struct Effects {
-    pub em : EnumMap<Effect,Vec<(u32,u32,InstanceIndex)>>,
+    pub em : EnumMap<Effect,Vec<(u32,u32,InstanceIndex)>>, // effect , for layer : [cur turns , start turns,  inflictor] // TODO make it an enum
     //pub vm : [Vec<(u32,InstanceRef)>;Effect::NumberOfEffects as usize],
 }
 

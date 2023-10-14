@@ -27,6 +27,8 @@ pub enum Effect {
     CritDamageUpI,
     CritDamageUpII,
 
+    DeepPoison,
+
     EffectHitUpI,
     EffectHitUpII,
     EffectHitDownI,
@@ -97,6 +99,9 @@ pub enum Effect {
     //Faction
     FactionHiddenWaveAttack, // Counter for faction hidden wave
     FactionHiddenWaveSkill, // Counter for faction hidden wave
+
+    //Util
+    _DeepTrapCounter
 }
 
 pub fn get_max(effect:Effect) -> u32 {
@@ -109,6 +114,7 @@ pub fn get_max(effect:Effect) -> u32 {
         Effect::FactionHiddenWaveSkill => 2,
         Effect::FishShoal => 3,
         Effect::RosePoison => 40,
+        Effect::Poison => 10,
         _ => 999999
     }
 }

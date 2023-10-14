@@ -5,4 +5,5 @@ pub enum Rarity {
     Elite, // Blue
     Epic, // Purple
     Legendary, // Gold
+    Mythic, // Red
 }

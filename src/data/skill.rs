@@ -3,6 +3,9 @@ use strum_macros::EnumIter;
 
 use crate::wave::heroes::alahan::detach::Detach;
 
+use crate::wave::heroes::nita::deep_trap::DeepTrap;
+use crate::wave::heroes::nita::curse::Curse;
+use crate::wave::heroes::nita::bondage::Bondage;
 use crate::wave::heroes::marville::fish_dive::FishDive;
 use crate::wave::heroes::marville::fish_guardian::FishGuardian;
 use crate::wave::heroes::marville::fish_waterball::FishWaterball;
@@ -107,198 +110,9 @@ impl Default for Select {
 }
 
 
-//#[derive(Debug, PartialEq, Deserialize, Serialize, Clone )]
-//pub struct Skill {
-//    //#[serde(default="cooldown_default")]
-//    //pub cooldown : u32,
-//    //#[serde(default="typ_default", rename="type",with = "quick_xml::serde_helpers::text_content")]
-//    //pub typ : SkillType,
-//    //#[serde(default="select_default",with = "quick_xml::serde_helpers::text_content")]
-//    //pub select: Select,
-//    #[serde(rename = "$value")]
-//    pub data : SkillData,
-//}
-
-//impl fmt::Display for Skill{
-//    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-//        write!(f, "{}", self.data)
-//    }
-//}
-
-//pub const NONE_SKILL: Skill = Skill {
-//    //cooldown : 0,
-//    //typ : SkillType::None,
-//    //select : Select::None,
-//    data : SkillData::None,
-//};
-//
-//pub const BASIC_ATTACK: Skill = Skill {
-//    //cooldown : 0,
-//    //typ : SkillType::Basic,
-//    //select : Select::SingleEnemy,
-//    data : SkillData::BasicAttack (
-//        BasicAttack{
-//            cooldown : 0,
-//            attack_damage_ratio : 1.0,
-//        }
-//    ),
-//};
 
 
-//#[derive(Default,Debug, PartialEq, Deserialize, Serialize, Clone )]
-//pub struct ScorchedSoul{
-//    attack_damage_ratio : f32,
-//    hp_burning_chance: f32,
-//    hp_burning_turns: u32
-//}
 
-
-//#[derive(EnumString, EnumIter, Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
-//pub enum SkillData {
-//    None,
-//    // Stabilized
-//    // Tested
-//    // Prototyped
-//
-//    BasicAttack(BasicAttack), 
-//    //BasicAttack {
-//    //    attack_damage_ratio : f32,
-//    //},
-//    //Liz
-//    ScorchedSoul(ScorchedSoul),
-//    //ScorchedSoul {
-//    //    attack_damage_ratio : f32,
-//    //    hp_burning_chance: f32,
-//    //    hp_burning_turns: u32
-//    //},
-//    FireHeal (FireHeal),
-//    Resurrection (Resurrection),
-//    // Natalie
-//    ScytheStrike(ScytheStrike),
-//    BloodthirstyScythe(BloodthirstyScythe) ,
-//    EnergyBurst(EnergyBurst) ,
-//    //Seth
-//    TideBigHit(TideBigHit),
-//    DeepSeaPower(DeepSeaPower),
-//    CrystalOfLife(CrystalOfLife),
-//    // Space
-//    Tricks(Tricks),
-//    Nightmare(Nightmare),
-//    Resplendence(Resplendence) ,
-//    FissionOfLife(FissionOfLife),
-//    // Tifya
-//    ScarletSlash(ScarletSlash),
-//    LeavesStorm(LeavesStorm),
-//    ScaletMultiStrike(ScarletMultiStrike),
-//    //Hazier
-//    DarknightStrike(DarknightStrike) ,
-//    EyeForAnEye (EyeForAnEye),
-//    DarknightArbitrament(DarknightArbitrament) ,
-//    //Geeliman
-//    BurstingKnowledge(BurstingKnowledge) ,
-//    //Alahan
-//    SpiritCall {
-//        attack_damage_ratio: f32,
-//        restore_hp_damage_ratio: f32,
-//        remove_all_buffs: bool,
-//        heal_lowest_ally : bool,
-//        increase_hp : bool,
-//    },
-//    SpiritFountain {
-//        heal_turns: u32,
-//        cleanse_attribute_debuffs: bool,
-//    },
-//    Commendation {
-//        max_hp_restore_ratio: f32,
-//        attack_up_turns : u32,
-//    },
-//    Detach {
-//        attack_damage_ratio : f32,
-//        stun_chance: f32,
-//        stun_turns: u32,
-//        steal_shield: bool,
-//        shield_max_hp_ratio: f32,
-//        shield_turns: u32,
-//    },
-//    //Marville
-//    FishWaterball {
-//        attack_damage_ratio : f32,
-//        act_chance: f32,
-//    },
-//    CleanOcean {
-//        restore_max_hp_ratio : f32,
-//        cleanse_dot_layers : u32,
-//        consolidation_turns : u32,
-//        block_removal_turns  : u32,
-//    },
-//    FishGuardian {
-//        restore_fish_shoal: u32,
-//        max_hp_restore_ratio : f32,
-//        damage_reduction : f32
-//    },
-//    FishDive {
-//        restore_fish_shoal: u32,
-//    },
-//    //Dakota
-//    SoulSurge {
-//        toxic_swamp_turns : u32,
-//        rose_poison_chance : f32,
-//        speed_up_turns : u32,
-//    },
-//    SoulRing {
-//        effect_res_down_chance : f32,
-//        effect_res_down_turns : u32,
-//    },
-//    SoulSeal {
-//        attack_damage_ratio : f32,
-//        attack_damage_ratio_per_poison : f32,
-//        increase_atk_turns : u32,
-//        rose_per_poison : u32,
-//        poison_turns : u32
-//    },
-//    // Maya
-//    LightOfPurifying {
-//        heal_allies : u32,
-//        max_hp_restore_ratio : f32,
-//        heal_turns : u32,
-//        cleanse_dot_layers: u32,
-//    },
-//    ForceOfMercy {
-//        max_hp_restore_ratio : f32,
-//        healing_effect : f32,
-//    },
-//    SacredLight {
-//        max_hp_restore_ratio : f32,
-//        loose_hp_ratio : f32,
-//        consolidation_turns : u32,
-//        shield_turns : u32,
-//        shield_max_hp_ratio : f32,
-//        block_debuff_turns : u32,
-//    },
-//
-//
-//    //Natalie
-//    BloodthirstyDesire,
-//    //Seth
-//    DeepSeaBloodline,
-//    //Space
-//
-//    //Tifya
-//    SharpInstinct,
-//    //Hazier
-//    BloodlustStrike {
-//        leech : f32,
-//        damage_reduction_buffs : f32,
-//        damage_reduction_nobuffs : f32,
-//    },
-//    IncessantChatter, // TODO
-//    //Margarita
-//    CounterattackCommand {
-//        blades : u32,
-//        crit_damage_turns : u32,
-//        attack_damage_ratio : f32,
-//    },
-//}
 
 pub fn get_selection(wave :& Wave, select: Select, actor :InstanceIndex, ) -> Vec<InstanceIndex> {
     match select{
@@ -327,42 +141,6 @@ pub fn get_selection(wave :& Wave, select: Select, actor :InstanceIndex, ) -> Ve
     } 
 }
 
-
-
-//pub fn get_selection<const LEN:usize>(skill : &Skill, actor :InstanceIndex, wave :&Wave<LEN>) -> Vec<InstanceIndex> {
-//    return get_subskill_targets(skill.select, actor, wave);
-//    //match skill {
-//    //    //Liz
-//    //    Skill::ScorchedSoul{..} => get_alive_enemies(actor,wave),
-//    //    Skill::FireHeal{..} => get_alive_allies(actor,wave),
-//    //    Skill::Resurrection { .. } => get_alive_allies(actor,wave),
-//    //    //Natalie
-//    //    Skill::ScytheStrike { .. } => get_alive_enemies(actor,wave),
-//    //    Skill::BloodthirstyScythe { .. } => get_alive_enemies(actor,wave),
-//    //    Skill::EnergyBurst { .. } => get_alive_enemies(actor,wave),
-//    //    //Seth
-//    //    Skill::TideBigHit { ..} => get_alive_enemies(actor,wave),
-//    //    Skill::DeepSeaPower { .. } => get_alive_allies(actor, wave),
-//    //    Skill::CrystalOfLife { .. } => get_alive_allies(actor, wave),
-//    //    //Space
-//    //    Skill::Tricks{..} => get_alive_enemies(actor,wave),
-//    //    Skill::Nightmare { .. } => get_alive_enemies(actor,wave),
-//    //    Skill::FissionOfLife { .. } => get_alive_allies(actor, wave),
-//    //    //Tifya
-//    //    Skill::ScarletSlash { .. } => get_alive_enemies(actor,wave),
-//    //    Skill::LeavesStorm { .. } => get_alive_enemies(actor,wave),
-//    //    Skill::ScaletMultiStrike { .. } => get_alive_enemies(actor,wave),
-//    //    //Hazier
-//    //    Skill::DarknightStrike { ..} => get_alive_enemies(actor,wave),
-//    //    Skill::EyeForAnEye { .. } => Some(vec![actor]),
-//    //    Skill::DarknightArbitrament { .. } => get_alive_enemies(actor, wave),
-//    //    //Geeliman
-//    //    Skill::BurstingKnowledge { .. } => get_alive_enemies(actor, wave),
-//    //    //
-//    //    Skill::BasicAttack{..} => get_alive_enemies(actor,wave),
-//    //    Skill::Generic{ subskills ,..} => Some(subskill::get_subskill_targets(get_generic_targets(subskills),actor,wave)),
-//    //}
-//}
 
 pub fn is_passive(skill : &Skill) -> bool {
     return get_type(skill) == SkillType::Passive;
@@ -494,6 +272,8 @@ gen_match!(
         ,BurstingKnowledge
         ,BloodlustStrike
         ,BloodthirstyDesire
+        ,Bondage
+        ,Curse
         ,CleanOcean
         ,CrystalOfLife     
         ,Commendation 
@@ -501,6 +281,7 @@ gen_match!(
         ,DarknightStrike   
         ,DarknightArbitrament
         ,DeepSeaPower      
+        ,DeepTrap
         ,Detach
         ,EnergyBurst       
         ,EyeForAnEye       

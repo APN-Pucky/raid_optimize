@@ -866,4 +866,73 @@
             </Generic>
         
     </hero>
+    <hero>
+        <id>13</id>
+        <name>Nita</name>
+        <mark>
+            Blue
+        </mark>
+        <class>
+            Attack
+        </class>
+        <faction>
+            SunsetSages
+        </faction>
+        <rarity>
+            Mythic
+        </rarity>
+        <health>41849</health>
+        <attack>3974</attack>
+        <defense>4114</defense>
+        <speed>980</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+        
+
+            <Curse>
+                <cooldown>0</cooldown>
+                <attack_damage_ratio>3.2</attack_damage_ratio>
+                <poison_chance>1.0</poison_chance>
+                <poison_turns>2</poison_turns>
+                <restore_max_health_per_poison>0.025</restore_max_health_per_poison>
+            </Curse>
+        
+            <Bondage>
+                <cooldown>3</cooldown>
+                <attack_damage_ratio>1.4</attack_damage_ratio>
+                <second_attack_damage_ratio>2.0</second_attack_damage_ratio>
+                <deep_poison_chance>1.0</deep_poison_chance>
+                <deep_poison_turns>2</deep_poison_turns>
+            </Bondage> 
+
+            
+            <DeepTrap>
+                <pursue_and_attack_limit> 5</pursue_and_attack_limit>
+                <poison_cleansed_attack_chance> 0.7</poison_cleansed_attack_chance>
+            </DeepTrap>
+        
+        
+            <Generic>
+            <cooldown>4</cooldown>
+            <type>
+                Active
+            </type>
+            <select>
+                AllEnemies
+            </select>
+                <name>Bury</name>
+                <subskill target="AllEnemies" ratio="1.0" type="Damage" scale="AttackDamage" effect="Poison" chance="0.9" turns="2"/>
+                <subskill target="AllEnemies" ratio="1.0" type="Damage" scale="AttackDamage" effect="Poison" chance="0.9" turns="2"/>
+                <subskill target="AllEnemies" ratio="1.0" type="Damage" scale="AttackDamage" effect="Poison" chance="0.9" turns="2"/>
+            </Generic>
+        
+    </hero>
 </heroes>
