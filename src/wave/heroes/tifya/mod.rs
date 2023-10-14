@@ -1,4 +1,4 @@
-use crate::{wave::{Wave, InstanceIndex}, data::{skill::{Skill}, effect::{Effect, is_debuff} }};
+use crate::{wave::{Wave, InstanceIndex}, data::{skill::Skill, effect::{Effect, is_debuff} }};
 
 use self::{scarlet_slash::ScarletSlash, scarlet_multi_strike::ScarletMultiStrike};
 
@@ -21,7 +21,7 @@ impl Wave<'_> {
 
     pub fn after_action_tifya(&mut self, actor:InstanceIndex) {
             if !self.team_acted[self.teams[actor]] {
-                for i in 0..self.len(){
+                for i in self.get_indices_iter() {
                     if self.teams[i] == self.teams[actor] {
                         if i != actor {
                             match self.heroes[i].skills[..] {

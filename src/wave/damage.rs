@@ -3,7 +3,7 @@ use rand::Rng;
 
 use crate::{debug, wave::{stat::Stat, heroes::marville::fish_guardian::FishGuardian}, indent, data::{faction::Faction, mark::Mark, skill::{Skill, is_basic_attack,  }, effect::Effect, subskill::Trigger}};
 
-use super::{Wave, InstanceIndex, heroes::{hazier::bloodlust_strike::BloodlustStrike}};
+use super::{Wave, InstanceIndex, heroes::hazier::bloodlust_strike::BloodlustStrike};
 
 impl Wave<'_> {
     pub fn attack_enemy_team(&mut self, actor : InstanceIndex, damage : f32,skill:&Skill) {

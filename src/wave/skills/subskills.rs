@@ -1,4 +1,4 @@
-use crate::{data::{skill::{Skill, Generic}, effect::Effect, subskill::{Scale, SubSkill, Target, Type, Trigger}}};
+use crate::data::{skill::{Skill, Generic}, effect::Effect, subskill::{Scale, SubSkill, Target, Type, Trigger}};
 
 use super::{InstanceIndex, Wave};
 
@@ -24,7 +24,7 @@ impl Wave<'_> {
     }
 
     pub fn on_trigger_any(&mut self, triggerer: InstanceIndex, trigger : Trigger) {
-        for actor in 0..self.len() {
+        for actor in self.get_indices_iter() {
             for s in &self.heroes[actor].skills {
                 match s {
                     Skill::Generic(Generic{subskills , ..}) => {
@@ -49,7 +49,7 @@ impl Wave<'_> {
     pub fn execute_subskill(&mut self,subskill : &SubSkill, actor :InstanceIndex, target :Option<InstanceIndex>,  skill: &Skill) {
         let wave = self;
         let mut val= 0.0;
-        let mut targets : Vec<InstanceIndex> = vec![];
+        let targets : Vec<InstanceIndex>;
         let mut effect = Effect::None;
         let mut chance = 0.0;
         let mut turns = 0;
@@ -78,8 +78,7 @@ impl Wave<'_> {
         }
         match subskill.target {
             Target::Everyone => {
-                // 0..LEN
-                targets = wave.get_indices();
+                targets = wave.get_indices_iter().collect();
             },
             Target::SingleAlly => {
                 targets  = vec![target.expect("SingleAlly needs a target")];

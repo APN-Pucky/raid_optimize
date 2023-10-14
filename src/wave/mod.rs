@@ -127,7 +127,7 @@ impl Wave<'_> {
         w
     }
 
-    //Deprecated
+    //Deprecated?
     #[deprecated]
     pub fn len(&self) -> usize {
         self.heroes.len()
@@ -150,9 +150,14 @@ impl Wave<'_> {
         self.set_bonds(); //  no change expecte
     }
 
+    #[deprecated]
     #[inline]
     pub fn get_indices(&self) -> Vec<InstanceIndex> {
-        (0..self.len()).collect::<Vec<_>>()
+        self.get_indices_iter().collect::<Vec<_>>()
+    }
+
+    pub fn get_indices_iter(&self) ->impl Iterator<Item = usize> {
+        0..self.heroes.len() 
     }
 
     #[inline]
@@ -218,25 +223,34 @@ impl Wave<'_> {
     }
 
     pub fn get_team_indices(&self, team : TeamIndex) -> Vec<InstanceIndex> {
-        (0..self.len())
-            .filter(|&i| self.teams[i] == team)
+        self.teams.iter().enumerate()
+            .filter(|(_,&t)| t == team)
+            .map(|(i,_)| i)
             .collect()
     }
 
     pub fn get_enemies_indices(&self, actor : InstanceIndex) -> Vec<InstanceIndex> {
-        (0..self.len())
-            .filter(|&i| self.teams[i] != self.teams[actor])
+        self.get_enemies_indices_iter(actor)
             .collect()
     }
 
-    pub fn get_ally_indices(&self, actor : InstanceIndex) -> Vec<InstanceIndex> {
-        (0..self.len())
-            .filter(|&i| self.teams[i] == self.teams[actor])
+    pub fn get_enemies_indices_iter(&self, actor : InstanceIndex) -> impl Iterator<Item = usize> + '_  {
+        self.get_indices_iter()
+            .filter(move |&i| self.teams[i] != self.teams[actor])
+    }
+
+    pub fn get_ally_indices(&self, actor : InstanceIndex) -> Vec<InstanceIndex>  {
+        self.get_ally_indices_iter(actor)
             .collect()
+    }
+
+    pub fn get_ally_indices_iter(&self, actor : InstanceIndex) ->impl Iterator<Item = usize> + '_  {
+        self.get_indices_iter()
+            .filter(move |&i| self.teams[i] == self.teams[actor])
     }
 
     pub fn find_actor_index(&self) -> Option<InstanceIndex> {
-        (0..self.len())
+        self.get_indices_iter()
             // get those alive
             .filter(|&a| self.is_alive(a))
             // get those with enough turn meter

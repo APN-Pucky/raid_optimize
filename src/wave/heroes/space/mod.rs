@@ -10,7 +10,7 @@ pub mod resplendence;
 
 impl Wave<'_> {
     pub fn on_begin_wave_space(&mut self) {
-        (0..self.len())
+        self.get_indices_iter() 
                 .for_each(|i| 
                     match self.heroes[i].skills[..] {
                         [ Skill::Resplendence(Resplendence{turn_meter_ratio,..}) ,.. ] => {

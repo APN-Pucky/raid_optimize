@@ -58,19 +58,11 @@ use super::subskill::SubSkill;
 
 
 
-type SkillRef = usize;
 use strum_macros::EnumString;
 
 pub struct NewSkill {
     pub cooldown : u32,
     pub subskills : Vec<SubSkill>,
-}
-
-fn false_default() -> bool{
-    false
-}
-fn true_default() -> bool{
-    true
 }
 
 #[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone,Copy )]
@@ -119,7 +111,7 @@ pub fn get_selection(wave :& Wave, select: Select, actor :InstanceIndex, ) -> Ve
     match select{
         Select::Everyone => {
             // 0..LEN
-            wave.get_indices()
+            wave.get_indices_iter().collect()
         },
         Select::SingleAlly => {
             wave.get_ally_indices(actor)
@@ -315,74 +307,6 @@ gen_match!(
     );
 
 
-//pub fn get_cooldown(skill: &Skill) ->u32 {
-//    return skill.cooldown;
-//    //match skill {
-//    //    //Liz
-//    //    Skill::ScorchedSoul       {cooldown,..} => *cooldown,
-//    //    Skill::FireHeal           { cooldown, ..} => *cooldown,
-//    //    Skill::Resurrection       { cooldown, .. } => *cooldown,
-//    //    //Natalie
-//    //    Skill::ScytheStrike       { cooldown,.. } => *cooldown,
-//    //    Skill::BloodthirstyScythe { cooldown,.. } => *cooldown,
-//    //    Skill::EnergyBurst        { cooldown,.. } => *cooldown,
-//    //    //Seth
-//    //    Skill::TideBigHit { cooldown,..} => *cooldown,
-//    //    Skill::DeepSeaPower { cooldown, ..} => *cooldown,
-//    //    Skill::CrystalOfLife { cooldown, ..} => *cooldown,
-//    //    //Space
-//    //    Skill::Tricks{cooldown,..} => *cooldown,
-//    //    Skill::Nightmare { cooldown, ..} => *cooldown,
-//    //    Skill::FissionOfLife { cooldown, ..} => *cooldown,
-//    //    //Tifya
-//    //    Skill::ScarletSlash { cooldown, ..} => *cooldown,
-//    //    Skill::LeavesStorm { cooldown, ..} => *cooldown,
-//    //    Skill::ScaletMultiStrike { cooldown, ..} => *cooldown,
-//    //    //Hazier
-//    //    Skill::DarknightStrike { cooldown,..} => *cooldown,
-//    //    Skill::EyeForAnEye { cooldown, basic_attack, Counterattack_turns: counter_attack_turns, damage_immunity_turns, control_immunity_turns } => *cooldown,
-//    //    Skill::DarknightArbitrament { cooldown, ..} => *cooldown,
-//    //    //Geeliman
-//    //    Skill::BurstingKnowledge { cooldown, ..} => *cooldown,
-//    //    //
-//    //    Skill::BasicAttack{cooldown,..} => *cooldown,
-//    //    Skill::Generic{ cooldown, ..} => *cooldown,
-//    //}
-//}
-
-// TODO why option and not just empty array?!?!?
-
-fn get_alive_allies<const LEN:usize>(wave : &Wave, actor :  InstanceIndex) -> Option<Vec<InstanceIndex>> {
-    let team = wave.get_ally_indices(actor);
-    let mut ids = Vec::new();
-    for (_index,&target) in team.iter().enumerate() {
-        if wave.is_alive(target)  {
-            ids.push(target);
-        }
-    }
-    if ids.is_empty() {
-        None
-    }
-    else {
-        Some(ids)
-    }
-}
-
-fn get_alive_enemies<const LEN:usize>( wave :&Wave,actor :InstanceIndex,) -> Option<Vec<InstanceIndex>> {
-    let team = wave.get_enemies_indices(actor);
-    let mut ids = Vec::new();
-    for (_index,&target) in team.iter().enumerate() {
-        if wave.is_alive(target)  {
-            ids.push(target);
-        }
-    }
-    if ids.is_empty() {
-        None
-    }
-    else {
-        Some(ids)
-    }
-}
 
 
 #[cfg(test)]

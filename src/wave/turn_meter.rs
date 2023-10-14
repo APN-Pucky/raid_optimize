@@ -50,7 +50,7 @@ impl Wave<'_> {
         debug!("Progressing turn meters");
         indent!({
             // get the time needed for one to reach threshold
-            let mut min : f32 = (0..self.len())
+            let mut min : f32 = self.get_indices_iter()
                 .filter(|a| self.is_alive(*a))
                 .map(|a| (self.turn_meter_threshold - self.get_turn_meter(a) )/(self.get_speed(a)))
                 .fold(self.turn_meter_threshold, |a,b| a.min(b));
@@ -59,7 +59,7 @@ impl Wave<'_> {
             if min < 0.0 {
                 min = 0.0;
             }
-            for a in 0..self.len(){
+            for a in self.get_indices_iter() {
                 self.progress_turn_meter(a,min);
             }
         })

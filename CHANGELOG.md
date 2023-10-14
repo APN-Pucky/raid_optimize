@@ -17,8 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Rarity renamed from Legendary to Legend
-- Subskill scale renamed from AttackDamage to Attack
+- Rarity renamed from "Legendary to "Legend"
+- Subskill scale renamed from "AttackDamage" to "Attack"
 
 ### Fixed 
 
