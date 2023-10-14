@@ -16,7 +16,6 @@ pub mod marville;
 pub mod dakota;
 pub mod maya;
 pub mod alahan;
-pub mod katherine;
 
 pub trait Typed {
     const TYPE : SkillType;
