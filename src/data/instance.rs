@@ -1,35 +1,33 @@
 // Import (via `use`) the `fmt` module to make it available.
 use std::fmt;
 
-
-
-
-
-
-use crate::{indent, debug};
-use crate::wave::{  InstanceIndex, TeamIndex};
+use crate::wave::{InstanceIndex, TeamIndex};
+use crate::{debug, indent};
 
 use super::hero::Hero;
 use super::skill::{get_cooldown, Skill};
-
 
 //TODO make instance so irrelevant that it can be removed since it only wraps hero
 
 #[derive(Debug)]
 pub struct Instance<'a> {
-    pub hero:  &'a Hero,
-    pub id : u32,
+    pub hero: &'a Hero,
+    pub id: u32,
     pub index: InstanceIndex,
-    pub team : TeamIndex,
+    pub team: TeamIndex,
     // these are transported between waves
     pub health: f32,
     pub turn_meter: f32,
-    pub cooldowns : Vec<u32>,
+    pub cooldowns: Vec<u32>,
 }
 
 impl fmt::Display for Instance<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}-{} [health: {}, turn_meter: {}]", self.hero.name, self.id,self.health, self.turn_meter)
+        write!(
+            f,
+            "{}-{} [health: {}, turn_meter: {}]",
+            self.hero.name, self.id, self.health, self.turn_meter
+        )
     }
 }
 
@@ -40,11 +38,12 @@ impl PartialEq for Instance<'_> {
 }
 
 impl<'a> Instance<'a> {
-
     pub fn get_active_skills(&self) -> Vec<&'a Skill> {
-        self.hero.skills.iter()
+        self.hero
+            .skills
+            .iter()
             .zip(self.cooldowns.iter())
-            .filter_map(|(s,c)| if *c == 0 {Some(s)} else {None})
+            .filter_map(|(s, c)| if *c == 0 { Some(s) } else { None })
             .collect()
         //let mut ret  = Vec::new();
         //for i in 0..self.cooldowns.len() {
@@ -57,18 +56,18 @@ impl<'a> Instance<'a> {
 }
 
 impl Instance<'_> {
-    pub fn new(hero: &Hero, id:u32,ii:InstanceIndex,ti:TeamIndex) -> Instance {
+    pub fn new(hero: &Hero, id: u32, ii: InstanceIndex, ti: TeamIndex) -> Instance {
         Instance {
             hero,
             id,
-            index:ii,
-            team:ti,
+            index: ii,
+            team: ti,
             health: hero.health,
             turn_meter: 0.0,
-            cooldowns : hero.skills.iter().map(|_| 0).collect(),
+            cooldowns: hero.skills.iter().map(|_| 0).collect(),
             //shield: Vec::new(),
             //statistics: EnumMap::default(),
-            //effects : Effects::new(), 
+            //effects : Effects::new(),
             //passives : hero.passives.clone(),
         }
     }
@@ -77,29 +76,29 @@ impl Instance<'_> {
     //    self.hero.passives.iter().any(|p| *p == passive)
     //}
 
-    pub fn cooldown(&mut self, skill :usize) {
-        self.cooldowns[skill] = get_cooldown(&self.hero.skills[skill]);//*get_cooldown(skill);
-        // find index of skill in hero.skills
-        //if let Some(i) = self.hero.skills.iter().position(|s| s == skill) {
-        //    self.cooldowns[i] = *get_cooldown(skill);
-        //}
-        //else {
-        //    panic!("Skill {:?} not found in hero {:?}", skill, self.hero);
-        //}
+    pub fn cooldown(&mut self, skill: usize) {
+        self.cooldowns[skill] = get_cooldown(&self.hero.skills[skill]); //*get_cooldown(skill);
+                                                                        // find index of skill in hero.skills
+                                                                        //if let Some(i) = self.hero.skills.iter().position(|s| s == skill) {
+                                                                        //    self.cooldowns[i] = *get_cooldown(skill);
+                                                                        //}
+                                                                        //else {
+                                                                        //    panic!("Skill {:?} not found in hero {:?}", skill, self.hero);
+                                                                        //}
     }
 
-    pub fn cooldown_s(&mut self, skill:&Skill) {
+    pub fn cooldown_s(&mut self, skill: &Skill) {
         if let Some(i) = self.hero.skills.iter().position(|s| s == skill) {
             self.cooldowns[i] = get_cooldown(skill);
-        }
-        else {
+        } else {
             panic!("Skill {:?} not found in hero {:?}", skill, self.hero);
         }
- 
     }
-    
+
     pub fn reduce_cooldowns(&mut self) {
-        self.cooldowns.iter_mut().for_each(|c| *c = c.saturating_sub(1));
+        self.cooldowns
+            .iter_mut()
+            .for_each(|c| *c = c.saturating_sub(1));
         //for i in 0..self.cooldowns.len() {
         //    if self.cooldowns[i] > 0 {
         //        self.cooldowns[i] -= 1;
@@ -228,7 +227,7 @@ impl Instance<'_> {
         self.add_stat(Stat::PiercedDefense, pierce);
         debug!("{} pierces {} defense of {} ({}%)", self, pierce, def, self.hero.piercing*100.);
         def -= pierce;
-        
+
         self.deal_damage(target, attack - def);
         })
     }
@@ -238,17 +237,19 @@ impl Instance<'_> {
         self.set_turn_meter(0.0)
     }
 
-    pub fn set_turn_meter(&mut self, turn_meter: f32) { indent!({
-        debug!("{} turn_meter set to {}", self, turn_meter);
-        self.turn_meter= turn_meter
-    })}
+    pub fn set_turn_meter(&mut self, turn_meter: f32) {
+        indent!({
+            debug!("{} turn_meter set to {}", self, turn_meter);
+            self.turn_meter = turn_meter
+        })
+    }
 
     pub fn increase_turn_meter(&mut self, turn_meter: f32) {
-        self.turn_meter+= turn_meter
+        self.turn_meter += turn_meter
     }
 
     pub fn decrease_turn_meter(&mut self, turn_meter: f32) {
-        self.turn_meter+= turn_meter
+        self.turn_meter += turn_meter
     }
 
     //pub fn progress_turn_meter(&mut self, time: f32) {
@@ -268,7 +269,7 @@ impl Instance<'_> {
     //    if self.has_effect(Effect::SpeedDownII) {
     //        fact *= 0.6;
     //    }
-    //    self.hero.speed  * fact 
+    //    self.hero.speed  * fact
     //}
 
     pub fn get_hero(&self) -> &Hero {
@@ -284,43 +285,40 @@ impl Instance<'_> {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use crate::data::{mark::Mark, class::Class, faction::Faction, rarity::Rarity, hero::Hero};
+    use crate::data::{class::Class, faction::Faction, hero::Hero, mark::Mark, rarity::Rarity};
 
     use super::*;
 
     #[test]
     fn create_instance() {
         // create a Hero
-        let h : Hero = Hero {
-            id:1,
-            name:"Elhain".to_string(),
-            health:15000.,
-            attack:1000.,
-            defense:1000.,
-            speed:100.,
-            crit_rate:0.0,
-            crit_damage:0.0,
-            effect_hit:0.0,
-            effect_resistance:0.0,
-            mastery:0.0,
-            healing_effect:0.15,
-            leech:0.15,
-            piercing:0.15,
-            tenacity:0.15,
-            damage_reflection : 0.0,
-            skills : Vec::new(),
+        let h: Hero = Hero {
+            id: 1,
+            name: "Elhain".to_string(),
+            health: 15000.,
+            attack: 1000.,
+            defense: 1000.,
+            speed: 100.,
+            crit_rate: 0.0,
+            crit_damage: 0.0,
+            effect_hit: 0.0,
+            effect_resistance: 0.0,
+            mastery: 0.0,
+            healing_effect: 0.15,
+            leech: 0.15,
+            piercing: 0.15,
+            tenacity: 0.15,
+            damage_reflection: 0.0,
+            skills: Vec::new(),
             //passives : Vec::new(),
             mark: Mark::Blue,
             class: Class::Attack,
             faction: Faction::DoomLegion,
             rarity: Rarity::Common,
         };
-        let hi : Instance = Instance::new(&h,0,1,0);
+        let hi: Instance = Instance::new(&h, 0, 1, 0);
         assert_eq!(h.health, hi.health);
-
     }
-
 }

@@ -1,10 +1,16 @@
-use crate::{debug, indent, data::{skill::{Skill, get_selection, get_select}, faction::Faction, subskill::Trigger}};
+use crate::{
+    data::{
+        faction::Faction,
+        skill::{get_select, get_selection, Skill},
+        subskill::Trigger,
+    },
+    debug, indent,
+};
 
 use super::{InstanceIndex, Wave};
 
-
 impl Wave<'_> {
-    pub fn before_action(&mut self, actor : InstanceIndex) {
+    pub fn before_action(&mut self, actor: InstanceIndex) {
         //let a = self.instances[actor];//get_ally_indices(actor);
         //let e = self.get_enemies_indices(actor);
         //let e = self.get_enemies(actor);
@@ -15,11 +21,11 @@ impl Wave<'_> {
         //    };
         debug!("before {} acts", self.name(actor));
         indent!({
-            self.on_trigger_self(actor,Trigger::BeginningOfEachTurn);
+            self.on_trigger_self(actor, Trigger::BeginningOfEachTurn);
             self.on_turn_start_marville(actor);
             self.nita_convert_poison_to_heal(actor);
-            // apply effects 
-            // apply poison 
+            // apply effects
+            // apply poison
             self.dot_poison(actor);
             // apply heal
             self.dot_heal(actor);
@@ -34,22 +40,21 @@ impl Wave<'_> {
         })
     }
 
-    pub fn after_action(&mut self, actor :InstanceIndex) {
+    pub fn after_action(&mut self, actor: InstanceIndex) {
         debug!("after {} acts", actor);
         indent!({
             self.after_action_tifya(actor);
             if self.get_faction(actor) == Faction::DragonTribe && self.bonds_counter[actor] < 5 {
                 self.bonds_counter[actor] += 1;
             }
-            self.set_turn_meter(actor,0.0);
+            self.set_turn_meter(actor, 0.0);
             self.effect_reduce(actor);
             self.shield_reduce(actor);
             self.team_acted[self.teams[actor]] = true;
         })
     }
 
-
-    pub fn act(&mut self, actor : InstanceIndex) {
+    pub fn act(&mut self, actor: InstanceIndex) {
         debug!("{} acts", self.fmt(actor));
         indent!({
             //
@@ -63,7 +68,7 @@ impl Wave<'_> {
                 return;
             }
             // choose action
-            let skills : Vec<&Skill> = self.get_active_skills(actor);
+            let skills: Vec<&Skill> = self.get_active_skills(actor);
             debug!("{} has active skills:", self.name(actor));
             indent!({
                 for s in skills.iter() {
@@ -71,26 +76,33 @@ impl Wave<'_> {
                 }
             });
             if skills.len() == 0 {
-                panic!("{} has no active skills: {:#?}", self.name(actor), self.heroes[actor])
+                panic!(
+                    "{} has no active skills: {:#?}",
+                    self.name(actor),
+                    self.heroes[actor]
+                )
             }
 
-            let skill :&Skill = self.get_player_of_instance(actor).pick_skill(self, actor,&skills);
+            let skill: &Skill = self
+                .get_player_of_instance(actor)
+                .pick_skill(self, actor, &skills);
 
             debug!("{} chooses {:?}", self.name(actor), skill);
             indent!({
                 // get targets
-                let ts = get_selection(self,get_select(skill), actor); 
+                let ts = get_selection(self, get_select(skill), actor);
                 if !ts.is_empty() {
-                    let target : InstanceIndex = self.get_player_of_instance(actor).pick_target(self, actor, &skill, &ts);
+                    let target: InstanceIndex = self
+                        .get_player_of_instance(actor)
+                        .pick_target(self, actor, &skill, &ts);
                     //
-                    self.pre_execute_skill(actor, target,skill );
+                    self.pre_execute_skill(actor, target, skill);
                     // apply skill
                     self.execute_skill(skill, actor, target);
-                }
-                else {
-                        // TODO maybe not even provide this option as active skill
-                        debug!("{} has no valid targets for {}", self.fmt(actor), skill);
-                        return;
+                } else {
+                    // TODO maybe not even provide this option as active skill
+                    debug!("{} has no valid targets for {}", self.fmt(actor), skill);
+                    return;
                 }
             });
             // finish

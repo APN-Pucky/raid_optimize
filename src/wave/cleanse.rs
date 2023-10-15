@@ -1,14 +1,16 @@
+use crate::data::effect::Effect;
 
-use crate::{data::effect::Effect};
-
-use super::{ Wave, InstanceIndex};
+use super::{InstanceIndex, Wave};
 
 use rand::seq::SliceRandom;
 
 impl Wave<'_> {
     // TODO this is broken
-    pub fn cleanse<F>(&mut self,  actor :InstanceIndex, effect_closure:&F, layers: u32) where F : Fn(Effect) -> bool {
-        for (k,v) in self.effects[actor].em.iter_mut() {
+    pub fn cleanse<F>(&mut self, actor: InstanceIndex, effect_closure: &F, layers: u32)
+    where
+        F: Fn(Effect) -> bool,
+    {
+        for (k, v) in self.effects[actor].em.iter_mut() {
             if effect_closure(k) {
                 // drop `layers` randomly of v
                 if v.len() > layers as usize {
@@ -18,8 +20,7 @@ impl Wave<'_> {
                     for _i in 0..layers {
                         v.pop();
                     }
-                }
-                else {
+                } else {
                     // empty v
                     v.clear();
                 }
@@ -28,9 +29,12 @@ impl Wave<'_> {
         self.effects[actor].remove_empty();
     }
 
-    pub fn cleanse_team<F>(&mut self, actor : InstanceIndex, effect_closure: &F ,layers:u32) where F : Fn(Effect) -> bool {
+    pub fn cleanse_team<F>(&mut self, actor: InstanceIndex, effect_closure: &F, layers: u32)
+    where
+        F: Fn(Effect) -> bool,
+    {
         for i in self.get_ally_indices(actor) {
-            self.cleanse(i,effect_closure,layers);
+            self.cleanse(i, effect_closure, layers);
         }
     }
 }

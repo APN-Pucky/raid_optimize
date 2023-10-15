@@ -2,8 +2,9 @@ use enum_map::Enum;
 
 use strum_macros::EnumIter;
 
-
-#[derive(EnumIter, Debug,Enum, PartialEq, Eq ,strum_macros::Display,Copy,Clone,Deserialize, Serialize, )]
+#[derive(
+    EnumIter, Debug, Enum, PartialEq, Eq, strum_macros::Display, Copy, Clone, Deserialize, Serialize,
+)]
 pub enum Effect {
     None,
 
@@ -49,13 +50,12 @@ pub enum Effect {
 
     Heal,
     HPBurning,
-    
+
     Immortal,
 
     RippleII,
 
     Suffocated,
-
 
     SpeedDownI,
     SpeedDownII,
@@ -67,11 +67,9 @@ pub enum Effect {
     TenacityDownI,
     TenacityDownII,
 
-
     WetI,
     WetII,
 
-    
     //Debuff
     BlockBuff,
     Stun,
@@ -100,13 +98,13 @@ pub enum Effect {
 
     //Faction
     FactionHiddenWaveAttack, // Counter for faction hidden wave
-    FactionHiddenWaveSkill, // Counter for faction hidden wave
+    FactionHiddenWaveSkill,  // Counter for faction hidden wave
 
     //Util
-    _DeepTrapCounter
+    _DeepTrapCounter,
 }
 
-pub fn get_max(effect:Effect) -> u32 {
+pub fn get_max(effect: Effect) -> u32 {
     match effect {
         Effect::ScarletSakura => 20,
         Effect::Arcane => 5,
@@ -117,15 +115,15 @@ pub fn get_max(effect:Effect) -> u32 {
         Effect::FishShoal => 3,
         Effect::RosePoison => 40,
         Effect::Poison => 10,
-        _ => 999999
+        _ => 999999,
     }
 }
 
-pub fn is_buff(effect : Effect) -> bool {
-    ! is_debuff(effect)
+pub fn is_buff(effect: Effect) -> bool {
+    !is_debuff(effect)
 }
 
-pub fn is_attribute_debuff(effect : Effect) -> bool {
+pub fn is_attribute_debuff(effect: Effect) -> bool {
     match effect {
         Effect::WetI => true,
         Effect::WetII => true,
@@ -149,15 +147,15 @@ pub fn is_attribute_debuff(effect : Effect) -> bool {
         Effect::CritDamageDownI => true,
         Effect::CritDamageDownII => true,
 
-        Effect::Poison=> false,
-        Effect::Burn=> false,
+        Effect::Poison => false,
+        Effect::Burn => false,
         Effect::Bleed => false,
-        Effect::HPBurning=> false,
+        Effect::HPBurning => false,
         _ => false,
     }
 }
 
-pub fn is_debuff(effect:Effect) -> bool {
+pub fn is_debuff(effect: Effect) -> bool {
     match effect {
         Effect::WetI => true,
         Effect::WetII => true,
@@ -186,7 +184,7 @@ pub fn is_debuff(effect:Effect) -> bool {
     }
 }
 
-pub fn is_dot(effect : Effect) -> bool {
+pub fn is_dot(effect: Effect) -> bool {
     match effect {
         Effect::WetI => false,
         Effect::WetII => false,

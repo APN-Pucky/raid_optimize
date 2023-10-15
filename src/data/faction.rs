@@ -1,9 +1,18 @@
-
-use enum_map::{Enum};
-
+use enum_map::Enum;
 
 //#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone )]
-#[derive(Debug,Enum, PartialEq, Eq, strum_macros::Display,strum_macros::EnumIter,Deserialize, Serialize,Copy,Clone)]
+#[derive(
+    Debug,
+    Enum,
+    PartialEq,
+    Eq,
+    strum_macros::Display,
+    strum_macros::EnumIter,
+    Deserialize,
+    Serialize,
+    Copy,
+    Clone,
+)]
 pub enum Faction {
     // Stabilized
     // Tested

@@ -1,27 +1,22 @@
 use super::hero::Hero;
 
-
-
-
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Heroes {
-    #[serde(rename="hero")]
+    #[serde(rename = "hero")]
     pub heroes: Vec<Hero>,
 }
 
 #[cfg(test)]
 mod tests {
-    
-    use quick_xml::de::from_str;
 
-    
+    use quick_xml::de::from_str;
 
     use super::*;
 
     #[test]
     fn read_xml_file() {
         let file_string = std::fs::read_to_string("data/heroes.xml").unwrap();
-        let heroes : Heroes = from_str(&file_string).unwrap();
+        let heroes: Heroes = from_str(&file_string).unwrap();
         //panic!("{:?}", heroes);
         assert_eq!(heroes.heroes[0].id, 1);
     }

@@ -2,9 +2,9 @@ use enum_map::{Enum, EnumMap};
 
 use crate::data::effect::Effect;
 
-use super::{ Wave, InstanceIndex};
+use super::{InstanceIndex, Wave};
 
-#[derive(Debug,Enum, PartialEq, Eq, strum_macros::Display,Copy,Clone)]
+#[derive(Debug, Enum, PartialEq, Eq, strum_macros::Display, Copy, Clone)]
 pub enum Stat {
     Attacks,
     Attacked,
@@ -37,7 +37,6 @@ pub enum Stat {
     Piercing,
     Pierced,
 
-
     Revives,
     Revived,
     ResetSkill,
@@ -48,7 +47,7 @@ pub enum Stat {
     TurnMeterReduced,
 }
 
-pub fn effect_to_stat(e:Effect) -> Stat {
+pub fn effect_to_stat(e: Effect) -> Stat {
     match e {
         Effect::WetI => Stat::EffectInflicted,
         Effect::WetII => Stat::EffectInflicted,
@@ -73,7 +72,7 @@ pub fn effect_to_stat(e:Effect) -> Stat {
 }
 
 impl Wave<'_> {
-    pub fn add_stat(&mut self, actor:InstanceIndex, key: Stat, statistics: f32 ) {
+    pub fn add_stat(&mut self, actor: InstanceIndex, key: Stat, statistics: f32) {
         if self.track_statistics {
             self.statistics[actor].sts[key] += statistics;
         }
@@ -82,17 +81,17 @@ impl Wave<'_> {
 
 #[derive(Debug)]
 pub struct Statistics {
-    pub sts :  EnumMap<Stat,f32>,
+    pub sts: EnumMap<Stat, f32>,
 }
 
 impl Statistics {
     pub fn new() -> Self {
         Self {
-            sts : EnumMap::default(),
+            sts: EnumMap::default(),
         }
     }
     pub fn clear(&mut self) {
-        for (_key,value) in self.sts.iter_mut() {
+        for (_key, value) in self.sts.iter_mut() {
             *value = 0.0;
         }
     }

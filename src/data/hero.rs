@@ -1,22 +1,21 @@
 use std::fmt;
 
-use super::{mark::Mark, class::Class, faction::Faction, rarity::Rarity, skill::Skill, heroes::Heroes};
+use super::{
+    class::Class, faction::Faction, heroes::Heroes, mark::Mark, rarity::Rarity, skill::Skill,
+};
 
-
-
-
-#[derive(Deserialize,Serialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Hero {
     pub id: u32,
     pub name: String,
     #[serde(with = "quick_xml::serde_helpers::text_content")]
-    pub mark : Mark,
+    pub mark: Mark,
     #[serde(with = "quick_xml::serde_helpers::text_content")]
     pub class: Class,
     #[serde(with = "quick_xml::serde_helpers::text_content")]
     pub faction: Faction,
     #[serde(with = "quick_xml::serde_helpers::text_content")]
-    pub rarity : Rarity,
+    pub rarity: Rarity,
     pub health: f32,
     pub attack: f32,
     pub defense: f32,
@@ -30,8 +29,8 @@ pub struct Hero {
     pub leech: f32,
     pub piercing: f32,
     pub tenacity: f32,
-    pub damage_reflection : f32,
-    #[serde(rename="$value",default)]
+    pub damage_reflection: f32,
+    #[serde(rename = "$value", default)]
     pub skills: Vec<Skill>,
     //#[serde(rename="passive")]
     //pub passives : Vec<Passive>,
@@ -42,10 +41,10 @@ impl Default for Hero {
         Hero {
             id: 0,
             name: "".to_string(),
-            mark : Mark::Blue,
+            mark: Mark::Blue,
             class: Class::Attack,
             faction: Faction::DoomLegion,
-            rarity : Rarity::Legend,
+            rarity: Rarity::Legend,
             health: 0.,
             attack: 0.,
             defense: 0.,
@@ -59,7 +58,7 @@ impl Default for Hero {
             leech: 0.,
             piercing: 0.,
             tenacity: 0.,
-            damage_reflection : 0.,
+            damage_reflection: 0.,
             skills: vec![],
         }
     }
@@ -67,42 +66,42 @@ impl Default for Hero {
 
 pub fn get_hero_by_string<'a>(heroes: &'a Heroes, name: &'a str) -> Option<&'a Hero> {
     for hero in heroes.heroes.iter() {
-        if hero.name == name  || name  == format!("[{}]", hero.id) 
-        { // TOOD handle multiple names
-            return Some(hero)
+        if hero.name == name || name == format!("[{}]", hero.id) {
+            // TOOD handle multiple names
+            return Some(hero);
         }
     }
     None
     //panic!("Hero not found: {}", name);
 }
 
-
 impl fmt::Display for Hero {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} (health: {}, attack: {})", self.name, self.health, self.attack)
+        write!(
+            f,
+            "{} (health: {}, attack: {})",
+            self.name, self.health, self.attack
+        )
     }
 }
-
 
 #[cfg(test)]
 mod tests {
     use crate::wave::heroes::natalie::bloodthristy_desire::BloodthirstyDesire;
-    
-    use quick_xml::{se::to_string, de::from_str};
+
+    use quick_xml::{de::from_str, se::to_string};
 
     use super::*;
 
     #[test]
     fn write_xml() {
-        
-
-        let hero = Hero{
+        let hero = Hero {
             id: 1,
             name: "Elhain".to_string(),
-            mark : Mark::Blue,
+            mark: Mark::Blue,
             class: Class::Support,
             faction: Faction::WizardsEye,
-            rarity : Rarity::Legend,
+            rarity: Rarity::Legend,
             health: 15000.,
             attack: 1000.,
             defense: 1000.,
@@ -116,12 +115,12 @@ mod tests {
             leech: 0.15,
             piercing: 0.15,
             tenacity: 0.15,
-            damage_reflection : 0.15,
+            damage_reflection: 0.15,
             skills: vec![Skill::BloodthirstyDesire(BloodthirstyDesire::default())],
         };
         //String buffer writter
         //let mut buffer = Vec::new();
-        
+
         //match serde_xml_rs::to_writer(&mut buffer,&hero)  {
         //    Ok(_) => {},
         //    Err(e) => println!("Error: {}", e),
@@ -129,7 +128,7 @@ mod tests {
         //let xml = String::from_utf8(buffer).unwrap();
         let _xml = to_string(&hero).unwrap();
         //panic!("{}", xml);
-        /* 
+        /*
         assert_eq!(xml,            r#"
         <hero>
             <id>1</id>

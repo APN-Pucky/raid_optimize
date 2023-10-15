@@ -1,42 +1,37 @@
-
 use strum_macros::EnumIter;
 
 use crate::wave::heroes::alahan::detach::Detach;
 
-use crate::wave::heroes::phocas::divine_prayer::DivinePrayer;
-use crate::wave::heroes::nita::deep_trap::DeepTrap;
-use crate::wave::heroes::nita::curse::Curse;
-use crate::wave::heroes::nita::bondage::Bondage;
-use crate::wave::heroes::marville::fish_dive::FishDive;
-use crate::wave::heroes::marville::fish_guardian::FishGuardian;
-use crate::wave::heroes::marville::fish_waterball::FishWaterball;
-use crate::wave::heroes::marville::clean_ocean::CleanOcean;
-use crate::wave::heroes::natalie::bloodthristy_desire::BloodthirstyDesire;
-use crate::wave::heroes::hazier::bloodlust_strike::BloodlustStrike;
-use crate::wave::heroes::maya::force_of_mercy::ForceOfMercy;
-use crate::wave::heroes::maya::light_of_purifying::LightOfPurifying;
-use crate::wave::heroes::maya::sacred_light::SacredLight;
-use crate::wave::heroes::BasicAttack;
-use crate::wave::heroes::dakota::soul_ring::SoulRing;
-use crate::wave::heroes::dakota::soul_seal::SoulSeal;
-use crate::wave::heroes::dakota::soul_surge::SoulSurge;
-use crate::wave::heroes::margarita::counterattack_command::CounterattackCommand;
-use crate::wave::heroes::PassiveSkill;
-use crate::wave::InstanceIndex;
-use crate::wave::Wave;
 use crate::wave::heroes::alahan::commendation::Commendation;
 use crate::wave::heroes::alahan::spirit_call::SpiritCall;
 use crate::wave::heroes::alahan::spirit_fountain::SpiritFountain;
+use crate::wave::heroes::dakota::soul_ring::SoulRing;
+use crate::wave::heroes::dakota::soul_seal::SoulSeal;
+use crate::wave::heroes::dakota::soul_surge::SoulSurge;
 use crate::wave::heroes::geeliman::bursting_knowledge::BurstingKnowledge;
+use crate::wave::heroes::hazier::bloodlust_strike::BloodlustStrike;
 use crate::wave::heroes::hazier::darknight_arbitrament::DarknightArbitrament;
 use crate::wave::heroes::hazier::darknight_strike::DarknightStrike;
 use crate::wave::heroes::hazier::eye_for_an_eye::EyeForAnEye;
 use crate::wave::heroes::liz::fire_heal::FireHeal;
 use crate::wave::heroes::liz::resurrection::Resurrection;
 use crate::wave::heroes::liz::scorched_soul::ScorchedSoul;
+use crate::wave::heroes::margarita::counterattack_command::CounterattackCommand;
+use crate::wave::heroes::marville::clean_ocean::CleanOcean;
+use crate::wave::heroes::marville::fish_dive::FishDive;
+use crate::wave::heroes::marville::fish_guardian::FishGuardian;
+use crate::wave::heroes::marville::fish_waterball::FishWaterball;
+use crate::wave::heroes::maya::force_of_mercy::ForceOfMercy;
+use crate::wave::heroes::maya::light_of_purifying::LightOfPurifying;
+use crate::wave::heroes::maya::sacred_light::SacredLight;
 use crate::wave::heroes::natalie::bloodthirsty_scythe::BloodthirstyScythe;
+use crate::wave::heroes::natalie::bloodthristy_desire::BloodthirstyDesire;
 use crate::wave::heroes::natalie::energy_burst::EnergyBurst;
 use crate::wave::heroes::natalie::scythe_strike::ScytheStrike;
+use crate::wave::heroes::nita::bondage::Bondage;
+use crate::wave::heroes::nita::curse::Curse;
+use crate::wave::heroes::nita::deep_trap::DeepTrap;
+use crate::wave::heroes::phocas::divine_prayer::DivinePrayer;
 use crate::wave::heroes::seth::crystal_of_life::CrystalOfLife;
 use crate::wave::heroes::seth::deep_sea_power::DeepSeaPower;
 use crate::wave::heroes::seth::tide_big_hit::TideBigHit;
@@ -47,26 +42,26 @@ use crate::wave::heroes::space::tricks::Tricks;
 use crate::wave::heroes::tifya::leaves_storm::LeavesStorm;
 use crate::wave::heroes::tifya::scarlet_multi_strike::ScarletMultiStrike;
 use crate::wave::heroes::tifya::scarlet_slash::ScarletSlash;
+use crate::wave::heroes::BasicAttack;
 use crate::wave::heroes::Cooldown;
 use crate::wave::heroes::Execute;
-use crate::wave::heroes::Typed;
+use crate::wave::heroes::PassiveSkill;
 use crate::wave::heroes::Selector;
-
+use crate::wave::heroes::Typed;
+use crate::wave::InstanceIndex;
+use crate::wave::Wave;
 
 use super::subskill::SubSkill;
-
-
-
 
 use strum_macros::EnumString;
 
 pub struct NewSkill {
-    pub cooldown : u32,
-    pub subskills : Vec<SubSkill>,
+    pub cooldown: u32,
+    pub subskills: Vec<SubSkill>,
 }
 
-#[derive(Debug, PartialEq,strum_macros::Display, Deserialize, Serialize, Clone,Copy )]
-pub enum SkillType{
+#[derive(Debug, PartialEq, strum_macros::Display, Deserialize, Serialize, Clone, Copy)]
+pub enum SkillType {
     Basic,
     Passive,
     Active,
@@ -85,7 +80,18 @@ pub fn typ_default() -> SkillType {
     SkillType::None
 }
 
-#[derive(Default,EnumIter, Deserialize, Serialize,strum_macros::Display, Debug, Clone,Eq, PartialEq,Copy)]
+#[derive(
+    Default,
+    EnumIter,
+    Deserialize,
+    Serialize,
+    strum_macros::Display,
+    Debug,
+    Clone,
+    Eq,
+    PartialEq,
+    Copy,
+)]
 pub enum Select {
     #[default]
     None,
@@ -97,52 +103,38 @@ pub enum Select {
     SingleSelf,
 }
 
-
-
-
-
-
-pub fn get_selection(wave :& Wave, select: Select, actor :InstanceIndex, ) -> Vec<InstanceIndex> {
-    match select{
+pub fn get_selection(wave: &Wave, select: Select, actor: InstanceIndex) -> Vec<InstanceIndex> {
+    match select {
         Select::Everyone => {
             // 0..LEN
             wave.get_indices_iter().collect()
-        },
-        Select::SingleAlly => {
-            wave.get_ally_indices(actor)
-        },
-        Select::SingleEnemy => {
-            wave.get_enemies_indices(actor)
-        },
-        Select::AllEnemies => {
-            wave.get_enemies_indices(actor)
-        },
-        Select::AllAllies => {
-            wave.get_ally_indices(actor)
-        },
+        }
+        Select::SingleAlly => wave.get_ally_indices(actor),
+        Select::SingleEnemy => wave.get_enemies_indices(actor),
+        Select::AllEnemies => wave.get_enemies_indices(actor),
+        Select::AllAllies => wave.get_ally_indices(actor),
         Select::SingleSelf => {
             vec![actor]
-        },
+        }
         Select::None => {
             vec![]
         }
-    } 
+    }
 }
 
-
-pub fn is_passive(skill : &Skill) -> bool {
+pub fn is_passive(skill: &Skill) -> bool {
     return get_type(skill) == SkillType::Passive;
 }
 
-pub fn is_reducable(skill : &Skill) -> bool {
+pub fn is_reducable(skill: &Skill) -> bool {
     match skill {
-        Skill::FishDive {..} => false,
-        Skill::DivinePrayer {..} => false,
+        Skill::FishDive { .. } => false,
+        Skill::DivinePrayer { .. } => false,
         _ => true,
     }
 }
 
-pub fn is_basic_attack(skill :&Skill) -> bool {
+pub fn is_basic_attack(skill: &Skill) -> bool {
     return get_type(skill) == SkillType::Basic;
     //match skill {
     //    Skill::Generic{basic_attack,..} => *basic_attack,
@@ -169,22 +161,25 @@ pub fn is_basic_attack(skill :&Skill) -> bool {
     //}
 }
 
-#[derive( Debug, PartialEq, Deserialize, Serialize, Clone)]
+#[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
 pub struct Generic {
-    pub cooldown : u32,
-    pub name : String,
-    #[serde(default="select_default",with = "quick_xml::serde_helpers::text_content")]
+    pub cooldown: u32,
+    pub name: String,
+    #[serde(
+        default = "select_default",
+        with = "quick_xml::serde_helpers::text_content"
+    )]
     pub select: Select,
-    #[serde(rename="subskill")]
-    pub subskills : Vec<SubSkill>,
+    #[serde(rename = "subskill")]
+    pub subskills: Vec<SubSkill>,
 }
 impl Default for Generic {
     fn default() -> Self {
         Generic {
-            cooldown : 0,
-            name : "Generic".to_string(),
-            select : Select::None,
-            subskills : vec![],
+            cooldown: 0,
+            name: "Generic".to_string(),
+            select: Select::None,
+            subskills: vec![],
         }
     }
 }
@@ -223,7 +218,7 @@ macro_rules! gen_match {
                 //$(Skill::$Passive_extra {..} => {return SkillType::Passive})*
                 $(Skill::$Special ($Special {..}) => return $Special::TYPE,)*
             }
-        } 
+        }
 
         pub fn get_select(skill :&Skill)-> Select{
             match skill {
@@ -248,61 +243,54 @@ macro_rules! gen_match {
     }
 }
 
-gen_match!(         
-        [
-        Counterattack,
-        IncessantChatter,
-        SharpInstinct
-        ],
-        //[Resplendence {turn_meter_ratio : f32}],
-        [
-        BasicAttack
-        ,BloodthirstyScythe
-        ,BurstingKnowledge
-        ,BloodlustStrike
-        ,BloodthirstyDesire
-        ,Bondage
-        ,Curse
-        ,CleanOcean
-        ,CrystalOfLife     
-        ,Commendation 
-        ,CounterattackCommand
-        ,DarknightStrike   
-        ,DarknightArbitrament
-        ,DeepSeaPower      
-        ,DeepTrap
-        ,Detach
-        ,DivinePrayer
-        ,EnergyBurst       
-        ,EyeForAnEye       
-        ,FissionOfLife     
-        ,FireHeal          
-        ,FishDive
-        ,FishGuardian
-        ,FishWaterball
-        ,ForceOfMercy
-        ,LeavesStorm       
-        ,LightOfPurifying
-        ,Nightmare         
-        ,Resplendence
-        ,Resurrection      
-        ,ScorchedSoul      
-        ,ScytheStrike
-        ,SacredLight
-        ,SoulRing
-        ,SoulSurge
-        ,SoulSeal
-        ,ScarletSlash      
-        ,ScarletMultiStrike 
-        ,SpiritCall
-        ,SpiritFountain
-        ,TideBigHit        
-        ,Tricks    
-        ]
-    );
-
-
-
+gen_match!(
+    [Counterattack, IncessantChatter, SharpInstinct],
+    //[Resplendence {turn_meter_ratio : f32}],
+    [
+        BasicAttack,
+        BloodthirstyScythe,
+        BurstingKnowledge,
+        BloodlustStrike,
+        BloodthirstyDesire,
+        Bondage,
+        Curse,
+        CleanOcean,
+        CrystalOfLife,
+        Commendation,
+        CounterattackCommand,
+        DarknightStrike,
+        DarknightArbitrament,
+        DeepSeaPower,
+        DeepTrap,
+        Detach,
+        DivinePrayer,
+        EnergyBurst,
+        EyeForAnEye,
+        FissionOfLife,
+        FireHeal,
+        FishDive,
+        FishGuardian,
+        FishWaterball,
+        ForceOfMercy,
+        LeavesStorm,
+        LightOfPurifying,
+        Nightmare,
+        Resplendence,
+        Resurrection,
+        ScorchedSoul,
+        ScytheStrike,
+        SacredLight,
+        SoulRing,
+        SoulSurge,
+        SoulSeal,
+        ScarletSlash,
+        ScarletMultiStrike,
+        SpiritCall,
+        SpiritFountain,
+        TideBigHit,
+        Tricks
+    ]
+);
 
 #[cfg(test)]
 mod tests {
@@ -312,15 +300,12 @@ mod tests {
 
     #[test]
     fn write_xml() {
-        let skill= 
-            //typ : SkillType::Active,
-            //select: Select::SingleEnemy,
-            Skill::ScorchedSoul (ScorchedSoul{
-                cooldown : 3,
-                attack_damage_ratio : 1.0,
-                hp_burning_chance: 0.5,
-                hp_burning_turns: 2
-            });
+        let skill = Skill::ScorchedSoul(ScorchedSoul {
+            cooldown: 3,
+            attack_damage_ratio: 1.0,
+            hp_burning_chance: 0.5,
+            hp_burning_turns: 2,
+        });
 
         let _xml = to_string(&skill).unwrap();
         //panic!("{}",xml);
@@ -346,7 +331,12 @@ mod tests {
         .unwrap();
 
         match skill[0] {
-            Skill::ScorchedSoul(ScorchedSoul{attack_damage_ratio,hp_burning_chance, hp_burning_turns ,..}) => {
+            Skill::ScorchedSoul(ScorchedSoul {
+                attack_damage_ratio,
+                hp_burning_chance,
+                hp_burning_turns,
+                ..
+            }) => {
                 assert_eq!(attack_damage_ratio, 1.0);
                 assert_eq!(hp_burning_chance, 0.5);
                 assert_eq!(hp_burning_turns, 2);

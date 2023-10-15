@@ -1,4 +1,4 @@
-use crate::{indent, debug};
+use crate::{debug, indent};
 
 use super::Wave;
 

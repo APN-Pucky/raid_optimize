@@ -1,9 +1,18 @@
-#[derive(Debug, PartialEq,strum_macros::Display,strum_macros::EnumIter, Deserialize, Serialize, Clone,Copy )]
+#[derive(
+    Debug,
+    PartialEq,
+    strum_macros::Display,
+    strum_macros::EnumIter,
+    Deserialize,
+    Serialize,
+    Clone,
+    Copy,
+)]
 pub enum Rarity {
     Common, // White
-    Rare, // Green
-    Elite, // Blue
-    Epic, // Purple
+    Rare,   // Green
+    Elite,  // Blue
+    Epic,   // Purple
     Legend, // Gold
     Mythic, // Red
 }
