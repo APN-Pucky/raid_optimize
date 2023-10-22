@@ -1054,37 +1054,30 @@
                 <subskill target="SingleEnemy" ratio="2.4" type="Damage" scale="Defense" effect="None" chance="0.0" turns="0"/>
             </Generic>
 
-            <Generic>
+            <AristocraticStyle> 
+                <steal_shield_and_heal_chance>0.3 </steal_shield_and_heal_chance>
+            </AristocraticStyle>
+
+            <BloodySpiral> 
                 <cooldown>3</cooldown>
+                <attack_damage_ratio>7.0</attack_damage_ratio>
+                <increase_damage_ratio>0.2</increase_damage_ratio>
+                <restore_hp_damage_ratio>0.1</restore_hp_damage_ratio>
+            </BloodySpiral>
+
+            <Generic>
+                <cooldown>4</cooldown>
                 <type>
                     Active
                 </type>
                 <select>
                     AllAllies
                 </select>
-                <name>Fusion of Fire</name>
-                <subskill target="AllAllies" ratio="0.0" type="Inflict" scale="None" effect="Immortal" chance="1.0" turns="1"/>
+                <name>ScarletTornado</name>
+                <subskill target="AllEnemies" ratio="1.9" type="Damage" scale="Attack" effect="CountessKiss" chance="1.0" turns="1"/>
+                <subskill target="AllEnemies" ratio="1.9" type="Damage" scale="Attack"/>
+                <subskill target="AllEnemies" ratio="1.9" type="Damage" scale="Attack"/>
             </Generic>
-
-
-
-            <Generic>
-            <cooldown>0</cooldown>
-            <type>
-                Passive
-            </type>
-            <select>
-                AllAllies
-            </select>
-                <name>FusionOfFire</name>
-                <subskill trigger="EnemyDeath" target="SingleSelf" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
-                <subskill trigger="AllyDeath" target="AllAllies" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
-            </Generic>
-
-        
-            <DivinePrayer>
-                <cooldown>5</cooldown>
-            </DivinePrayer>
         
     </hero>
 </heroes>

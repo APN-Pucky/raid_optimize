@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Skill are no longer only matched if they are the first 
+- Skill only matched if they are the first 
+- Crash on Marville's FishShoal/FishGuardian
 
 ## [0.0.14] - 2023-10-14
 

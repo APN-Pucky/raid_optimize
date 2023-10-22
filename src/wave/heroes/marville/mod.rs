@@ -27,8 +27,8 @@ impl Wave<'_> {
                     restore_fish_shoal, ..
                 }) = *p
                 {
-                    for i in 0..restore_fish_shoal {
-                        self.inflict_single(i as InstanceIndex, actor, Effect::FishShoal, 1.0, 999)
+                    for _j in 0..restore_fish_shoal {
+                        self.inflict_single(i, actor, Effect::FishShoal, 1.0, 999)
                     }
                 }
             }
