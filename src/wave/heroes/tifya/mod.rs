@@ -1,8 +1,5 @@
 use crate::{
-    data::{
-        effect::{is_debuff, Effect},
-        skill::Skill,
-    },
+    data::{effect::Effect, skill::Skill},
     wave::{InstanceIndex, Wave},
 };
 
@@ -50,7 +47,7 @@ impl Wave<'_> {
                 }
                 if self.teams[i] != self.teams[actor] {
                     if let [Skill::SharpInstinct, ..] = self.heroes[i].skills[..] {
-                        self.cleanse(i, &is_debuff, 999);
+                        self.cleanse(i, Effect::is_debuff, 999);
                         self.act(i);
                     }
                 }

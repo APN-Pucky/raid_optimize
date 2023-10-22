@@ -1,4 +1,3 @@
-use crate::data::effect::is_dot;
 use crate::wave::heroes::Cooldown;
 use crate::{
     data::{
@@ -44,7 +43,7 @@ impl LightOfPurifying {
     ) {
         let t = target;
         if wave.health[t] == wave.get_max_health(t) {
-            wave.cleanse(target, &is_dot, self.cleanse_dot_layers);
+            wave.cleanse(target, Effect::is_dot, self.cleanse_dot_layers);
             wave.inflict_single(actor, target, Effect::Heal, 1.0, self.heal_turns);
         }
         wave.restore_single(

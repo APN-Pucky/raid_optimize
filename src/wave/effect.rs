@@ -1,4 +1,4 @@
-use crate::data::effect::{is_buff, is_debuff, Effect};
+use crate::data::effect::Effect;
 
 use super::{InstanceIndex, Wave};
 use enum_map::EnumMap;
@@ -94,7 +94,7 @@ impl Wave<'_> {
 
     pub fn has_debuff(&self, actor: InstanceIndex) -> bool {
         for (key, value) in self.effects[actor].em.iter() {
-            if is_debuff(key) && !value.is_empty() {
+            if key.is_debuff() && !value.is_empty() {
                 return true;
             }
         }
@@ -103,7 +103,7 @@ impl Wave<'_> {
 
     pub fn has_buff(&self, actor: InstanceIndex) -> bool {
         for (key, value) in self.effects[actor].em.iter() {
-            if is_buff(key) && !value.is_empty() {
+            if key.is_buff() && !value.is_empty() {
                 return true;
             }
         }
@@ -138,7 +138,7 @@ impl Wave<'_> {
     pub fn get_number_of_buff_layers(&self, actor: InstanceIndex) -> u32 {
         let mut n = 0;
         for (k, v) in self.effects[actor].em.iter() {
-            if is_buff(k) {
+            if k.is_buff() {
                 n += v.len() as u32;
             }
         }

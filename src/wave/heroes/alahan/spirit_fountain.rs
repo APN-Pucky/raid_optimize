@@ -1,7 +1,7 @@
 use crate::wave::heroes::Cooldown;
 use crate::{
     data::{
-        effect::{is_attribute_debuff, Effect},
+        effect::Effect,
         skill::{Select, Skill, SkillType},
     },
     wave::{InstanceIndex, Wave},
@@ -37,7 +37,7 @@ impl SpiritFountain {
     ) {
         wave.restore_to_highest_ally_health_percentage(actor);
         if self.cleanse_attribute_debuffs {
-            wave.cleanse_team(actor, &is_attribute_debuff, 999)
+            wave.cleanse_team(actor, Effect::is_attribute_debuff, 999)
         }
         wave.inflict_ally_team(actor, Effect::Heal, 1.0, self.heal_turns);
     }

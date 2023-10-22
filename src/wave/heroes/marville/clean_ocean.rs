@@ -1,4 +1,3 @@
-use crate::data::effect::{is_attribute_debuff, is_dot};
 use crate::wave::heroes::Cooldown;
 use crate::{
     data::{
@@ -41,8 +40,8 @@ impl CleanOcean {
         _target: InstanceIndex,
     ) {
         wave.restore_max_hp_ratio_own_team(actor, self.restore_max_hp_ratio);
-        wave.cleanse_team(actor, &is_dot, self.cleanse_dot_layers);
-        wave.cleanse_team(actor, &is_attribute_debuff, 999);
+        wave.cleanse_team(actor, Effect::is_dot, self.cleanse_dot_layers);
+        wave.cleanse_team(actor, Effect::is_attribute_debuff, 999);
         wave.inflict_ally_team(actor, Effect::BlockRemoval, 1.0, self.block_removal_turns);
         wave.inflict_ally_team(
             actor,

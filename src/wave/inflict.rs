@@ -1,8 +1,5 @@
 use crate::{
-    data::{
-        effect::{get_max, is_buff, is_debuff, Effect},
-        faction::Faction,
-    },
+    data::{effect::Effect, faction::Faction},
     debug, indent, roll,
     wave::stat::effect_to_stat,
 };
@@ -35,11 +32,11 @@ impl Wave<'_> {
             self.name(target)
         );
         indent!({
-            if self.has_effect(target, Effect::BlockBuff) && is_buff(effect) {
+            if self.has_effect(target, Effect::BlockBuff) && effect.is_buff() {
                 debug!("{} has BlockBuff, {} is blocked", self.name(target), effect);
                 return false;
             }
-            if self.effects[target].get(effect) >= get_max(effect) {
+            if self.effects[target].get(effect) >= effect.get_max() {
                 debug!("{} already has max {}", self.name(target), effect);
                 return false;
             }
@@ -51,7 +48,7 @@ impl Wave<'_> {
             self.on_inflicted_margarita(target, effect);
             if actor == target
                 && self.get_faction(actor) == Faction::DoomLegion
-                && is_buff(effect)
+                && effect.is_buff()
                 && self.bonds_counter[actor] < 5
             {
                 self.bonds_counter[actor] += 1;
@@ -85,7 +82,7 @@ impl Wave<'_> {
         turns: u32,
     ) {
         indent!({
-            if !is_debuff(effect) {
+            if !effect.is_debuff() {
                 self.inflict_buff_single(actor, target, effect, turns);
             } else {
                 self.inflict_debuff_single(actor, target, effect, chance, turns);

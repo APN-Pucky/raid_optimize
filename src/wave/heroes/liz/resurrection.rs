@@ -1,9 +1,7 @@
+use crate::data::effect::Effect;
 use crate::wave::heroes::Cooldown;
 use crate::{
-    data::{
-        effect::is_dot,
-        skill::{Select, Skill, SkillType},
-    },
+    data::skill::{Select, Skill, SkillType},
     wave::{InstanceIndex, Wave},
 };
 
@@ -41,6 +39,6 @@ impl Resurrection {
         let max_hp = wave.get_max_health(actor);
         wave.restore_max_hp_ratio_own_team(actor, self.restore_max_hp_ratio);
         wave.shield_ally_team(actor, self.shield_max_hp_ratio * max_hp, self.shield_turns);
-        wave.cleanse_team(actor, &is_dot, self.cleanse_dot_debuffs);
+        wave.cleanse_team(actor, Effect::is_dot, self.cleanse_dot_debuffs);
     }
 }

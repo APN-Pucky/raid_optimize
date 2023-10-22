@@ -1,4 +1,3 @@
-use crate::data::effect::is_buff;
 use crate::{data::effect::Effect, debug, indent};
 
 use super::{InstanceIndex, Wave};
@@ -17,7 +16,7 @@ impl Wave<'_> {
                 return;
             }
             for (k, v) in self.effects[target].em.iter_mut() {
-                if is_buff(k) {
+                if k.is_buff() {
                     // empty v
                     v.clear();
                 }

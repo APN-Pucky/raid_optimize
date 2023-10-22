@@ -1,4 +1,4 @@
-use crate::data::effect::Effect;
+use crate::data::effect::{Effect, EffectFilter};
 
 use super::{InstanceIndex, Wave};
 
@@ -6,12 +6,9 @@ use rand::seq::SliceRandom;
 
 impl Wave<'_> {
     // TODO this is broken
-    pub fn cleanse<F>(&mut self, actor: InstanceIndex, effect_closure: &F, layers: u32)
-    where
-        F: Fn(Effect) -> bool,
-    {
+    pub fn cleanse(&mut self, actor: InstanceIndex, effect_closure: EffectFilter, layers: u32) {
         for (k, v) in self.effects[actor].em.iter_mut() {
-            if effect_closure(k) {
+            if effect_closure(&k) {
                 // drop `layers` randomly of v
                 if v.len() > layers as usize {
                     let mut rng = rand::thread_rng();
@@ -29,10 +26,12 @@ impl Wave<'_> {
         self.effects[actor].remove_empty();
     }
 
-    pub fn cleanse_team<F>(&mut self, actor: InstanceIndex, effect_closure: &F, layers: u32)
-    where
-        F: Fn(Effect) -> bool,
-    {
+    pub fn cleanse_team(
+        &mut self,
+        actor: InstanceIndex,
+        effect_closure: EffectFilter,
+        layers: u32,
+    ) {
         for i in self.get_ally_indices(actor) {
             self.cleanse(i, effect_closure, layers);
         }

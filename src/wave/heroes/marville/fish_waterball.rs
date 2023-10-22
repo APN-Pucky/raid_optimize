@@ -1,4 +1,4 @@
-use crate::data::effect::is_attribute_debuff;
+use crate::data::effect::Effect;
 use crate::roll;
 use crate::wave::heroes::Cooldown;
 use crate::{
@@ -36,7 +36,7 @@ impl FishWaterball {
     ) {
         let damage = wave.get_attack_damage(actor) * self.attack_damage_ratio;
         wave.attack_enemy_team(actor, damage, skill);
-        wave.refresh_enemy_team(actor, &is_attribute_debuff);
+        wave.refresh_enemy_team(actor, Effect::is_attribute_debuff);
         if roll(self.act_chance) {
             // take another turn
             wave.act(actor);

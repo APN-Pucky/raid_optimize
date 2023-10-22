@@ -1,7 +1,7 @@
 use crate::wave::heroes::Cooldown;
 use crate::{
     data::{
-        effect::{is_buff, Effect},
+        effect::Effect,
         skill::{Select, Skill, SkillType},
     },
     debug, indent,
@@ -58,7 +58,7 @@ impl DarknightArbitrament {
                 .em
                 .iter()
                 .map(|(effect, _)| effect)
-                .filter(|effect| is_buff(*effect))
+                .filter(|effect| effect.is_buff())
                 .collect::<Vec<_>>()
             {
                 let cloned_vec: Vec<_> = wave.effects[target].em[effect].iter().cloned().collect();
