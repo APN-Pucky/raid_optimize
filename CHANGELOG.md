@@ -11,12 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Hero Agatha
 - Hero Guhanna
+- Hero Asindo
 - "Triggerer" keyword to Generic skills
+
+### Changed
+
+- "BeginningOfEachTurn" renamed to "TurnBegin"
 
 ### Fixed
 
 - Skill only matched if they are the first 
 - Crash on Marville's FishShoal/FishGuardian
+- Increase vs Reduce Turn Meter ratios
 
 ## [0.0.14] - 2023-10-14
 

@@ -59,8 +59,6 @@ impl EyeForAnEye {
             self.control_immunity_turns,
         );
 
-        // Early cooling down, so that the skill can't be used again in the same turn
-        wave.cooldown_s(actor, skill);
         wave.act(actor);
     }
 }

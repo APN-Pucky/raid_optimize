@@ -34,11 +34,11 @@ impl Wave<'_> {
     pub fn nita_convert_poison_to_heal(&mut self, actor: InstanceIndex) {
         if has_skill!(self, actor, Skill::DeepTrap(_)) {
             debug!("DeepTrap converts poison to Heal");
-            for v in self.effects[actor].em[Effect::Poison].clone() {
+            for v in self.effects[actor].clone_single(Effect::Poison) {
                 self.inflict_single(actor, actor, Effect::Heal, 1.0, v.1);
             }
-            self.effects[actor].em[Effect::Poison].clear();
-            self.effects[actor].em[Effect::_DeepTrapCounter].clear();
+            self.effects[actor].clear_single(Effect::Poison);
+            self.effects[actor].clear_single(Effect::_DeepTrapCounter);
         }
     }
 

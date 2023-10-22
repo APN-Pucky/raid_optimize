@@ -1,5 +1,6 @@
 use crate::{
     data::{
+        effect::Effect,
         faction::Faction,
         skill::{get_select, get_selection, Skill},
         subskill::Trigger,
@@ -21,7 +22,7 @@ impl Wave<'_> {
         //    };
         debug!("before {} acts", self.name(actor));
         indent!({
-            self.on_trigger(actor, Trigger::BeginningOfEachTurn);
+            self.on_trigger(actor, Trigger::TurnBegin);
             self.on_turn_start_marville(actor);
             self.nita_convert_poison_to_heal(actor);
             // apply effects
@@ -68,43 +69,47 @@ impl Wave<'_> {
                 return;
             }
             // choose action
-            let skills: Vec<&Skill> = self.get_active_skills(actor);
+            let skills: Vec<&Skill> = self.get_ready_skills(actor);
             debug!("{} has active skills:", self.name(actor));
             indent!({
                 for s in skills.iter() {
                     debug!("{}", s);
                 }
             });
-            if skills.len() == 0 {
-                panic!(
-                    "{} has no active skills: {:#?}",
+
+            if skills.len() != 0 {
+                let skill: &Skill = self
+                    .get_player_of_instance(actor)
+                    .pick_skill(self, actor, &skills);
+
+                debug!("{} chooses {:?}", self.name(actor), skill);
+                indent!({
+                    // get targets
+                    let ts = get_selection(self, get_select(skill), actor);
+                    if !ts.is_empty() {
+                        let target: InstanceIndex = self
+                            .get_player_of_instance(actor)
+                            .pick_target(self, actor, &skill, &ts);
+                        //
+                        self.pre_execute_skill(actor, target, skill);
+                        // apply skill
+                        self.execute_skill(skill, actor, target);
+                    } else {
+                        // TODO maybe not even provide this option as active skill
+                        debug!("{} has no valid targets for {}", self.fmt(actor), skill);
+                        return;
+                    }
+                });
+            } else {
+                // TODO print
+                debug!(
+                    "{} has no ready skills (Stun {}, Freeze {}): {:#?}",
                     self.name(actor),
+                    self.effects[actor].get(Effect::Stun),
+                    self.effects[actor].get(Effect::Freeze),
                     self.heroes[actor]
                 )
             }
-
-            let skill: &Skill = self
-                .get_player_of_instance(actor)
-                .pick_skill(self, actor, &skills);
-
-            debug!("{} chooses {:?}", self.name(actor), skill);
-            indent!({
-                // get targets
-                let ts = get_selection(self, get_select(skill), actor);
-                if !ts.is_empty() {
-                    let target: InstanceIndex = self
-                        .get_player_of_instance(actor)
-                        .pick_target(self, actor, &skill, &ts);
-                    //
-                    self.pre_execute_skill(actor, target, skill);
-                    // apply skill
-                    self.execute_skill(skill, actor, target);
-                } else {
-                    // TODO maybe not even provide this option as active skill
-                    debug!("{} has no valid targets for {}", self.fmt(actor), skill);
-                    return;
-                }
-            });
             // finish
             self.after_action(actor);
         })

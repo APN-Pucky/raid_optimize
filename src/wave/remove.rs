@@ -1,7 +1,8 @@
 use crate::{
-    data::effect::{Effect, EffectFilter},
+    data::effect::{self, Effect, EffectFilter},
     debug, indent,
 };
+use strum::IntoEnumIterator;
 
 use super::{InstanceIndex, Wave};
 
@@ -11,8 +12,8 @@ impl Wave<'_> {
         &mut self,
         actor: InstanceIndex,
         target: InstanceIndex,
-        effect_closure: EffectFilter,
-    ) -> i32 {
+        effect: Effect,
+    ) -> u32 {
         let mut i = 0;
         debug!(
             "{} removes buffs from {}",
@@ -25,24 +26,31 @@ impl Wave<'_> {
                 self.effects[target].remove_layer(Effect::BlockRemoval);
                 return;
             }
-            for (k, v) in self.effects[target].em.iter_mut() {
-                if effect_closure(&k) {
-                    // empty v
-                    v.clear();
-                    i += 1;
-                }
-            }
+            i += self.effects[target].get(effect);
+            self.effects[target].clear_single(effect);
             self.effects[target].remove_empty();
         });
         i
     }
+    pub fn remove_effect_filter_single(
+        &mut self,
+        actor: InstanceIndex,
+        target: InstanceIndex,
+        opt_effect_closure: EffectFilter,
+    ) -> u32 {
+        let mut i = 0;
+        for e in Effect::iter().filter(|e| opt_effect_closure(e)) {
+            i += self.remove_effect_single(actor, target, e);
+        }
+        i
+    }
 
-    pub fn remove_all_buffs_single(&mut self, actor: InstanceIndex, target: InstanceIndex) -> i32 {
+    pub fn remove_all_buffs_single(&mut self, actor: InstanceIndex, target: InstanceIndex) -> u32 {
         debug!(
             "{} removes all buffs from {}",
             self.name(actor),
             self.name(target)
         );
-        self.remove_effect_single(actor, target, Effect::is_buff)
+        self.remove_effect_filter_single(actor, target, Effect::is_buff)
     }
 }

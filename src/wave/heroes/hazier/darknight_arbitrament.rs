@@ -1,3 +1,5 @@
+use strum::IntoEnumIterator;
+
 use crate::wave::heroes::Cooldown;
 use crate::{
     data::{
@@ -53,16 +55,9 @@ impl DarknightArbitrament {
             wave.name(actor)
         );
         indent!({
-            //cloned loop to allow copying of buffs from wave to wave, which should never happen
-            for effect in wave.effects[target]
-                .em
-                .iter()
-                .map(|(effect, _)| effect)
-                .filter(|effect| effect.is_buff())
-                .collect::<Vec<_>>()
-            {
-                let cloned_vec: Vec<_> = wave.effects[target].em[effect].iter().cloned().collect();
-                wave.effects[actor].em[effect].extend(cloned_vec);
+            for effect in Effect::iter().filter(Effect::is_buff) {
+                let cloned_vec: Vec<_> = wave.effects[target].clone_single(effect);
+                wave.effects[actor].extend_single(effect, cloned_vec);
             }
         });
         wave.attack_single(

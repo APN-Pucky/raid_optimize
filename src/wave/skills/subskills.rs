@@ -7,12 +7,21 @@ use crate::data::{
 use super::{InstanceIndex, Wave};
 
 impl Wave<'_> {
-    pub fn on_trigger(&mut self, triggerer: InstanceIndex, trigger: Trigger) {
+    pub fn on_trigger(
+        &mut self,
+        triggerer: InstanceIndex,
+        trigger: Trigger, //        ,trigger_effect : Option<Effect>
+    ) {
         for actor in self.get_indices_iter() {
             for s in &self.heroes[actor].skills {
                 if let Skill::Generic(Generic { subskills, .. }) = s {
                     for ss in subskills {
                         if ss.trigger == trigger {
+                            //if let Some(te) = ss.trigger_effect {
+                            //    if ss.trigger_effect != trigger_effect {
+                            //        continue;
+                            //    }
+                            //}
                             if (ss.triggerer == Triggerer::Any)
                                 || (ss.triggerer == Triggerer::Ally
                                     && self.are_allies(actor, triggerer))
@@ -20,7 +29,7 @@ impl Wave<'_> {
                                     && self.are_enemies(actor, triggerer))
                                 || (ss.triggerer == Triggerer::I && actor == triggerer)
                             {
-                                self.execute_subskill(&ss, actor, None, s);
+                                self.execute_subskill(&ss, actor, Some(triggerer), s);
                             }
                         }
                     }
@@ -85,7 +94,11 @@ impl Wave<'_> {
                 vec![wave.get_lowest_health_ally(actor)]
             }
         };
+
         match subskill.typ {
+            Type::ActAgain => {
+                wave.act(actor);
+            }
             Type::Damage => {
                 for target in targets.iter() {
                     wave.attack_single(actor, *target, val, skill);
@@ -117,6 +130,36 @@ impl Wave<'_> {
             Type::IncreaseTurnMeter => {
                 for target in targets.iter() {
                     wave.increase_turn_meter_ratio(actor, *target, subskill.ratio)
+                }
+            }
+            Type::StealTurnMeter => {
+                for target in targets.iter() {
+                    wave.steal_turn_meter_ratio(actor, *target, subskill.ratio)
+                }
+            }
+            Type::RestoreMaxHealth => {
+                for target in targets.iter() {
+                    wave.restore_single(
+                        actor,
+                        *target,
+                        subskill.ratio * wave.get_max_health(*target),
+                    );
+                }
+            }
+            Type::RemoveEffect => {
+                for target in targets.iter() {
+                    wave.remove_effect_single(actor, *target, effect);
+                }
+            }
+            Type::ChangeSilence => {
+                for target in targets.iter() {
+                    if wave.effects[*target].get(Effect::Silence) > 0
+                        && turns > 0
+                        && effect != Effect::None
+                    {
+                        wave.remove_effect_single(actor, *target, Effect::Silence);
+                        wave.inflict_single(actor, *target, effect, 1.0, turns);
+                    }
                 }
             }
         }

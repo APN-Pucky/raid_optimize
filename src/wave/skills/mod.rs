@@ -13,13 +13,18 @@ pub mod subskills;
 
 pub type SkillIndex = usize;
 impl<'a> Wave<'a> {
-    pub fn get_active_skills(&self, actor: InstanceIndex) -> Vec<&'a Skill> {
+    pub fn get_ready_skills(&self, actor: InstanceIndex) -> Vec<&'a Skill> {
         self.heroes[actor]
             .skills
             .iter()
             .zip(self.cooldowns[actor].iter())
             .filter_map(|(s, c)| {
-                if *c == 0 && !is_passive(s) {
+                if *c == 0
+                    && !is_passive(s)
+                    && self.effects[actor].get(Effect::Stun) == 0
+                    && self.effects[actor].get(Effect::Freeze) == 0
+                    && (self.effects[actor].get(Effect::Silence) == 0 || is_basic_attack(s))
+                {
                     Some(s)
                 } else {
                     None

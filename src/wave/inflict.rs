@@ -1,5 +1,5 @@
 use crate::{
-    data::{effect::Effect, faction::Faction, skill::Skill},
+    data::{effect::Effect, faction::Faction, skill::Skill, subskill::Trigger},
     debug, indent, roll,
     wave::{has_skill, stat::effect_to_stat},
 };
@@ -57,6 +57,14 @@ impl Wave<'_> {
             self.add_stat(actor, effect_to_stat(effect), turns as f32);
             self.effects[target].push(effect, turns, actor);
             self.on_inflicted_margarita(target, effect);
+            self.on_trigger(actor, Trigger::Inflicting);
+            self.on_trigger(target, Trigger::Inflicted);
+            if effect == Effect::Silence {
+                self.on_trigger(target, Trigger::InflictedSilence);
+            }
+            if effect.is_control() {
+                self.on_trigger(target, Trigger::InflictedControl);
+            }
             if actor == target
                 && self.get_faction(actor) == Faction::DoomLegion
                 && effect.is_buff()

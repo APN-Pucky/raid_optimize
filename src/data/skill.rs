@@ -1,12 +1,12 @@
 use strum_macros::EnumIter;
 
-use crate::wave::heroes::alahan::detach::Detach;
-
 use crate::wave::heroes::agatha::aristocratic_style::AristocraticStyle;
 use crate::wave::heroes::agatha::bloody_spiral::BloodySpiral;
 use crate::wave::heroes::alahan::commendation::Commendation;
+use crate::wave::heroes::alahan::detach::Detach;
 use crate::wave::heroes::alahan::spirit_call::SpiritCall;
 use crate::wave::heroes::alahan::spirit_fountain::SpiritFountain;
+use crate::wave::heroes::asindo::psychological_torture::PsychologicalTorture;
 use crate::wave::heroes::dakota::soul_ring::SoulRing;
 use crate::wave::heroes::dakota::soul_seal::SoulSeal;
 use crate::wave::heroes::dakota::soul_surge::SoulSurge;
@@ -203,6 +203,7 @@ macro_rules! gen_match {
 
         impl Wave<'_> {
             pub fn execute_skill(&mut self, skill : &Skill,  actor :InstanceIndex, target :InstanceIndex, ) {
+                self.cooldown_s(actor,skill); // Early cooldown so no reuse
                 match skill {
                     Skill::None => {},
                     Skill::Generic (Generic{  ..}) => {self.execute_generic_skill(skill, actor, target)},
@@ -210,7 +211,6 @@ macro_rules! gen_match {
                     //$(Skill::$Passive_extra {..} => {panic!("No exec on passsive")})*
                     $(Skill::$Special (s) => {s.execute(self,skill,actor,target)})*
                 }
-                self.cooldown_s(actor,skill);
             }
         }
 
@@ -283,6 +283,7 @@ gen_match!(
         LunarRecovery,
         LightOfPurifying,
         Nightmare,
+        PsychologicalTorture,
         Resplendence,
         Resurrection,
         ScorchedSoul,

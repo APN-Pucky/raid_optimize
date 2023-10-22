@@ -1,4 +1,9 @@
-use crate::{data::effect::EffectFilter, debug, indent};
+use strum::IntoEnumIterator;
+
+use crate::{
+    data::effect::{Effect, EffectFilter},
+    debug, indent,
+};
 
 use super::{InstanceIndex, Wave};
 
@@ -17,11 +22,10 @@ impl Wave<'_> {
     ) {
         debug!("{} refreshes {}'s", self.name(actor), self.name(target));
         indent!({
-            for (e, v) in self.effects[target].em.iter_mut() {
-                if effect_closure(&e) {
-                    for (cur, start, _ir) in v.iter_mut() {
-                        *cur = *start;
-                    }
+            for k in Effect::iter().filter(effect_closure) {
+                let v = self.effects[actor].mut_single(k);
+                for (cur, start, _ir) in v.iter_mut() {
+                    *cur = *start;
                 }
             }
         });

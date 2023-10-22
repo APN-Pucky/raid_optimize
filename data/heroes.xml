@@ -849,7 +849,7 @@
                 AllAllies
             </select>
                 <name>BurstOfEnergy</name>
-                <subskill trigger="BeginningOfEachTurn" triggerer="I" target="AllAllies" ratio="0.08" type="Restore" scale="MaxHealth" effect="None" chance="0.0" turns="0"/>
+                <subskill trigger="TurnBegin" triggerer="I" target="AllAllies" ratio="0.08" type="Restore" scale="MaxHealth" effect="None" chance="0.0" turns="0"/>
             </Generic>
         
         
@@ -1151,6 +1151,90 @@
                 <increase_restoration_hp_ratio>0.5</increase_restoration_hp_ratio>
                 <cleanse_dot_layers> 5</cleanse_dot_layers>
             </LunarRecovery>
+
+        
+    </hero>
+
+    <hero>
+        <id>17</id>
+        <name>Asindo</name>
+        <mark>
+            Red
+        </mark>
+        <class>
+            Attack
+        </class>
+        <faction>
+            EternalSect
+        </faction>
+        <rarity>
+            Legend
+        </rarity>
+        <health>40449</health>
+        <attack>3835</attack>
+        <defense>3834</defense>
+        <speed>1020</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+
+            <PsychologicalTorture>
+                <cooldown>0</cooldown>
+                <attack_damage_ratio>2.0</attack_damage_ratio>
+                <silence_chance> 0.8 </silence_chance>
+                <silence_turns> 1 </silence_turns>
+                <turn_meter_reduction_ratio> 0.15 </turn_meter_reduction_ratio>
+            </PsychologicalTorture>
+
+            <Generic>
+                <cooldown>3</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    SingleEnemy
+                </select>
+                <name>Riddle</name>
+                <subskill target="SingleEnemy" ratio="4.2" type="Damage" scale="Attack" effect="Silence" chance="1.0" turns="1"/>
+                <subskill target="SingleEnemy" type="StealTurnMeter" ratio="0.2" />
+            </Generic>
+
+            <Generic>
+                <cooldown>0</cooldown>
+                <type>
+                    Passive 
+                </type>
+                <select>
+                    SingleSelf
+                </select>
+                <name>Mastery of Chaos</name>
+                <subskill trigger="WaveBegin" triggerer="I" target="SingleSelf" ratio="0.3" type="IncreaseTurnMeter"/>
+                <subskill target="SingleSelf" trigger="InflictedControl" triggerer="Enemy" ratio="0.05" type="IncreaseTurnMeter"/>
+                <subskill target="SingleSelf" trigger="InflictedControl" triggerer="Enemy" ratio="0.02" type="RestoreMaxHealth"/>
+                <subskill target="SingleEnemy" trigger="InflictedSilence" triggerer="Enemy" type="ChangeSilence" effect="Freeze" turns="1"/>
+            </Generic>
+
+            <Generic>
+                <cooldown>3</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    AllEnemies
+                </select>
+                <name>Elimination Orb</name>
+                <subskill target="AllEnemies" ratio="2.40" type="Damage" scale="Attack" effect="Silence" chance="0.75" turns="1"/>
+                <subskill target="AllEnemies" ratio="0.10" type="ReduceTurnMeter" />
+                <subskill target="SingleSelf" type="ActAgain" />
+            </Generic>
 
         
     </hero>

@@ -5,6 +5,7 @@ use super::{InstanceIndex, Wave};
 
 pub mod agatha;
 pub mod alahan;
+pub mod asindo;
 pub mod dakota;
 pub mod geeliman;
 pub mod guhanna;

@@ -32,11 +32,16 @@ pub enum Scale {
 pub enum Type {
     Damage,
     Restore,
+    RestoreMaxHealth,
     Inflict,
+    RemoveEffect,
     RemoveAllBuffs,
     Shield,
     ReduceTurnMeter,
     IncreaseTurnMeter,
+    StealTurnMeter,
+    ActAgain,
+    ChangeSilence,
 }
 
 #[derive(
@@ -44,12 +49,17 @@ pub enum Type {
 )]
 pub enum Trigger {
     None,
-    BeginningOfEachTurn,
+    TurnBegin,
+    WaveBegin,
     Death,
     Shielding,
     Shielded,
     Healed,
     Healing,
+    Inflicted,
+    Inflicting,
+    InflictedControl,
+    InflictedSilence,
 }
 
 #[derive(
@@ -83,6 +93,8 @@ pub struct SubSkill {
     pub trigger: Trigger,
     #[serde(default = "triggerer_default", rename = "@triggerer")]
     pub triggerer: Triggerer,
+    //    #[serde(default = "trigger_effect_default", rename = "@trigger_effect")]
+    //    pub trigger_effect: Option<Effect>,
 }
 
 impl Default for SubSkill {
@@ -97,9 +109,14 @@ impl Default for SubSkill {
             turns: turns_default(),
             trigger: trigger_default(),
             triggerer: triggerer_default(),
+            //trigger_effect : trigger_effect_default(),
         }
     }
 }
+
+//fn trigger_effect_default() -> Option<Effect> {
+//    None
+//}
 
 fn trigger_default() -> Trigger {
     Trigger::None
@@ -176,6 +193,7 @@ mod tests {
             turns: 0,
             trigger: Trigger::None,
             triggerer: Triggerer::None,
+            //trigger_effect : None
         };
 
         let _xml = to_string(&ss).unwrap();

@@ -5,8 +5,8 @@ use enum_map::EnumMap;
 
 #[derive(Debug)]
 pub struct Effects {
-    pub em: EnumMap<Effect, Vec<(u32, u32, InstanceIndex)>>, // effect , for layer : [cur turns , start turns,  inflictor] // TODO make it an enum
-                                                             //pub vm : [Vec<(u32,InstanceRef)>;Effect::NumberOfEffects as usize],
+    em: EnumMap<Effect, Vec<(u32, u32, InstanceIndex)>>, // effect , for layer : [cur turns , start turns,  inflictor] // TODO make it an enum
+                                                         //pub vm : [Vec<(u32,InstanceRef)>;Effect::NumberOfEffects as usize],
 }
 
 impl Default for Effects {
@@ -48,6 +48,14 @@ impl Effects {
         }
     }
 
+    pub fn extend_single(&mut self, key: Effect, v: Vec<(u32, u32, InstanceIndex)>) {
+        self.em[key].extend(v);
+    }
+
+    pub fn clone_single(&mut self, key: Effect) -> Vec<(u32, u32, InstanceIndex)> {
+        self.em[key].clone()
+    }
+
     pub fn clear_single(&mut self, key: Effect) {
         self.em[key].clear();
     }
@@ -58,6 +66,10 @@ impl Effects {
 
     pub fn get(&self, key: Effect) -> u32 {
         self.em[key].len() as u32
+    }
+
+    pub fn mut_single(&mut self, key: Effect) -> &mut Vec<(u32, u32, InstanceIndex)> {
+        &mut self.em[key]
     }
 
     pub fn push(&mut self, key: Effect, turns: u32, ir: InstanceIndex) {

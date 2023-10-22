@@ -49,6 +49,7 @@ pub enum Effect {
 
     FeeblenessI,
     FeeblenessII,
+    Freeze,
 
     Heal,
     HPBurning,
@@ -59,11 +60,13 @@ pub enum Effect {
     RippleII,
 
     SevereWound,
+    Silence,
     SpeedDownI,
     SpeedDownII,
     SpeedUpI,
     SpeedUpII,
     Suffocated,
+    Stun,
 
     TenacityUpI,
     TenacityUpII,
@@ -75,7 +78,6 @@ pub enum Effect {
 
     //Debuff
     BlockBuff,
-    Stun,
     //DotDebuff
     Poison,
     Burn,
@@ -123,6 +125,7 @@ impl Effect {
             Effect::CountessKiss => 10,
             Effect::None => 0,
             Effect::AttackUpI
+            | Effect::Silence
             | Effect::InferiorSevereWound
             | Effect::SevereWound
             | Effect::AttackUpII
@@ -171,6 +174,7 @@ impl Effect {
             | Effect::WetII
             | Effect::BlockBuff
             | Effect::Stun
+            | Effect::Freeze
             | Effect::Burn
             | Effect::BlockRemoval
             | Effect::Stealth
@@ -197,6 +201,7 @@ impl Effect {
             }
 
             Effect::None
+            | Effect::Silence
             | Effect::InferiorSevereWound
             | Effect::SevereWound
             | Effect::AttackUpI
@@ -247,6 +252,7 @@ impl Effect {
             | Effect::WetII
             | Effect::BlockBuff
             | Effect::Stun
+            | Effect::Freeze
             | Effect::Poison
             | Effect::Burn
             | Effect::BlockRemoval
@@ -292,6 +298,7 @@ impl Effect {
             | Effect::CritDamageDownII => true,
 
             Effect::Poison
+            | Effect::Silence
             | Effect::InferiorSevereWound
             | Effect::SevereWound
             | Effect::Burn
@@ -324,6 +331,7 @@ impl Effect {
             | Effect::TenacityUpII
             | Effect::BlockBuff
             | Effect::Stun
+            | Effect::Freeze
             | Effect::BlockRemoval
             | Effect::Stealth
             | Effect::Counterattack
@@ -348,6 +356,7 @@ impl Effect {
     pub fn is_debuff(&self) -> bool {
         match self {
             Effect::WetI
+            | Effect::Silence
             | Effect::InferiorSevereWound
             | Effect::SevereWound
             | Effect::WetII
@@ -400,7 +409,86 @@ impl Effect {
             | Effect::TenacityUpII
             | Effect::BlockBuff
             | Effect::Stun
+            | Effect::Freeze
             | Effect::Poison
+            | Effect::Burn
+            | Effect::BlockRemoval
+            | Effect::Stealth
+            | Effect::Counterattack
+            | Effect::DamageImmunity
+            | Effect::ControlImmunity
+            | Effect::ConsolidationI
+            | Effect::ConsolidationII
+            | Effect::ScarletSakura
+            | Effect::Arcane
+            | Effect::CountessKiss
+            | Effect::Blade
+            | Effect::FishShoal
+            | Effect::RosePoison
+            | Effect::ToxicSwamp
+            | Effect::ForceOfMercy
+            | Effect::FactionHiddenWaveAttack
+            | Effect::FactionHiddenWaveSkill
+            | Effect::_DeepTrapCounter => false,
+        }
+    }
+
+    pub fn is_control(&self) -> bool {
+        match self {
+            Effect::Silence | Effect::Freeze | Effect::Stun => true,
+
+            Effect::WetI
+            | Effect::Poison
+            | Effect::HPBurning
+            | Effect::Bleed
+            | Effect::InferiorSevereWound
+            | Effect::SevereWound
+            | Effect::WetII
+            | Effect::ColdI
+            | Effect::ColdII
+            | Effect::ColdIII
+            | Effect::Suffocated
+            | Effect::BlockDebuff
+            | Effect::EffectResistanceDownII
+            | Effect::RippleII
+            | Effect::AttackUpII
+            | Effect::Heal
+            | Effect::SpeedDownII
+            | Effect::SpeedUpI
+            | Effect::None
+            | Effect::AttackUpI
+            | Effect::AttackDownI
+            | Effect::AttackDownII
+            | Effect::CritRateUpI
+            | Effect::CritRateUpII
+            | Effect::CritRateDownI
+            | Effect::CritRateDownII
+            | Effect::CritDamageDownI
+            | Effect::CritDamageDownII
+            | Effect::CritDamageUpI
+            | Effect::CritDamageUpII
+            | Effect::DeepPoison
+            | Effect::DefenseUpI
+            | Effect::DefenseUpII
+            | Effect::DefenseDownI
+            | Effect::DefenseDownII
+            | Effect::EffectHitUpI
+            | Effect::EffectHitUpII
+            | Effect::EffectHitDownI
+            | Effect::EffectHitDownII
+            | Effect::EffectResistanceUpI
+            | Effect::EffectResistanceUpII
+            | Effect::EffectResistanceDownI
+            | Effect::FeeblenessI
+            | Effect::FeeblenessII
+            | Effect::Immortal
+            | Effect::SpeedDownI
+            | Effect::SpeedUpII
+            | Effect::TenacityUpI
+            | Effect::TenacityUpII
+            | Effect::TenacityDownI
+            | Effect::TenacityDownII
+            | Effect::BlockBuff
             | Effect::Burn
             | Effect::BlockRemoval
             | Effect::Stealth
@@ -428,6 +516,7 @@ impl Effect {
             Effect::Poison | Effect::Bleed | Effect::HPBurning => true,
 
             Effect::WetI
+            | Effect::Silence
             | Effect::InferiorSevereWound
             | Effect::SevereWound
             | Effect::WetII
@@ -477,6 +566,7 @@ impl Effect {
             | Effect::TenacityDownII
             | Effect::BlockBuff
             | Effect::Stun
+            | Effect::Freeze
             | Effect::Burn
             | Effect::BlockRemoval
             | Effect::Stealth
