@@ -1,4 +1,8 @@
-use crate::{debug, indent, warn, wave::stat::Stat};
+use crate::{
+    data::{skill::Skill, subskill::Trigger},
+    debug, indent, roll, warn,
+    wave::{for_skill, heroes::agatha::aristocratic_style::AristocraticStyle, stat::Stat},
+};
 
 use super::{InstanceIndex, Wave};
 
@@ -13,6 +17,23 @@ impl Wave<'_> {
             );
             return;
         }
+        for i in self.get_enemies_indices(target) {
+            for_skill!(
+                self,
+                i,
+                Skill::AristocraticStyle(AristocraticStyle {
+                    steal_shield_and_heal_chance
+                }),
+                {
+                    if roll(steal_shield_and_heal_chance) {
+                        debug!("{} transfers heal from {}", self.name(i), self.name(target));
+                        self.heal(i, i, health);
+                        return;
+                    }
+                }
+            );
+        }
+
         let healing_effect = self.get_healing_effect(actor);
         let healed_effect = self.get_healed_effect(target);
         let heal = health * (healing_effect + healed_effect); // TODO handle rounding
@@ -26,6 +47,8 @@ impl Wave<'_> {
         );
         self.add_stat(target, Stat::HealthHealed, new_health - self.health[target]);
         self.health[target] = new_health;
+        self.on_trigger(target, Trigger::Healed);
+        self.on_trigger(actor, Trigger::Healing);
     }
 
     pub fn restore(&mut self, actor: InstanceIndex, target: InstanceIndex, health: f32) {

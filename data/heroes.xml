@@ -849,7 +849,7 @@
                 AllAllies
             </select>
                 <name>BurstOfEnergy</name>
-                <subskill trigger="BeginningOfEachTurn" target="AllAllies" ratio="0.08" type="Restore" scale="MaxHealth" effect="None" chance="0.0" turns="0"/>
+                <subskill trigger="BeginningOfEachTurn" triggerer="I" target="AllAllies" ratio="0.08" type="Restore" scale="MaxHealth" effect="None" chance="0.0" turns="0"/>
             </Generic>
         
         
@@ -1001,8 +1001,8 @@
                 AllAllies
             </select>
                 <name>FusionOfFire</name>
-                <subskill trigger="EnemyDeath" target="SingleSelf" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
-                <subskill trigger="AllyDeath" target="AllAllies" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
+                <subskill trigger="Death" triggerer="Enemy" target="SingleSelf" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
+                <subskill trigger="Death" triggerer="Ally" target="AllAllies" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
             </Generic>
 
         

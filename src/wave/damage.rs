@@ -161,7 +161,7 @@ impl Wave<'_> {
             } else {
                 ret = self.health[actor];
                 self.health[actor] = 0.0;
-                self.on_trigger_any(actor, Trigger::AnyDeath);
+                self.on_trigger(actor, Trigger::Death);
                 self.on_fatal_damage_maya(actor);
             }
         } else {

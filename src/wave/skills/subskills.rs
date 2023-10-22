@@ -1,43 +1,27 @@
 use crate::data::{
     effect::Effect,
     skill::{Generic, Skill},
-    subskill::{Scale, SubSkill, Target, Trigger, Type},
+    subskill::{Scale, SubSkill, Target, Trigger, Triggerer, Type},
 };
 
 use super::{InstanceIndex, Wave};
 
 impl Wave<'_> {
-    pub fn on_trigger_self(&mut self, actor: InstanceIndex, trigger: Trigger) {
-        for s in &self.heroes[actor].skills {
-            if let Skill::Generic(Generic { subskills, .. }) = s {
-                for ss in subskills {
-                    if ss.trigger == trigger {
-                        self.execute_subskill(&ss, actor, None, s);
-                    }
-                }
-            }
-        }
-    }
-
-    pub fn on_trigger_any(&mut self, triggerer: InstanceIndex, trigger: Trigger) {
+    pub fn on_trigger(&mut self, triggerer: InstanceIndex, trigger: Trigger) {
         for actor in self.get_indices_iter() {
             for s in &self.heroes[actor].skills {
                 if let Skill::Generic(Generic { subskills, .. }) = s {
                     for ss in subskills {
                         if ss.trigger == trigger {
-                            self.execute_subskill(&ss, actor, None, s);
-                        }
-                        if trigger == Trigger::AnyDeath
-                            && ss.trigger == Trigger::AllyDeath
-                            && self.are_allies(actor, triggerer)
-                        {
-                            self.execute_subskill(&ss, actor, None, s);
-                        }
-                        if trigger == Trigger::AnyDeath
-                            && ss.trigger == Trigger::EnemyDeath
-                            && self.are_enemies(actor, triggerer)
-                        {
-                            self.execute_subskill(&ss, actor, None, s);
+                            if (ss.triggerer == Triggerer::Any)
+                                || (ss.triggerer == Triggerer::Ally
+                                    && self.are_allies(actor, triggerer))
+                                || (ss.triggerer == Triggerer::Enemy
+                                    && self.are_enemies(actor, triggerer))
+                                || (ss.triggerer == Triggerer::I && actor == triggerer)
+                            {
+                                self.execute_subskill(&ss, actor, None, s);
+                            }
                         }
                     }
                 }

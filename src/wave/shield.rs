@@ -1,4 +1,8 @@
-use crate::{debug, indent, wave::stat::Stat};
+use crate::{
+    data::{skill::Skill, subskill::Trigger},
+    debug, indent, roll, warn,
+    wave::{for_skill, heroes::agatha::aristocratic_style::AristocraticStyle, stat::Stat},
+};
 
 use super::{InstanceIndex, Wave};
 
@@ -10,6 +14,35 @@ impl Wave<'_> {
         shield_value: f32,
         shield_turns: u32,
     ) {
+        if self.is_dead(target) {
+            warn!(
+                "{} is dead, cannot shield [{},{}]",
+                self.name(target),
+                self.health[target],
+                self.health[target] > 0.0
+            );
+            return;
+        }
+        for i in self.get_enemies_indices(target) {
+            for_skill!(
+                self,
+                i,
+                Skill::AristocraticStyle(AristocraticStyle {
+                    steal_shield_and_heal_chance
+                }),
+                {
+                    if roll(steal_shield_and_heal_chance) {
+                        debug!(
+                            "{} transfers shield from {}",
+                            self.name(i),
+                            self.name(target)
+                        );
+                        self.shield(i, i, shield_value, shield_turns);
+                        return;
+                    }
+                }
+            );
+        }
         debug!(
             "{} shields {} for {} for {}",
             self.name(actor),
@@ -19,6 +52,8 @@ impl Wave<'_> {
         );
         self.add_stat(actor, Stat::Shielded, shield_value);
         self.shields[target].push((shield_value, shield_turns, actor));
+        self.on_trigger(actor, Trigger::Shielding);
+        self.on_trigger(target, Trigger::Shielded);
     }
 
     pub fn shield_single(

@@ -45,10 +45,22 @@ pub enum Type {
 pub enum Trigger {
     None,
     BeginningOfEachTurn,
-    EnemyDeath,
-    AllyDeath,
-    //SelfDeath
-    AnyDeath,
+    Death,
+    Shielding,
+    Shielded,
+    Healed,
+    Healing,
+}
+
+#[derive(
+    EnumIter, strum_macros::Display, Deserialize, Serialize, Debug, Clone, Eq, PartialEq, Copy,
+)]
+pub enum Triggerer {
+    None,
+    Any,
+    Ally,
+    Enemy,
+    I,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone, Copy, PartialEq)]
@@ -69,6 +81,8 @@ pub struct SubSkill {
     pub turns: u32,
     #[serde(default = "trigger_default", rename = "@trigger")]
     pub trigger: Trigger,
+    #[serde(default = "triggerer_default", rename = "@triggerer")]
+    pub triggerer: Triggerer,
 }
 
 impl Default for SubSkill {
@@ -82,12 +96,17 @@ impl Default for SubSkill {
             chance: chance_default(),
             turns: turns_default(),
             trigger: trigger_default(),
+            triggerer: triggerer_default(),
         }
     }
 }
 
 fn trigger_default() -> Trigger {
     Trigger::None
+}
+
+fn triggerer_default() -> Triggerer {
+    Triggerer::None
 }
 
 fn typ_default() -> Type {
@@ -156,6 +175,7 @@ mod tests {
             chance: 0.0,
             turns: 0,
             trigger: Trigger::None,
+            triggerer: Triggerer::None,
         };
 
         let _xml = to_string(&ss).unwrap();
