@@ -10,7 +10,11 @@ use crate::{
         subskill::Trigger,
     },
     debug, indent,
-    wave::{for_skill, heroes::marville::fish_guardian::FishGuardian, stat::Stat},
+    wave::{
+        for_ally_skill, for_skill,
+        heroes::{guhanna::lunar_shelter::LunarShelter, marville::fish_guardian::FishGuardian},
+        stat::Stat,
+    },
 };
 
 use super::{heroes::hazier::bloodlust_strike::BloodlustStrike, InstanceIndex, Wave};
@@ -200,6 +204,21 @@ impl Wave<'_> {
                 return 0.0;
             }
             let mut damage = damage;
+            for_ally_skill!(
+                self,
+                target,
+                Skill::LunarShelter(LunarShelter {
+                    direct_dmg_reduction
+                }),
+                {
+                    debug!(
+                        "{}'s ally has LunarShelter -> damage * {}",
+                        self.name(target),
+                        1.0 - direct_dmg_reduction
+                    );
+                    damage = damage * (1.0 - direct_dmg_reduction); // TODO no reduction 2 turns after action of Guhannah
+                }
+            );
             if self.has_effect(actor, Effect::FeeblenessI) {
                 let xfact = 1.2;
                 damage = damage * xfact;

@@ -42,7 +42,7 @@ impl Wave<'_> {
             }
             //if self.heroes[target].skills.iter().any(|x| match x {Skill::AristocraticStyle(_) => true, _ => false}) {
             if has_skill!(self, target, Skill::AristocraticStyle(_)) {
-                if effect == Effect::SevereWound || effect == Effect::InferiorSeverWound {
+                if effect == Effect::SevereWound || effect == Effect::InferiorSevereWound {
                     debug!(
                         "{} has AristocraticStyle dodges {}",
                         self.name(target),

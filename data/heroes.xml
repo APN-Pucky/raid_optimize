@@ -1050,13 +1050,10 @@
                     SingleEnemy
                 </select>
                 <name>Graceful Slash</name>
-                <subskill target="SingleEnemy" ratio="2.4" type="Damage" scale="Defense" effect="CountessKiss" chance="1.0" turns="1"/>
-                <subskill target="SingleEnemy" ratio="2.4" type="Damage" scale="Defense" effect="None" chance="0.0" turns="0"/>
+                <subskill target="SingleEnemy" ratio="2.4" type="Damage" scale="Attack" effect="CountessKiss" chance="1.0" turns="1"/>
+                <subskill target="SingleEnemy" ratio="2.4" type="Damage" scale="Attack" effect="None" chance="0.0" turns="0"/>
             </Generic>
 
-            <AristocraticStyle> 
-                <steal_shield_and_heal_chance>0.3 </steal_shield_and_heal_chance>
-            </AristocraticStyle>
 
             <BloodySpiral> 
                 <cooldown>3</cooldown>
@@ -1064,6 +1061,10 @@
                 <increase_damage_ratio>0.2</increase_damage_ratio>
                 <restore_hp_damage_ratio>0.1</restore_hp_damage_ratio>
             </BloodySpiral>
+
+            <AristocraticStyle> 
+                <steal_shield_and_heal_chance>0.3 </steal_shield_and_heal_chance>
+            </AristocraticStyle>
 
             <Generic>
                 <cooldown>4</cooldown>
@@ -1078,6 +1079,79 @@
                 <subskill target="AllEnemies" ratio="1.9" type="Damage" scale="Attack"/>
                 <subskill target="AllEnemies" ratio="1.9" type="Damage" scale="Attack"/>
             </Generic>
+        
+    </hero>
+
+    <hero>
+        <id>16</id>
+        <name>Guhanna</name>
+        <mark>
+            Blue
+        </mark>
+        <class>
+            Support
+        </class>
+        <faction>
+            SunsetSages
+        </faction>
+        <rarity>
+            Legend
+        </rarity>
+        <health>40309</health>
+        <attack>4120</attack>
+        <defense>3969</defense>
+        <speed>991</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+            <Generic>
+                <cooldown>0</cooldown>
+                <type>
+                    Basic
+                </type>
+                <select>
+                    SingleEnemy
+                </select>
+                <name>Lunar Fall</name>
+                <subskill target="SingleEnemy" ratio="2.0" type="Damage" scale="Attack" effect="InferiorSevereWound" chance="0.8" turns="2"/>
+            </Generic>
+
+            <Generic>
+                <cooldown>3</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    SingleEnemy
+                </select>
+                <name>Lunar Radiance</name>
+                <subskill target="SingleEnemy" ratio="2.0" type="Damage" scale="Attack" effect="SpeedDownII" chance="1.0" turns="2"/>
+                <subskill target="AllAllies" type="Inflict" effect="SpeedUpII" chance="1.0" turns="2"/>
+            </Generic>
+
+            <LunarShelter>
+                <direct_dmg_reduction>0.12</direct_dmg_reduction>
+            </LunarShelter>
+
+            <LunarRecovery>
+                <cooldown>4</cooldown>
+                <restore_hp_max_ratio> 0.16</restore_hp_max_ratio>
+                <increase_turn_meter_ratio> 0.2</increase_turn_meter_ratio>
+                <increase_attack_chance> 1.0</increase_attack_chance>
+                <increase_attack_turns> 2</increase_attack_turns>
+                <increase_restoration> 0.4</increase_restoration>
+                <increase_restoration_hp_ratio>0.5</increase_restoration_hp_ratio>
+                <cleanse_dot_layers> 5</cleanse_dot_layers>
+            </LunarRecovery>
+
         
     </hero>
 </heroes>

@@ -90,7 +90,7 @@ impl Wave<'_> {
                 );
                 fact *= xfact;
             }
-            if self.has_effect(actor, Effect::InferiorSeverWound) {
+            if self.has_effect(actor, Effect::InferiorSevereWound) {
                 fact *= 0.6;
             }
             if self.has_effect(actor, Effect::SevereWound) {

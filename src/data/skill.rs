@@ -11,6 +11,8 @@ use crate::wave::heroes::dakota::soul_ring::SoulRing;
 use crate::wave::heroes::dakota::soul_seal::SoulSeal;
 use crate::wave::heroes::dakota::soul_surge::SoulSurge;
 use crate::wave::heroes::geeliman::bursting_knowledge::BurstingKnowledge;
+use crate::wave::heroes::guhanna::lunar_recovery::LunarRecovery;
+use crate::wave::heroes::guhanna::lunar_shelter::LunarShelter;
 use crate::wave::heroes::hazier::bloodlust_strike::BloodlustStrike;
 use crate::wave::heroes::hazier::darknight_arbitrament::DarknightArbitrament;
 use crate::wave::heroes::hazier::darknight_strike::DarknightStrike;
@@ -277,6 +279,8 @@ gen_match!(
         FishWaterball,
         ForceOfMercy,
         LeavesStorm,
+        LunarShelter,
+        LunarRecovery,
         LightOfPurifying,
         Nightmare,
         Resplendence,
