@@ -40,7 +40,7 @@ impl Wave<'_> {
         self.heroes[actor].mark
     }
 
-    pub fn get_leech(&self, actor: InstanceIndex) -> f32 {
+    pub fn get_leech(&self, actor: InstanceIndex, target: InstanceIndex) -> f32 {
         let mut fact = 1.0;
         debug!(
             "{} base leech of {}",
@@ -58,6 +58,8 @@ impl Wave<'_> {
                 );
                 fact *= xfact;
             }
+            let n = self.effects[actor].get(Effect::CountessKiss);
+            fact *= 1.0 + 0.2 * n as f32;
         });
         if fact != 1.0 {
             debug!(

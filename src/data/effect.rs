@@ -88,6 +88,7 @@ pub enum Effect {
     //Unique
     ScarletSakura,
     Arcane,
+    CountessKiss,
     Blade,
     FishShoal,
     RosePoison,
@@ -115,7 +116,67 @@ pub fn get_max(effect: Effect) -> u32 {
         Effect::FishShoal => 3,
         Effect::RosePoison => 40,
         Effect::Poison => 10,
-        _ => 999999,
+        Effect::CountessKiss => 10,
+        Effect::None => 0,
+        Effect::AttackUpI
+        | Effect::AttackUpII
+        | Effect::AttackDownI
+        | Effect::AttackDownII
+        | Effect::BlockDebuff
+        | Effect::ColdI
+        | Effect::ColdII
+        | Effect::ColdIII
+        | Effect::CritRateUpI
+        | Effect::CritRateUpII
+        | Effect::CritRateDownI
+        | Effect::CritRateDownII
+        | Effect::CritDamageDownI
+        | Effect::CritDamageDownII
+        | Effect::CritDamageUpI
+        | Effect::CritDamageUpII
+        | Effect::DeepPoison
+        | Effect::DefenseUpI
+        | Effect::DefenseUpII
+        | Effect::DefenseDownI
+        | Effect::DefenseDownII
+        | Effect::EffectHitUpI
+        | Effect::EffectHitUpII
+        | Effect::EffectHitDownI
+        | Effect::EffectHitDownII
+        | Effect::EffectResistanceUpI
+        | Effect::EffectResistanceUpII
+        | Effect::EffectResistanceDownI
+        | Effect::EffectResistanceDownII
+        | Effect::FeeblenessI
+        | Effect::FeeblenessII
+        | Effect::Heal
+        | Effect::Immortal
+        | Effect::RippleII
+        | Effect::Suffocated
+        | Effect::SpeedDownI
+        | Effect::SpeedDownII
+        | Effect::SpeedUpI
+        | Effect::SpeedUpII
+        | Effect::TenacityUpI
+        | Effect::TenacityUpII
+        | Effect::TenacityDownI
+        | Effect::TenacityDownII
+        | Effect::WetI
+        | Effect::WetII
+        | Effect::BlockBuff
+        | Effect::Stun
+        | Effect::Burn
+        | Effect::BlockRemoval
+        | Effect::Stealth
+        | Effect::Counterattack
+        | Effect::DamageImmunity
+        | Effect::ControlImmunity
+        | Effect::ConsolidationI
+        | Effect::ConsolidationII
+        | Effect::Blade
+        | Effect::ToxicSwamp
+        | Effect::ForceOfMercy
+        | Effect::_DeepTrapCounter => 99999,
     }
 }
 
@@ -125,83 +186,226 @@ pub fn is_buff(effect: Effect) -> bool {
 
 pub fn is_attribute_debuff(effect: Effect) -> bool {
     match effect {
-        Effect::WetI => true,
-        Effect::WetII => true,
-        Effect::ColdI => true,
-        Effect::ColdII => true,
-        Effect::ColdIII => true,
-        Effect::SpeedDownI => true,
-        Effect::SpeedDownII => true,
-        Effect::EffectResistanceDownI => true,
-        Effect::EffectResistanceDownII => true,
-        Effect::AttackDownI => true,
-        Effect::AttackDownII => true,
-        Effect::TenacityDownI => true,
-        Effect::TenacityDownII => true,
-        Effect::EffectHitDownI => true,
-        Effect::EffectHitDownII => true,
-        Effect::DefenseDownI => true,
-        Effect::DefenseDownII => true,
-        Effect::CritRateDownI => true,
-        Effect::CritRateDownII => true,
-        Effect::CritDamageDownI => true,
-        Effect::CritDamageDownII => true,
+        Effect::WetI
+        | Effect::WetII
+        | Effect::ColdI
+        | Effect::ColdII
+        | Effect::ColdIII
+        | Effect::SpeedDownI
+        | Effect::SpeedDownII
+        | Effect::EffectResistanceDownI
+        | Effect::EffectResistanceDownII
+        | Effect::AttackDownI
+        | Effect::AttackDownII
+        | Effect::TenacityDownI
+        | Effect::TenacityDownII
+        | Effect::EffectHitDownI
+        | Effect::EffectHitDownII
+        | Effect::DefenseDownI
+        | Effect::DefenseDownII
+        | Effect::CritRateDownI
+        | Effect::CritRateDownII
+        | Effect::CritDamageDownI
+        | Effect::CritDamageDownII => true,
 
-        Effect::Poison => false,
-        Effect::Burn => false,
-        Effect::Bleed => false,
-        Effect::HPBurning => false,
-        _ => false,
+        Effect::Poison
+        | Effect::Burn
+        | Effect::Bleed
+        | Effect::HPBurning
+        | Effect::None
+        | Effect::AttackUpI
+        | Effect::AttackUpII
+        | Effect::BlockDebuff
+        | Effect::CritRateUpI
+        | Effect::CritRateUpII
+        | Effect::CritDamageUpI
+        | Effect::CritDamageUpII
+        | Effect::DeepPoison
+        | Effect::DefenseUpI
+        | Effect::DefenseUpII
+        | Effect::EffectHitUpI
+        | Effect::EffectHitUpII
+        | Effect::EffectResistanceUpI
+        | Effect::EffectResistanceUpII
+        | Effect::FeeblenessI
+        | Effect::FeeblenessII
+        | Effect::Heal
+        | Effect::Immortal
+        | Effect::RippleII
+        | Effect::Suffocated
+        | Effect::SpeedUpI
+        | Effect::SpeedUpII
+        | Effect::TenacityUpI
+        | Effect::TenacityUpII
+        | Effect::BlockBuff
+        | Effect::Stun
+        | Effect::BlockRemoval
+        | Effect::Stealth
+        | Effect::Counterattack
+        | Effect::DamageImmunity
+        | Effect::ControlImmunity
+        | Effect::ConsolidationI
+        | Effect::ConsolidationII
+        | Effect::ScarletSakura
+        | Effect::Arcane
+        | Effect::CountessKiss
+        | Effect::Blade
+        | Effect::FishShoal
+        | Effect::RosePoison
+        | Effect::ToxicSwamp
+        | Effect::ForceOfMercy
+        | Effect::FactionHiddenWaveAttack
+        | Effect::FactionHiddenWaveSkill
+        | Effect::_DeepTrapCounter => false,
     }
 }
 
 pub fn is_debuff(effect: Effect) -> bool {
     match effect {
-        Effect::WetI => true,
-        Effect::WetII => true,
-        Effect::ColdI => true,
-        Effect::ColdII => true,
-        Effect::ColdIII => true,
-        Effect::Bleed => true,
-        Effect::HPBurning => true,
-        Effect::Suffocated => true,
-        Effect::EffectResistanceDownII => true,
-        Effect::AttackDownI => true,
-        Effect::AttackDownII => true,
-        Effect::TenacityDownI => true,
-        Effect::TenacityDownII => true,
-        Effect::SpeedDownI => true,
-        Effect::SpeedDownII => true,
-        Effect::EffectHitDownI => true,
-        Effect::EffectHitDownII => true,
-        Effect::DefenseDownI => true,
-        Effect::DefenseDownII => true,
-        Effect::CritRateDownI => true,
-        Effect::CritRateDownII => true,
-        Effect::CritDamageDownI => true,
-        Effect::CritDamageDownII => true,
-        _ => false,
+        Effect::WetI
+        | Effect::WetII
+        | Effect::ColdI
+        | Effect::ColdII
+        | Effect::ColdIII
+        | Effect::Bleed
+        | Effect::HPBurning
+        | Effect::Suffocated
+        | Effect::EffectResistanceDownI
+        | Effect::EffectResistanceDownII
+        | Effect::AttackDownI
+        | Effect::AttackDownII
+        | Effect::TenacityDownI
+        | Effect::TenacityDownII
+        | Effect::SpeedDownI
+        | Effect::SpeedDownII
+        | Effect::EffectHitDownI
+        | Effect::EffectHitDownII
+        | Effect::FeeblenessI
+        | Effect::FeeblenessII
+        | Effect::DefenseDownI
+        | Effect::DefenseDownII
+        | Effect::CritRateDownI
+        | Effect::CritRateDownII
+        | Effect::CritDamageDownI
+        | Effect::CritDamageDownII => true,
+
+        Effect::None
+        | Effect::AttackUpI
+        | Effect::AttackUpII
+        | Effect::BlockDebuff
+        | Effect::CritRateUpI
+        | Effect::CritRateUpII
+        | Effect::CritDamageUpI
+        | Effect::CritDamageUpII
+        | Effect::DeepPoison
+        | Effect::DefenseUpI
+        | Effect::DefenseUpII
+        | Effect::EffectHitUpI
+        | Effect::EffectHitUpII
+        | Effect::EffectResistanceUpI
+        | Effect::EffectResistanceUpII
+        | Effect::Heal
+        | Effect::Immortal
+        | Effect::RippleII
+        | Effect::SpeedUpI
+        | Effect::SpeedUpII
+        | Effect::TenacityUpI
+        | Effect::TenacityUpII
+        | Effect::BlockBuff
+        | Effect::Stun
+        | Effect::Poison
+        | Effect::Burn
+        | Effect::BlockRemoval
+        | Effect::Stealth
+        | Effect::Counterattack
+        | Effect::DamageImmunity
+        | Effect::ControlImmunity
+        | Effect::ConsolidationI
+        | Effect::ConsolidationII
+        | Effect::ScarletSakura
+        | Effect::Arcane
+        | Effect::CountessKiss
+        | Effect::Blade
+        | Effect::FishShoal
+        | Effect::RosePoison
+        | Effect::ToxicSwamp
+        | Effect::ForceOfMercy
+        | Effect::FactionHiddenWaveAttack
+        | Effect::FactionHiddenWaveSkill
+        | Effect::_DeepTrapCounter => false,
     }
 }
 
 pub fn is_dot(effect: Effect) -> bool {
     match effect {
-        Effect::WetI => false,
-        Effect::WetII => false,
-        Effect::ColdI => false,
-        Effect::ColdII => false,
-        Effect::ColdIII => false,
-        Effect::Bleed => true,
-        Effect::HPBurning => true,
-        Effect::Suffocated => false,
-        Effect::BlockDebuff => false,
-        Effect::EffectResistanceDownII => false,
-        Effect::RippleII => false,
-        Effect::AttackUpII => false,
-        Effect::Heal => false,
-        Effect::SpeedDownII => false,
-        Effect::SpeedUpI => false,
-        Effect::None => false,
-        _ => false,
+        Effect::Poison | Effect::Bleed | Effect::HPBurning => true,
+
+        Effect::WetI
+        | Effect::WetII
+        | Effect::ColdI
+        | Effect::ColdII
+        | Effect::ColdIII
+        | Effect::Suffocated
+        | Effect::BlockDebuff
+        | Effect::EffectResistanceDownII
+        | Effect::RippleII
+        | Effect::AttackUpII
+        | Effect::Heal
+        | Effect::SpeedDownII
+        | Effect::SpeedUpI
+        | Effect::None
+        | Effect::AttackUpI
+        | Effect::AttackDownI
+        | Effect::AttackDownII
+        | Effect::CritRateUpI
+        | Effect::CritRateUpII
+        | Effect::CritRateDownI
+        | Effect::CritRateDownII
+        | Effect::CritDamageDownI
+        | Effect::CritDamageDownII
+        | Effect::CritDamageUpI
+        | Effect::CritDamageUpII
+        | Effect::DeepPoison
+        | Effect::DefenseUpI
+        | Effect::DefenseUpII
+        | Effect::DefenseDownI
+        | Effect::DefenseDownII
+        | Effect::EffectHitUpI
+        | Effect::EffectHitUpII
+        | Effect::EffectHitDownI
+        | Effect::EffectHitDownII
+        | Effect::EffectResistanceUpI
+        | Effect::EffectResistanceUpII
+        | Effect::EffectResistanceDownI
+        | Effect::FeeblenessI
+        | Effect::FeeblenessII
+        | Effect::Immortal
+        | Effect::SpeedDownI
+        | Effect::SpeedUpII
+        | Effect::TenacityUpI
+        | Effect::TenacityUpII
+        | Effect::TenacityDownI
+        | Effect::TenacityDownII
+        | Effect::BlockBuff
+        | Effect::Stun
+        | Effect::Burn
+        | Effect::BlockRemoval
+        | Effect::Stealth
+        | Effect::Counterattack
+        | Effect::DamageImmunity
+        | Effect::ControlImmunity
+        | Effect::ConsolidationI
+        | Effect::ConsolidationII
+        | Effect::ScarletSakura
+        | Effect::Arcane
+        | Effect::CountessKiss
+        | Effect::Blade
+        | Effect::FishShoal
+        | Effect::RosePoison
+        | Effect::ToxicSwamp
+        | Effect::ForceOfMercy
+        | Effect::FactionHiddenWaveAttack
+        | Effect::FactionHiddenWaveSkill
+        | Effect::_DeepTrapCounter => false,
     }
 }

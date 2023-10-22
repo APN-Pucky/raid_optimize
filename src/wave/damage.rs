@@ -383,7 +383,7 @@ impl Wave<'_> {
     }
 
     pub fn leech(&mut self, actor: InstanceIndex, target: InstanceIndex, dmg: f32, crit: bool) {
-        let mut fleech = self.get_leech(actor);
+        let mut fleech = self.get_leech(actor, target);
         if crit {
             for p in &self.heroes[actor].skills {
                 if let Skill::BloodlustStrike(BloodlustStrike { leech, .. }) = p {
