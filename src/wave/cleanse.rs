@@ -1,4 +1,4 @@
-use crate::data::effect::{Effect, EffectFilter};
+use crate::data::effect::EffectFilter;
 
 use super::{InstanceIndex, Wave};
 

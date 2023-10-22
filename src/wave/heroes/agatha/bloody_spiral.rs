@@ -1,9 +1,6 @@
 use crate::wave::heroes::Cooldown;
 use crate::{
-    data::{
-        effect::Effect,
-        skill::{Select, Skill, SkillType},
-    },
+    data::skill::{Select, Skill, SkillType},
     wave::{InstanceIndex, Wave},
 };
 

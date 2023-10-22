@@ -3,7 +3,7 @@ use crate::{
     debug, warn,
 };
 
-use super::{has_skill, heroes::nita::deep_trap::DeepTrap, InstanceIndex, Wave};
+use super::{has_skill, InstanceIndex, Wave};
 
 impl Wave<'_> {
     /// Check and apply damage from poison

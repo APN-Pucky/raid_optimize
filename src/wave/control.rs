@@ -1,15 +1,7 @@
-use enum_map::EnumMap;
-use rand::Rng;
-
 use crate::{
-    data::{
-        effect::Effect,
-        faction::Faction,
-        mark::Mark,
-        skill::{is_basic_attack, Skill},
-    },
+    data::{effect::Effect, skill::Skill},
     debug, indent,
-    wave::{has_skill, stat::Stat},
+    wave::has_skill,
 };
 
 use super::{InstanceIndex, Wave};

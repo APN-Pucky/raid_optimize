@@ -151,7 +151,7 @@ impl Wave<'_> {
     }
 
     pub fn loose_health(&mut self, actor: InstanceIndex, damage: f32) -> f32 {
-        let mut ret = 0.0;
+        let ret;
         if self.health[actor] < damage {
             self.add_stat(actor, Stat::HealthLost, self.health[actor]);
             if self.has_effect(actor, Effect::Immortal) {

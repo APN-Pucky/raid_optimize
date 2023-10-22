@@ -1,8 +1,5 @@
-use crate::data::effect::Effect;
 use crate::wave::heroes::Cooldown;
 use crate::wave::heroes::PassiveSkill;
-use crate::wave::InstanceIndex;
-use crate::wave::Wave;
 
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone, Copy)]
 pub struct AristocraticStyle {

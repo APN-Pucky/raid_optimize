@@ -35,7 +35,6 @@ macro_rules! test_run_N_vs_M {
         }
 }
 
-#[test]
 test_run_N_vs_M! {
     test_run_1_vs_1: (1, 1),
     test_run_2_vs_1: (2, 1),

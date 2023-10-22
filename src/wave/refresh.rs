@@ -1,7 +1,4 @@
-use crate::{
-    data::effect::{Effect, EffectFilter},
-    debug, indent,
-};
+use crate::{data::effect::EffectFilter, debug, indent};
 
 use super::{InstanceIndex, Wave};
 
