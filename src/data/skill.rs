@@ -2,6 +2,8 @@ use strum_macros::EnumIter;
 
 use crate::wave::heroes::alahan::detach::Detach;
 
+use crate::wave::heroes::agatha::aristocratic_style::AristocraticStyle;
+use crate::wave::heroes::agatha::bloody_spiral::BloodySpiral;
 use crate::wave::heroes::alahan::commendation::Commendation;
 use crate::wave::heroes::alahan::spirit_call::SpiritCall;
 use crate::wave::heroes::alahan::spirit_fountain::SpiritFountain;
@@ -247,11 +249,13 @@ gen_match!(
     [Counterattack, IncessantChatter, SharpInstinct],
     //[Resplendence {turn_meter_ratio : f32}],
     [
+        AristocraticStyle,
         BasicAttack,
         BloodthirstyScythe,
         BurstingKnowledge,
         BloodlustStrike,
         BloodthirstyDesire,
+        BloodySpiral,
         Bondage,
         Curse,
         CleanOcean,

@@ -53,16 +53,17 @@ pub enum Effect {
     Heal,
     HPBurning,
 
+    InferiorSeverWound,
     Immortal,
 
     RippleII,
 
-    Suffocated,
-
+    SevereWound,
     SpeedDownI,
     SpeedDownII,
     SpeedUpI,
     SpeedUpII,
+    Suffocated,
 
     TenacityUpI,
     TenacityUpII,
@@ -122,6 +123,8 @@ impl Effect {
             Effect::CountessKiss => 10,
             Effect::None => 0,
             Effect::AttackUpI
+            | Effect::InferiorSeverWound
+            | Effect::SevereWound
             | Effect::AttackUpII
             | Effect::AttackDownI
             | Effect::AttackDownII
@@ -194,6 +197,8 @@ impl Effect {
             }
 
             Effect::None
+            | Effect::InferiorSeverWound
+            | Effect::SevereWound
             | Effect::AttackUpI
             | Effect::AttackUpII
             | Effect::AttackDownI
@@ -287,6 +292,8 @@ impl Effect {
             | Effect::CritDamageDownII => true,
 
             Effect::Poison
+            | Effect::InferiorSeverWound
+            | Effect::SevereWound
             | Effect::Burn
             | Effect::Bleed
             | Effect::HPBurning
@@ -341,6 +348,8 @@ impl Effect {
     pub fn is_debuff(&self) -> bool {
         match self {
             Effect::WetI
+            | Effect::InferiorSeverWound
+            | Effect::SevereWound
             | Effect::WetII
             | Effect::ColdI
             | Effect::ColdII
@@ -419,6 +428,8 @@ impl Effect {
             Effect::Poison | Effect::Bleed | Effect::HPBurning => true,
 
             Effect::WetI
+            | Effect::InferiorSeverWound
+            | Effect::SevereWound
             | Effect::WetII
             | Effect::ColdI
             | Effect::ColdII

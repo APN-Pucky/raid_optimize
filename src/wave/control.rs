@@ -6,10 +6,10 @@ use crate::{
         effect::Effect,
         faction::Faction,
         mark::Mark,
-        skill::{is_basic_attack, Skill, BASIC_ATTACK, NONE_SKILL},
+        skill::{is_basic_attack, Skill},
     },
     debug, indent,
-    wave::stat::Stat,
+    wave::{has_skill, stat::Stat},
 };
 
 use super::{InstanceIndex, Wave};
@@ -18,13 +18,7 @@ impl Wave<'_> {
     pub fn control(&mut self, actor: InstanceIndex, target: InstanceIndex) {
         debug!("{} control {}", self.name(actor), self.name(target));
         indent!({
-            if let Some(
-                [Skill {
-                    data: SkillData::SoulRing { .. },
-                    ..
-                }, ..],
-            ) = self.heroes[target].skills[..]
-            {
+            if has_skill!(self, target, Skill::SoulRing(_)) {
                 debug!("{} has SoulRing -> immune to control", self.name(target));
                 return;
             }

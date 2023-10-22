@@ -3,7 +3,7 @@ use crate::{
     debug, warn,
 };
 
-use super::{heroes::nita::deep_trap::DeepTrap, InstanceIndex, Wave};
+use super::{has_skill, heroes::nita::deep_trap::DeepTrap, InstanceIndex, Wave};
 
 impl Wave<'_> {
     /// Check and apply damage from poison
@@ -41,7 +41,7 @@ impl Wave<'_> {
     }
 
     pub fn dot_bleed(&mut self, actor: InstanceIndex) {
-        if let [Skill::DeepTrap(DeepTrap { .. }), ..] = self.heroes[actor].skills[..] {
+        if has_skill!(self, actor, Skill::DeepTrap(..)) {
             debug!("DeepTrap garants immunity against DoT");
             return;
         }
@@ -61,7 +61,7 @@ impl Wave<'_> {
     }
 
     pub fn dot_hp_burning(&mut self, actor: InstanceIndex) {
-        if let [Skill::DeepTrap(DeepTrap { .. }), ..] = self.heroes[actor].skills[..] {
+        if has_skill!(self, actor, Skill::DeepTrap(..)) {
             debug!("DeepTrap garants immunity against DoT");
             return;
         }

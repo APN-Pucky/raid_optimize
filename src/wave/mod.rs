@@ -4,6 +4,7 @@ pub mod action;
 pub mod attributes;
 pub mod begin;
 pub mod cleanse;
+pub mod control;
 pub mod damage;
 pub mod dot;
 pub mod effect;
@@ -32,6 +33,21 @@ use self::stat::{Stat, Statistics};
 
 pub type TeamIndex = usize;
 pub type InstanceIndex = usize;
+
+macro_rules! has_skill(($wave : ident, $target : ident,$variant: pat) => {
+    $wave.heroes[$target].skills.iter().any(|x| match x {$variant => true, _ => false})
+});
+pub(crate) use has_skill;
+
+macro_rules! for_skill(($wave : ident, $target : ident,$variant: pat,$body:block) => {
+    for p in &$wave.heroes[$target].skills {
+        if let $variant = *p {
+            $body
+        }
+    }
+});
+pub(crate) use for_skill;
+
 // this serves as a ECS system
 pub struct Wave<'a> {
     //pub allies: &'a mut Vec<Instance<'a>>, // should this be position dependent?
@@ -179,10 +195,6 @@ impl Wave<'_> {
     pub fn are_enemies(&self, i: InstanceIndex, j: InstanceIndex) -> bool {
         self.teams[i] != self.teams[j]
     }
-
-    //pub fn has_passive(&self, actor:InstanceIndex, passive: Passive) -> bool {
-    //    self.heroes[actor].skills.iter().any(|p| *p == passive)
-    //}
 
     pub fn get_statistics(&self) -> Vec<EnumMap<Stat, f32>> {
         self.statistics.iter().map(|s| s.sts).collect()

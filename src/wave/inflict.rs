@@ -1,7 +1,7 @@
 use crate::{
-    data::{effect::Effect, faction::Faction},
+    data::{effect::Effect, faction::Faction, skill::Skill},
     debug, indent, roll,
-    wave::stat::effect_to_stat,
+    wave::{has_skill, stat::effect_to_stat},
 };
 
 use super::{InstanceIndex, Wave};
@@ -39,6 +39,17 @@ impl Wave<'_> {
             if self.effects[target].get(effect) >= effect.get_max() {
                 debug!("{} already has max {}", self.name(target), effect);
                 return false;
+            }
+            //if self.heroes[target].skills.iter().any(|x| match x {Skill::AristocraticStyle(_) => true, _ => false}) {
+            if has_skill!(self, target, Skill::AristocraticStyle(_)) {
+                if effect == Effect::SevereWound || effect == Effect::InferiorSeverWound {
+                    debug!(
+                        "{} has AristocraticStyle dodges {}",
+                        self.name(target),
+                        effect
+                    );
+                    return false;
+                }
             }
             let mut turns: u32 = turns;
             self.on_inflict_dakota(actor, target, effect, &mut turns);

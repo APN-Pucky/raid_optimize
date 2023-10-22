@@ -1011,4 +1011,80 @@
             </DivinePrayer>
         
     </hero>
+    <hero>
+        <id>15</id>
+        <name>Agatha</name>
+        <mark>
+            Red
+        </mark>
+        <class>
+            Attack
+        </class>
+        <faction>
+            EternalSect
+        </faction>
+        <rarity>
+            Legend
+        </rarity>
+        <health>39049</health>
+        <attack>4303</attack>
+        <defense>3646</defense>
+        <speed>1010</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+            <Generic>
+                <cooldown>0</cooldown>
+                <type>
+                    Basic
+                </type>
+                <select>
+                    SingleEnemy
+                </select>
+                <name>Graceful Slash</name>
+                <subskill target="SingleEnemy" ratio="2.4" type="Damage" scale="Defense" effect="CountessKiss" chance="1.0" turns="1"/>
+                <subskill target="SingleEnemy" ratio="2.4" type="Damage" scale="Defense" effect="None" chance="0.0" turns="0"/>
+            </Generic>
+
+            <Generic>
+                <cooldown>3</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    AllAllies
+                </select>
+                <name>Fusion of Fire</name>
+                <subskill target="AllAllies" ratio="0.0" type="Inflict" scale="None" effect="Immortal" chance="1.0" turns="1"/>
+            </Generic>
+
+
+
+            <Generic>
+            <cooldown>0</cooldown>
+            <type>
+                Passive
+            </type>
+            <select>
+                AllAllies
+            </select>
+                <name>FusionOfFire</name>
+                <subskill trigger="EnemyDeath" target="SingleSelf" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
+                <subskill trigger="AllyDeath" target="AllAllies" ratio="0.31" type="IncreaseTurnMeter" scale="None" effect="None" chance="0.0" turns="0"/>
+            </Generic>
+
+        
+            <DivinePrayer>
+                <cooldown>5</cooldown>
+            </DivinePrayer>
+        
+    </hero>
 </heroes>

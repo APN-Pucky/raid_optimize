@@ -1,7 +1,7 @@
 use crate::{
-    data::{faction::Faction, skill::Skill},
+    data::{effect::Effect, faction::Faction, skill::Skill},
     debug, indent,
-    wave::heroes::maya::force_of_mercy::ForceOfMercy,
+    wave::{for_skill, heroes::maya::force_of_mercy::ForceOfMercy},
 };
 
 use super::{InstanceIndex, Wave};
@@ -51,18 +51,21 @@ impl Wave<'_> {
                 );
                 fact *= xfact;
             }
-            if let [Skill::ForceOfMercy(ForceOfMercy { healing_effect, .. }), ..] =
-                self.heroes[actor].skills[..]
-            {
-                if self.health[actor] < 0.5 * self.get_max_health(actor) {
-                    debug!(
-                        "{} has ForceOfMercy -> healing_effect * {}",
-                        self.name(actor),
-                        healing_effect
-                    );
-                    fact *= healing_effect;
+            for_skill!(
+                self,
+                actor,
+                Skill::ForceOfMercy(ForceOfMercy { healing_effect, .. }),
+                {
+                    if self.health[actor] < 0.5 * self.get_max_health(actor) {
+                        debug!(
+                            "{} has ForceOfMercy -> healing_effect * {}",
+                            self.name(actor),
+                            healing_effect
+                        );
+                        fact *= healing_effect;
+                    }
                 }
-            }
+            );
         });
         let res = self.get_hero(actor).healing_effect * fact;
         if fact != 1.0 {
@@ -86,6 +89,12 @@ impl Wave<'_> {
                     xfact
                 );
                 fact *= xfact;
+            }
+            if self.has_effect(actor, Effect::InferiorSeverWound) {
+                fact *= 0.6;
+            }
+            if self.has_effect(actor, Effect::SevereWound) {
+                fact *= 0.2;
             }
         });
         let res = base_healed * fact;

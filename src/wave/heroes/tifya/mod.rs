@@ -1,6 +1,6 @@
 use crate::{
     data::{effect::Effect, skill::Skill},
-    wave::{InstanceIndex, Wave},
+    wave::{has_skill, InstanceIndex, Wave},
 };
 
 use self::{scarlet_multi_strike::ScarletMultiStrike, scarlet_slash::ScarletSlash};
@@ -27,7 +27,7 @@ impl Wave<'_> {
             for i in self.get_indices_iter() {
                 if self.teams[i] == self.teams[actor] {
                     if i != actor {
-                        if let [Skill::SharpInstinct, ..] = self.heroes[i].skills[..] {
+                        if has_skill!(self, i, Skill::SharpInstinct) {
                             for s in &self.heroes[i].skills {
                                 if let Skill::LeavesStorm { .. } = s {
                                     self.execute_skill(&s, i, i)
@@ -35,7 +35,7 @@ impl Wave<'_> {
                             }
                         }
                     } else {
-                        if let [Skill::SharpInstinct, ..] = self.heroes[actor].skills[..] {
+                        if has_skill!(self, actor, Skill::SharpInstinct) {
                             for s in &self.heroes[actor].skills {
                                 if let Skill::LeavesStorm { .. } = s {
                                     self.inflict_buff_single(actor, actor, Effect::Stealth, 1);
@@ -46,7 +46,7 @@ impl Wave<'_> {
                     }
                 }
                 if self.teams[i] != self.teams[actor] {
-                    if let [Skill::SharpInstinct, ..] = self.heroes[i].skills[..] {
+                    if has_skill!(self, i, Skill::SharpInstinct) {
                         self.cleanse(i, Effect::is_debuff, 999);
                         self.act(i);
                     }

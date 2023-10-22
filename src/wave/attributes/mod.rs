@@ -59,7 +59,7 @@ impl Wave<'_> {
                 fact *= xfact;
             }
             let n = self.effects[actor].get(Effect::CountessKiss);
-            fact *= 1.0 + 0.2 * n as f32;
+            fact *= 1.0 + 0.02 * n as f32;
         });
         if fact != 1.0 {
             debug!(
