@@ -1429,4 +1429,66 @@
             
         
     </hero>
+    <hero>
+        <id>21</id>
+        <name>Paulin</name>
+        <mark>
+            Yellow
+        </mark>
+        <class>
+            Support
+        </class>
+        <faction>
+            DragonTribe
+        </faction>
+        <rarity>
+            Legend
+        </rarity>
+        <health>41392</health>
+        <attack>4069</attack>
+        <defense>4069</defense>
+        <speed>1030</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+        <DecayedStaffStrike>
+                    <cooldown> 0</cooldown>
+            <remove_chance> 0.6</remove_chance>
+            <attack_damage_ratio> 1.2</attack_damage_ratio>
+        </DecayedStaffStrike>
+
+        <BonshoShelter>
+                    <cooldown> 3</cooldown>
+            <damage_immunity_turns> 1</damage_immunity_turns>
+            <tenacity_up_turns> 2</tenacity_up_turns>
+            <defense_up_turns> 2</defense_up_turns>
+        </BonshoShelter>
+
+
+        <PromptAction>
+                    <increase_self_turn_meter_ratio> 0.1</increase_self_turn_meter_ratio>
+            <increase_ally_turn_meter_ratio> 0.1</increase_ally_turn_meter_ratio>
+            <increase_tenacity_ratio> 0.5</increase_tenacity_ratio>
+            <increase_tenacity_ratio_max> 0.63</increase_tenacity_ratio_max>
+            <effect_resistance_turns> 2</effect_resistance_turns>
+            <start_increase_turn_meter_ratio> 0.1</start_increase_turn_meter_ratio>
+        </PromptAction>
+
+        <ImmenseHappiness>
+                    <cooldown> 4</cooldown>
+            <hp_up_turns> 2</hp_up_turns>
+            <block_debuff_turns> 1</block_debuff_turns>
+            <restore_hp_ratio> 0.16</restore_hp_ratio>
+            <stealth_turns> 2</stealth_turns>
+            <act_again> true</act_again>
+        </ImmenseHappiness>
+    </hero>
 </heroes>
