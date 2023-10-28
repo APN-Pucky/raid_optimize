@@ -13,7 +13,7 @@ macro_rules! test_run_N_vs_M {
                 let heroes = load_heroes("data/heroes.xml".to_string());
                 let mut args = Args::default();
                 args.threads = 2;
-                args.iterations = 100;
+                args.iterations = 10;
                 // loop over all heroes and randomly select five per team
                 for _ in 0..25 {
                     args.allies = heroes

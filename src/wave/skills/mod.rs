@@ -1,3 +1,5 @@
+use std::cmp;
+
 use crate::{
     data::{
         effect::Effect,
@@ -53,15 +55,49 @@ impl Wave<'_> {
         })
     }
 
-    pub fn cooldown_s(&mut self, actor: InstanceIndex, skill: &Skill) {
-        if let Some(i) = self.heroes[actor].skills.iter().position(|s| s == skill) {
-            self.cooldowns[actor][i] = get_cooldown(skill);
-        } else {
-            panic!(
-                "Skill {:?} not found in hero {:?}",
-                skill, self.heroes[actor]
-            );
+    pub fn get_max_cooldown(&self, actor: InstanceIndex, skill: SkillIndex) -> u32 {
+        get_cooldown(&self.get_hero(actor).skills[skill])
+    }
+
+    pub fn get_skill_indices_iter(&self, actor: InstanceIndex) -> impl Iterator<Item = SkillIndex> {
+        0..self.get_hero(actor).skills.len()
+    }
+    pub fn get_skill_indices(&self, actor: InstanceIndex) -> Vec<SkillIndex> {
+        self.get_skill_indices_iter(actor).collect::<Vec<_>>()
+    }
+
+    pub fn increase_all_cooldowns(
+        &mut self,
+        actor: InstanceIndex,
+        target: InstanceIndex,
+        value: u32,
+    ) -> u32 {
+        let mut r = 0;
+        for s in self.get_skill_indices_iter(target) {
+            r += self.increase_cooldowns(actor, target, s, value);
         }
+        r
+    }
+
+    pub fn increase_cooldowns(
+        &mut self,
+        actor: InstanceIndex,
+        target: InstanceIndex,
+        si: SkillIndex,
+        value: u32,
+    ) -> u32 {
+        self.add_stat(actor, Stat::IncreaseSkillCooldown, 1.);
+        let s = self.cooldowns[actor][si];
+        self.cooldowns[actor][si] = cmp::max(
+            self.get_max_cooldown(actor, si),
+            self.cooldowns[actor][si] + value,
+        );
+        self.cooldowns[actor][si] - s
+    }
+
+    pub fn cooldown_s(&mut self, actor: InstanceIndex, skill: &Skill) {
+        let si = self.get_skill_index(actor, skill);
+        self.cooldowns[actor][si] = self.get_max_cooldown(actor, si);
     }
 
     pub fn get_skill_index(&self, actor: InstanceIndex, skill: &Skill) -> SkillIndex {

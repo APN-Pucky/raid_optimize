@@ -7,6 +7,10 @@ use crate::wave::heroes::alahan::detach::Detach;
 use crate::wave::heroes::alahan::spirit_call::SpiritCall;
 use crate::wave::heroes::alahan::spirit_fountain::SpiritFountain;
 use crate::wave::heroes::asindo::psychological_torture::PsychologicalTorture;
+use crate::wave::heroes::ben_austin::inspiring_attack::InspiringAttack;
+use crate::wave::heroes::ben_austin::kings_benevolence::KingsBenevolence;
+use crate::wave::heroes::ben_austin::kings_majesty::KingsMajesty;
+use crate::wave::heroes::ben_austin::regal_might::RegalMight;
 use crate::wave::heroes::dakota::soul_ring::SoulRing;
 use crate::wave::heroes::dakota::soul_seal::SoulSeal;
 use crate::wave::heroes::dakota::soul_surge::SoulSurge;
@@ -281,6 +285,9 @@ gen_match!(
         FishGuardian,
         FishWaterball,
         ForceOfMercy,
+        InspiringAttack,
+        KingsBenevolence,
+        KingsMajesty,
         LeavesStorm,
         LunarShelter,
         LunarRecovery,
@@ -289,6 +296,7 @@ gen_match!(
         PsychologicalTorture,
         Resplendence,
         Resurrection,
+        RegalMight,
         ScorchedSoul,
         ScytheStrike,
         SacredLight,

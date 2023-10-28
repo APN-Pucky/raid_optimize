@@ -1293,7 +1293,7 @@
                 <name>Electromagnetic Pulse</name>
                 <subskill target="AllAllies" type="Inflict" effect="DefenseUpII" chance="1.0" turns="2"/>
                 <subskill target="AllAllies" type="Inflict" effect="TenacityUpII" chance="1.0" turns="2"/>
-                <subskill target="AllAllies" type="Inflict" effect="EffectResistanceUpI" chance="1.0" turns="1"/>
+                <subskill target="AllAllies" type="Inflict" effect="BlockDebuff" chance="1.0" turns="1"/>
             </Generic>
 
             <Generic>
@@ -1309,6 +1309,70 @@
                 <subskill target="AllAllies" type="Shield" ratio="0.3" scale="TargetMaxHealth" turns="2" />
             </Generic>
 
+        
+    </hero>
+    <hero>
+        <id>19</id>
+        <name>Ben Austin</name>
+        <mark>
+            Green
+        </mark>
+        <class>
+            Support
+        </class>
+        <faction>
+            SwordHarborGuards
+        </faction>
+        <rarity>
+            Mythic
+        </rarity>
+        <health>41392</health>
+        <attack>4069</attack>
+        <defense>4069</defense>
+        <speed>1030</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+            <InspiringAttack>
+            <cooldown> 0</cooldown>
+            <attack_damage_ratio> 1.0</attack_damage_ratio>
+            <reduce_defense_chance> 0.7</reduce_defense_chance>
+            <reduce_defense_turns> 2</reduce_defense_turns>
+            </InspiringAttack>
+
+            <RegalMight>
+            <cooldown> 3</cooldown>
+            <attack_damage_ratio> 1.0</attack_damage_ratio>
+            <increase_active_cooldowns_chance> 0.5</increase_active_cooldowns_chance>
+            <increase_active_cooldowns_turns> 1</increase_active_cooldowns_turns>
+            <steal_turn_meter_ratio > 0.10</steal_turn_meter_ratio >
+            </RegalMight>
+
+
+            <KingsBenevolence>
+            <cleanse_chance> 0.28</cleanse_chance>
+            <effect_resistance_turns > 2</effect_resistance_turns >
+            </KingsBenevolence>
+
+            <KingsMajesty>
+            <cooldown> 5</cooldown>
+            <block_buff_chance> 1.0</block_buff_chance>
+            <block_buff_turns> 1</block_buff_turns>
+            <effect_resistance_turns> 2</effect_resistance_turns>
+            <reset_cooldown > true</reset_cooldown >
+            </KingsMajesty>
+
+
+
+            
         
     </hero>
 </heroes>

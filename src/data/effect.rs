@@ -16,7 +16,6 @@ pub enum Effect {
     AttackDownII,
 
     Bleed,
-    BlockDebuff,
 
     ColdI,
     ColdII,
@@ -78,6 +77,7 @@ pub enum Effect {
 
     //Debuff
     BlockBuff,
+    BlockDebuff,
     //DotDebuff
     Poison,
     Burn,
@@ -222,12 +222,13 @@ impl Effect {
             Effect::None => 0,
             Effect::AttackUpI
             | Effect::Silence
+            | Effect::BlockDebuff
             | Effect::InferiorSevereWound
             | Effect::SevereWound
             | Effect::AttackUpII
             | Effect::AttackDownI
             | Effect::AttackDownII
-            | Effect::BlockDebuff
+            | Effect::BlockBuff
             | Effect::ColdI
             | Effect::ColdII
             | Effect::ColdIII
@@ -268,7 +269,6 @@ impl Effect {
             | Effect::TenacityDownII
             | Effect::WetI
             | Effect::WetII
-            | Effect::BlockBuff
             | Effect::Stun
             | Effect::Freeze
             | Effect::Burn

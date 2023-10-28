@@ -30,6 +30,8 @@ pub enum Stat {
     HealthRestored,
     HealthLost,
 
+    IncreaseSkillCooldown,
+
     LostToTenacity,
     Leeched,
     LeechedOf,

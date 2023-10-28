@@ -45,6 +45,20 @@ impl Wave<'_> {
         i
     }
 
+    pub fn remove_effect_filter_ally(
+        &mut self,
+        actor: InstanceIndex,
+        opt_effect_closure: EffectFilter,
+    ) -> u32 {
+        let mut i = 0;
+        for e in Effect::iter().filter(|e| opt_effect_closure(e)) {
+            for target in self.get_ally_indices(actor) {
+                i += self.remove_effect_single(actor, target, e);
+            }
+        }
+        i
+    }
+
     pub fn remove_all_buffs_single(&mut self, actor: InstanceIndex, target: InstanceIndex) -> u32 {
         debug!(
             "{} removes all buffs from {}",

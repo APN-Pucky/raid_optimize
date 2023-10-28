@@ -5,7 +5,11 @@ use crate::{
     data::{effect::Effect, faction::Faction, skill::Skill, subskill::Trigger},
     debug, indent, roll,
     wave::{
-        for_ally_skill, has_skill, heroes::ellic::electron_transfer::ElectronTransfer,
+        for_ally_skill, has_skill,
+        heroes::{
+            ben_austin::kings_benevolence::KingsBenevolence,
+            ellic::electron_transfer::ElectronTransfer,
+        },
         stat::effect_to_stat,
     },
 };
@@ -40,6 +44,14 @@ impl Wave<'_> {
         indent!({
             if self.has_effect(target, Effect::BlockBuff) && effect.is_buff() {
                 debug!("{} has BlockBuff, {} is blocked", self.name(target), effect);
+                return false;
+            }
+            if self.has_effect(target, Effect::BlockDebuff) && effect.is_debuff() {
+                debug!(
+                    "{} has BlockDebuff, {} is blocked",
+                    self.name(target),
+                    effect
+                );
                 return false;
             }
             if self.effects[target].get(effect) >= effect.get_max() {
@@ -78,6 +90,27 @@ impl Wave<'_> {
                             self.inflict_any(i, i, Effect::_ElectronTransferCounter, 1);
                             self.inflict_any(actor, i, effect, turns);
                             return false;
+                        }
+                    }
+                }
+            );
+            for_ally_skill!(
+                self,
+                target,
+                Skill::KingsBenevolence(KingsBenevolence {
+                    cleanse_chance,
+                    effect_resistance_turns
+                }),
+                i,
+                {
+                    if roll(cleanse_chance) {
+                        if self.remove_effect_filter_single(i, target, Effect::is_control) > 0 {
+                            self.inflict_any(
+                                i,
+                                target,
+                                Effect::EffectResistanceUpII,
+                                effect_resistance_turns,
+                            );
                         }
                     }
                 }

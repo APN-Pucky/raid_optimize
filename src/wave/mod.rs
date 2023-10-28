@@ -195,7 +195,7 @@ impl Wave<'_> {
         self.get_indices_iter().collect::<Vec<_>>()
     }
 
-    pub fn get_indices_iter(&self) -> impl Iterator<Item = usize> {
+    pub fn get_indices_iter(&self) -> impl Iterator<Item = InstanceIndex> {
         0..self.heroes.len()
     }
 

@@ -6,6 +6,7 @@ use super::{InstanceIndex, Wave};
 pub mod agatha;
 pub mod alahan;
 pub mod asindo;
+pub mod ben_austin;
 pub mod dakota;
 pub mod ellic;
 pub mod geeliman;
@@ -165,3 +166,20 @@ macro_rules! test_hero {
     };
 }
 pub(crate) use test_hero;
+
+macro_rules! test_hero_string {
+    ($hero:expr) => {
+        #[cfg(test)]
+        pub mod tests {
+            #[test]
+            fn test_1_vs_1() {
+                crate::wave::heroes::tests::test_1_vs_1($hero);
+            }
+            #[test]
+            fn test_5_vs_5() {
+                crate::wave::heroes::tests::test_5_vs_5($hero);
+            }
+        }
+    };
+}
+pub(crate) use test_hero_string;
