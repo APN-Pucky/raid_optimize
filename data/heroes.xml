@@ -1426,6 +1426,20 @@
                 <subskill target="AllAllies" type="Shield" ratio="0.45" scale="MaxHealth" turns="2" />
             </Generic>
 
+            <HolyShelter>
+                        <cooldown> 4</cooldown>
+            <damage_imunity_turns> 2</damage_imunity_turns>
+            <block_debuff_turns> 2</block_debuff_turns>
+            </HolyShelter>
+
+            <HolyCreature>
+                        <divine_dust_increase_shield> 0.004</divine_dust_increase_shield>
+            <divine_shield_max_health_ratio> 0.1</divine_shield_max_health_ratio>
+            <overflowing_light_alive_max_hp_ratio>0.35</overflowing_light_alive_max_hp_ratio>
+            <overflowing_light_dead_max_hp_ratio>0.15</overflowing_light_dead_max_hp_ratio>
+            <overflowing_light_turn_limit> 3</overflowing_light_turn_limit>
+            </HolyCreature>
+
             
         
     </hero>
@@ -1433,7 +1447,7 @@
         <id>21</id>
         <name>Paulin</name>
         <mark>
-            Yellow
+            Force
         </mark>
         <class>
             Support

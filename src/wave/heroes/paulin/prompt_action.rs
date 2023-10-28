@@ -36,7 +36,7 @@ impl Default for PromptAction {
 }
 
 impl Wave<'_> {
-    pub fn start_of_wave_paulin_prompt_action(&mut self) {
+    pub fn on_begin_wave_paulin_prompt_action(&mut self) {
         for_any_skill!(
             self,
             Skill::PromptAction(PromptAction {

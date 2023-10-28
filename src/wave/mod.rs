@@ -92,8 +92,8 @@ pub struct Wave<'a> {
     */
     pub heroes: Vec<&'a Hero>,
     pub teams: Vec<InstanceIndex>,
-    pub players: &'a mut Vec<Box<dyn Player>>, //TODO make this also generic 2!
-    pub shields: Vec<Vec<(f32, u32, InstanceIndex)>>, // (shield_value, turns)
+    pub players: &'a mut Vec<Box<dyn Player>>,
+    pub shields: Vec<Vec<(f32, u32, InstanceIndex)>>, // (shield_value, turns, actor)
     pub effects: Vec<Effects>,
     pub statistics: Vec<Statistics>,
     pub turn_meter: Vec<f32>,
@@ -104,6 +104,7 @@ pub struct Wave<'a> {
     //pub ally_player : Box<dyn Player>,
     //pub enemy_player : Box<dyn Player>,
     pub team_acted: Vec<bool>,
+    pub acted_turns: Vec<u32>,
     turns: u32,
     turn_limit: u32,
     turn_meter_threshold: f32,
@@ -153,6 +154,7 @@ impl Wave<'_> {
             }
         }
         let team_acted = vec![false; players.len()];
+        let acted_turns = vec![0; instances.len()];
         // transform instances into ECS
         let mut w = Wave {
             heroes,
@@ -172,6 +174,7 @@ impl Wave<'_> {
             team_acted,
             team_bonds: bonds,
             bonds_counter,
+            acted_turns,
         };
         w.set_bonds();
         w
@@ -335,6 +338,7 @@ impl Wave<'_> {
 
             if let Some(ir) = self.find_actor_index() {
                 self.act(ir);
+                self.acted_turns[ir] += 1;
                 self.turns += 1;
             } else {
                 log::debug!("Nobody acts");

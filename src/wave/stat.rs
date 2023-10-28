@@ -23,6 +23,7 @@ pub enum Stat {
     DamageDone,
     DamageTaken,
     Defends,
+    DivineShieldBlocked,
 
     EffectInflicted,
 

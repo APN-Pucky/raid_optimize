@@ -9,6 +9,8 @@ impl Wave<'_> {
             for i in self.get_indices_iter() {
                 self.on_trigger(i, Trigger::WaveBegin);
             }
+            self.on_begin_wave_nordak_holy_creature();
+            self.on_begin_wave_paulin_prompt_action();
             // TODO these can be converted to subskills
             self.on_begin_wave_space();
             self.on_begin_wave_marville();

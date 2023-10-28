@@ -87,10 +87,10 @@ impl Effects {
     }
 
     pub fn reduce(&mut self) {
-        for (_key, value) in self.em.iter_mut() {
+        for (key, value) in self.em.iter_mut() {
             let mut i = 0;
             while i < value.len() {
-                value[i].0 -= 1;
+                value[i].0 -= key.get_reduction();
                 if value[i].0 == 0 {
                     value.remove(i);
                 } else {

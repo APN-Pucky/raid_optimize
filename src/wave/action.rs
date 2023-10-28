@@ -45,6 +45,7 @@ impl Wave<'_> {
     pub fn after_action(&mut self, actor: InstanceIndex) {
         debug!("after {} acts", actor);
         indent!({
+            self.on_turn_end_nordak_holy_creature(actor);
             self.after_action_tifya(actor);
             if self.get_faction(actor) == Faction::DragonTribe && self.bonds_counter[actor] < 5 {
                 self.bonds_counter[actor] += 1;

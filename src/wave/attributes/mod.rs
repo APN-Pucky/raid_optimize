@@ -5,7 +5,10 @@ use ordered_float::OrderedFloat;
 use crate::{
     data::{effect::Effect, faction::Faction, hero::Hero, mark::Mark, skill::Skill},
     debug, indent,
-    wave::{for_skill, heroes::paulin::prompt_action::PromptAction},
+    wave::{
+        for_ally_skill, for_skill,
+        heroes::{nordak::holy_creature::HolyCreature, paulin::prompt_action::PromptAction},
+    },
 };
 
 use super::{InstanceIndex, Wave};
@@ -157,12 +160,39 @@ impl Wave<'_> {
 
     pub fn get_max_health(&self, actor: InstanceIndex) -> f32 {
         let mut fact = 1.0;
+        let mut add = 0.;
         debug!(
             "{} base max health of {}",
             self.name(actor),
             self.get_hero(actor).health
         );
         indent!({
+            if self.effects[actor].has(Effect::OverflowingLight) {
+                for_ally_skill!(
+                    self,
+                    actor,
+                    Skill::HolyCreature(HolyCreature {
+                        overflowing_light_turn_limit,
+                        divine_dust_increase_shield,
+                        overflowing_light_alive_max_hp_ratio,
+                        overflowing_light_dead_max_hp_ratio,
+                        divine_shield_max_health_ratio
+                    }),
+                    i,
+                    {
+                        let xadd = self.get_hero(i).health
+                            * if self.is_alive(i)
+                                && self.acted_turns[i] > overflowing_light_turn_limit
+                            {
+                                overflowing_light_alive_max_hp_ratio
+                            } else {
+                                overflowing_light_dead_max_hp_ratio
+                            };
+                        debug!("{} has HolyCreate -> health + {}", self.name(actor), xadd);
+                        add += xadd;
+                    }
+                )
+            }
             if self.effects[actor].has(Effect::HPUpI) {
                 let xfact = 1.25;
                 debug!("{} has HPUpI -> health * {}", self.name(actor), xfact);
@@ -174,7 +204,7 @@ impl Wave<'_> {
                 fact *= xfact;
             }
         });
-        let res = self.get_hero(actor).health * fact;
+        let res = self.get_hero(actor).health * fact + add;
         if fact != 1.0 {
             debug!("{} speed of {}", self.name(actor), res);
         }

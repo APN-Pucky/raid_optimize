@@ -1,7 +1,13 @@
 use crate::{
-    data::{skill::Skill, subskill::Trigger},
+    data::{effect::Effect, skill::Skill, subskill::Trigger},
     debug, indent, roll, warn,
-    wave::{for_skill, heroes::agatha::aristocratic_style::AristocraticStyle, stat::Stat},
+    wave::{
+        for_ally_skill, for_skill,
+        heroes::{
+            agatha::aristocratic_style::AristocraticStyle, nordak::holy_creature::HolyCreature,
+        },
+        stat::Stat,
+    },
 };
 
 use super::{InstanceIndex, Wave};
@@ -23,6 +29,12 @@ impl Wave<'_> {
             );
             return;
         }
+        for_ally_skill!(self, target, Skill::HolyCreature(_), i, {
+            self.inflict_single(target, i, Effect::DivineDust, 1.0, 999);
+            if i == target {
+                self.inflict_single(target, i, Effect::DivineDust, 1.0, 999);
+            }
+        });
         for i in self.get_enemies_indices(target) {
             for_skill!(
                 self,
@@ -139,11 +151,51 @@ impl Wave<'_> {
         }
     }
 
+    pub fn get_divine_shield(&self, actor: InstanceIndex) -> f32 {
+        let mut ret = 0.;
+        if self.has_effect(actor, Effect::DivineShield) {
+            for_ally_skill!(
+                self,
+                actor,
+                Skill::HolyCreature(HolyCreature {
+                    divine_dust_increase_shield,
+                    divine_shield_max_health_ratio,
+                    ..
+                }),
+                i,
+                { ret = divine_shield_max_health_ratio * self.get_max_health(i) }
+            )
+        }
+        ret
+    }
+
+    pub fn get_shield_effect(&self, actor: InstanceIndex) -> f32 {
+        let mut shield_effect: f32 = 1.0;
+
+        shield_effect
+    }
+
     pub fn get_shield(&self, actor: InstanceIndex) -> f32 {
         let mut shield: f32 = 0.0;
         for (s, _, _) in self.shields[actor].iter() {
             shield += s;
         }
+        // shield effect increase
+        for_ally_skill!(
+            self,
+            actor,
+            Skill::HolyCreature(HolyCreature {
+                divine_dust_increase_shield,
+                divine_shield_max_health_ratio,
+                ..
+            }),
+            i,
+            {
+                shield *= 1.0
+                    + divine_dust_increase_shield
+                        * self.effects[actor].get(Effect::DivineDust) as f32;
+            }
+        );
         shield
     }
 
@@ -151,8 +203,16 @@ impl Wave<'_> {
         &mut self,
         actor: InstanceIndex,
         target: InstanceIndex,
-        damage: f32,
+        mut damage: f32,
     ) -> f32 {
+        let divine_shield = self.get_divine_shield(actor);
+        if damage > divine_shield {
+            // TODO this is not really correct, but it's a start
+            // We should track fractional divine shields
+            damage -= divine_shield;
+            self.effects[target].clear_single(Effect::DivineShield);
+            self.add_stat(target, Stat::DivineShieldBlocked, divine_shield);
+        }
         let current_shield = self.get_shield(target);
         if current_shield > damage {
             debug!("{} looses {} shield", self.name(actor), damage);

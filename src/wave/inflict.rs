@@ -146,6 +146,7 @@ impl Wave<'_> {
             self.add_stat(actor, effect_to_stat(effect), turns as f32);
             self.effects[target].push(effect, turns, actor);
             self.on_inflicted_margarita(target, effect);
+            self.on_inflicted_nordak_holy_creature(target, effect);
             self.on_trigger(actor, Trigger::Inflicting);
             self.on_trigger(target, Trigger::Inflicted);
             if effect == Effect::Silence {

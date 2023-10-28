@@ -252,9 +252,9 @@ impl Effect {
             Effect::RosePoison => 40,
             Effect::Poison => 10,
             Effect::CountessKiss => 10,
+            Effect::DivineDust => 100,
             Effect::None => 0,
             Effect::AttackUpI
-            | Effect::DivineDust
             | Effect::DivineLight
             | Effect::DivineShield
             | Effect::OverflowingLight
@@ -414,6 +414,20 @@ impl Effect {
             EffectCategory::AttributeDebuff => false,
             EffectCategory::Unique => false,
             EffectCategory::Util => false,
+        }
+    }
+
+    pub fn get_reduction(&self) -> u32 {
+        // TODO plug in extra cases
+        match self.get_category() {
+            EffectCategory::Buff => 1,
+            EffectCategory::AttributeBuff => 1,
+            EffectCategory::Debuff => 1,
+            EffectCategory::Dot => 1,
+            EffectCategory::Control => 1,
+            EffectCategory::AttributeDebuff => 1,
+            EffectCategory::Unique => 0,
+            EffectCategory::Util => 1,
         }
     }
 }
