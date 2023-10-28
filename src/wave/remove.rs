@@ -24,13 +24,13 @@ impl Wave<'_> {
             if self.effects[target].has(Effect::BlockRemoval) {
                 debug!("{} has block_removal, no buffs removed", self.name(target));
                 self.effects[target].remove_layer(Effect::BlockRemoval);
-                return;
+                return i;
             }
             i += self.effects[target].get(effect);
             self.effects[target].clear_single(effect);
             self.effects[target].remove_empty();
-        });
-        i
+            i
+        })
     }
     pub fn remove_effect_filter_single(
         &mut self,
