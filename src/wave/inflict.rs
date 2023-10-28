@@ -1,7 +1,13 @@
+use rand::seq::SliceRandom;
+use strum::IntoEnumIterator;
+
 use crate::{
     data::{effect::Effect, faction::Faction, skill::Skill, subskill::Trigger},
     debug, indent, roll,
-    wave::{has_skill, stat::effect_to_stat},
+    wave::{
+        for_ally_skill, has_skill, heroes::ellic::electron_transfer::ElectronTransfer,
+        stat::effect_to_stat,
+    },
 };
 
 use super::{InstanceIndex, Wave};
@@ -51,6 +57,31 @@ impl Wave<'_> {
                     return false;
                 }
             }
+            for_ally_skill!(
+                self,
+                target,
+                Skill::ElectronTransfer(ElectronTransfer { max_transfers, .. }),
+                i,
+                {
+                    if let Some(target2) = self.find_highest_attack_alive_ally(target) {
+                        if target2 == target
+                            && effect.is_debuff()
+                            && self.effects[target].get(Effect::_ElectronTransferCounter)
+                                < max_transfers
+                        {
+                            debug!(
+                                "{}'s ally has ElectronTransfer, redirects {} to {}",
+                                self.name(target),
+                                effect,
+                                self.name(i)
+                            );
+                            self.inflict_any(i, i, Effect::_ElectronTransferCounter, 1);
+                            self.inflict_any(actor, i, effect, turns);
+                            return false;
+                        }
+                    }
+                }
+            );
             let mut turns: u32 = turns;
             self.on_inflict_dakota(actor, target, effect, &mut turns);
 
@@ -148,6 +179,36 @@ impl Wave<'_> {
                 self.name(target)
             );
         }
+    }
+
+    pub fn steal_random_buff_layers(
+        &mut self,
+        actor: InstanceIndex,
+        target: InstanceIndex,
+        layers: u32,
+    ) {
+        debug!(
+            "{} steals {} buff layers from {}",
+            self.name(actor),
+            layers,
+            self.name(target)
+        );
+        indent!({
+            let mut rng = rand::thread_rng();
+            let mut effs = Effect::iter().collect::<Vec<Effect>>();
+            effs.shuffle(&mut rng);
+            for key in effs {
+                let value = self.effects[target].mut_single(key);
+                if key.is_buff() && !value.is_empty() {
+                    for _i in 0..layers {
+                        if let Some(a) = self.effects[target].remove_layer(key) {
+                            self.effects[actor].add_layer(key, a);
+                        }
+                    }
+                    return;
+                }
+            }
+        });
     }
 
     pub fn inflict_enemy_team(

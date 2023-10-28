@@ -108,6 +108,7 @@ pub enum Effect {
 
     //Util
     _DeepTrapCounter,
+    _ElectronTransferCounter,
 }
 
 pub enum EffectCategory {
@@ -127,6 +128,7 @@ impl Effect {
             Effect::FactionHiddenWaveAttack
             | Effect::FactionHiddenWaveSkill
             | Effect::_DeepTrapCounter
+            | Effect::_ElectronTransferCounter
             | Effect::None => EffectCategory::Util,
 
             Effect::AttackDownI
@@ -280,6 +282,7 @@ impl Effect {
             | Effect::Blade
             | Effect::ToxicSwamp
             | Effect::ForceOfMercy
+            | Effect::_ElectronTransferCounter
             | Effect::_DeepTrapCounter => 99999,
         }
     }

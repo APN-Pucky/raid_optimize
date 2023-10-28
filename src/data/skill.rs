@@ -10,6 +10,8 @@ use crate::wave::heroes::asindo::psychological_torture::PsychologicalTorture;
 use crate::wave::heroes::dakota::soul_ring::SoulRing;
 use crate::wave::heroes::dakota::soul_seal::SoulSeal;
 use crate::wave::heroes::dakota::soul_surge::SoulSurge;
+use crate::wave::heroes::ellic::electron_transfer::ElectronTransfer;
+use crate::wave::heroes::ellic::thunder_palm::ThunderPalm;
 use crate::wave::heroes::geeliman::bursting_knowledge::BurstingKnowledge;
 use crate::wave::heroes::guhanna::lunar_recovery::LunarRecovery;
 use crate::wave::heroes::guhanna::lunar_shelter::LunarShelter;
@@ -270,6 +272,7 @@ gen_match!(
         DeepTrap,
         Detach,
         DivinePrayer,
+        ElectronTransfer,
         EnergyBurst,
         EyeForAnEye,
         FissionOfLife,
@@ -296,6 +299,7 @@ gen_match!(
         ScarletMultiStrike,
         SpiritCall,
         SpiritFountain,
+        ThunderPalm,
         TideBigHit,
         Tricks
     ]

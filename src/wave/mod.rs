@@ -9,6 +9,7 @@ pub mod damage;
 pub mod dot;
 pub mod effect;
 pub mod faction;
+pub mod find;
 pub mod heroes;
 pub mod inflict;
 pub mod print;
@@ -48,9 +49,9 @@ macro_rules! for_skill(($wave : ident, $target : ident,$variant: pat,$body:block
 });
 pub(crate) use for_skill;
 
-macro_rules! for_ally_skill(($wave : ident, $target : ident,$variant: pat,$body:block) => {
-    for i in $wave.get_ally_indices($target) {
-        for p in &$wave.heroes[i].skills {
+macro_rules! for_ally_skill(($wave : ident, $target : ident,$variant: pat, $i : ident, $body:block) => {
+    for $i in $wave.get_ally_indices($target) {
+        for p in &$wave.heroes[$i].skills {
             if let $variant = *p {
                 $body
             }

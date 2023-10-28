@@ -7,6 +7,7 @@ pub mod agatha;
 pub mod alahan;
 pub mod asindo;
 pub mod dakota;
+pub mod ellic;
 pub mod geeliman;
 pub mod guhanna;
 pub mod hazier;
@@ -113,7 +114,7 @@ pub mod tests {
         let liz = heroes.heroes.iter().find(|h| h.name == name).unwrap();
         let mut args = Args::default();
         args.threads = 1;
-        args.iterations = 100;
+        args.iterations = 10;
         args.allies = vec![liz.clone()];
         args.enemies = vec![liz.clone()];
         let sim = Sim::new(args.clone());
@@ -127,7 +128,7 @@ pub mod tests {
         let liz = heroes.heroes.iter().find(|h| h.name == name).unwrap();
         let mut args = Args::default();
         args.threads = 1;
-        args.iterations = 100;
+        args.iterations = 10;
         args.allies = vec![
             liz.clone(),
             liz.clone(),

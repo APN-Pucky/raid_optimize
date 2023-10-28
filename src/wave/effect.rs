@@ -28,8 +28,11 @@ impl Effects {
         }
     }
 
-    pub fn remove_layer(&mut self, key: Effect) {
-        self.em[key].pop();
+    pub fn remove_layer(&mut self, key: Effect) -> Option<(u32, u32, InstanceIndex)> {
+        self.em[key].pop()
+    }
+    pub fn add_layer(&mut self, key: Effect, layer: (u32, u32, InstanceIndex)) {
+        self.em[key].push(layer);
     }
 
     pub fn get_last_inflictor(&self, key: Effect) -> Option<InstanceIndex> {
@@ -126,6 +129,30 @@ impl Wave<'_> {
         self.effects[actor].reduce();
     }
 
+    // TODO shield too?
+    // TODO check number
+    // TODO count layers or
+    pub fn count_buffs_layers(&self, actor: InstanceIndex) -> usize {
+        let mut count = 0;
+        for (e, value) in self.effects[actor].em.iter() {
+            if e.is_buff() {
+                count += value.len();
+            }
+        }
+        count
+    }
+
+    pub fn count_buffs_types(&self, actor: InstanceIndex) -> usize {
+        let mut count = 0;
+        for (e, value) in self.effects[actor].em.iter() {
+            if e.is_buff() && !value.is_empty() {
+                count += 1;
+            }
+        }
+        count
+    }
+
+    // TODO rename due to shield too
     pub fn count_self_buffs(&self, actor: InstanceIndex) -> usize {
         let mut count = 0;
         for (_key, value) in self.effects[actor].em.iter() {

@@ -1,7 +1,9 @@
+use derive_macro::PassiveSkill;
+
 use crate::wave::heroes::Cooldown;
 use crate::wave::heroes::PassiveSkill;
 
-#[derive(Debug, PartialEq, Deserialize, Serialize, Clone, Copy)]
+#[derive(PassiveSkill, Debug, PartialEq, Deserialize, Serialize, Clone, Copy)]
 pub struct CounterattackCommand {
     pub blades: u32,
     pub crit_damage_turns: u32,
@@ -15,13 +17,5 @@ impl Default for CounterattackCommand {
             crit_damage_turns: 1,
             attack_damage_ratio: 2.3,
         }
-    }
-}
-
-impl PassiveSkill for CounterattackCommand {}
-
-impl Cooldown for CounterattackCommand {
-    fn get_cooldown(&self) -> u32 {
-        0
     }
 }

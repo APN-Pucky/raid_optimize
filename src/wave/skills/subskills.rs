@@ -1,7 +1,10 @@
-use crate::data::{
-    effect::Effect,
-    skill::{Generic, Skill},
-    subskill::{Scale, SubSkill, Target, Trigger, Triggerer, Type},
+use crate::{
+    data::{
+        effect::Effect,
+        skill::{Generic, Skill},
+        subskill::{Scale, SubSkill, Target, Trigger, Triggerer, Type},
+    },
+    debug,
 };
 
 use super::{InstanceIndex, Wave};
@@ -45,45 +48,43 @@ impl Wave<'_> {
         target: Option<InstanceIndex>,
         skill: &Skill,
     ) {
-        let wave = self;
         let mut val = 0.0;
-        let mut effect = Effect::None;
-        let mut chance = 0.0;
-        let mut turns = 0;
+        let effect = subskill.effect;
+        let chance = subskill.chance;
+        let turns = subskill.turns;
+        if !self.is_alive(actor) {
+            debug!(
+                "{} is dead -> can't execute subskill",
+                self.heroes[actor].name
+            );
+            return;
+        }
         match subskill.scale {
             Scale::Attack => {
-                val = wave.get_attack_damage(actor) * subskill.ratio;
+                val = self.get_attack_damage(actor) * subskill.ratio;
             }
             Scale::Defense => {
-                val = wave.get_defense(actor) * subskill.ratio;
+                val = self.get_defense(actor) * subskill.ratio;
             }
             Scale::MaxHealth => {
-                val = wave.get_max_health(actor) * subskill.ratio;
+                val = self.get_max_health(actor) * subskill.ratio;
             }
             Scale::TargetMaxHealth => {
-                val = wave.get_max_health(target.expect("TargetMaxHealth needs a target"))
+                val = self.get_max_health(target.expect("TargetMaxHealth needs a target"))
                     * subskill.ratio;
             }
             Scale::None => {}
         }
-        match subskill.effect {
-            Effect::None => {}
-            _ => {
-                effect = subskill.effect;
-                chance = subskill.chance;
-                turns = subskill.turns;
-            }
-        }
         let targets: Vec<InstanceIndex> = match subskill.target {
-            Target::Everyone => wave.get_indices_iter().collect(),
+            Target::Everyone => self.get_indices_iter().collect(),
             Target::SingleAlly => {
                 vec![target.expect("SingleAlly needs a target")]
             }
             Target::SingleEnemy => {
                 vec![target.expect("SingleEnemy needs a target")]
             }
-            Target::AllEnemies => wave.get_enemies_indices(actor),
-            Target::AllAllies => wave.get_ally_indices(actor),
+            Target::AllEnemies => self.get_enemies_indices(actor),
+            Target::AllAllies => self.get_ally_indices(actor),
             Target::SingleSelf => {
                 vec![actor]
             }
@@ -91,27 +92,27 @@ impl Wave<'_> {
                 vec![]
             }
             Target::LowestHealthAlly => {
-                vec![wave.get_lowest_health_ally(actor)]
+                vec![self.get_lowest_health_ally(actor)]
             }
         };
 
         match subskill.typ {
             Type::ActAgain => {
-                wave.act(actor);
+                self.act(actor);
             }
             Type::Damage => {
                 for target in targets.iter() {
-                    wave.attack_single(actor, *target, val, skill);
+                    self.attack_single(actor, *target, val, skill);
                 }
             }
             Type::Shield => {
                 for target in targets.iter() {
-                    wave.shield_single(actor, *target, val, turns);
+                    self.shield_single(actor, *target, val, turns);
                 }
             }
             Type::Restore => {
                 for target in targets.iter() {
-                    wave.restore_single(actor, *target, val);
+                    self.restore_single(actor, *target, val);
                 }
             }
             Type::Inflict => {
@@ -119,53 +120,53 @@ impl Wave<'_> {
             }
             Type::RemoveAllBuffs => {
                 for target in targets.iter() {
-                    wave.remove_all_buffs_single(actor, *target);
+                    self.remove_all_buffs_single(actor, *target);
                 }
             }
             Type::ReduceTurnMeter => {
                 for target in targets.iter() {
-                    wave.reduce_turn_meter_ratio(actor, *target, subskill.ratio);
+                    self.reduce_turn_meter_ratio(actor, *target, subskill.ratio);
                 }
             }
             Type::IncreaseTurnMeter => {
                 for target in targets.iter() {
-                    wave.increase_turn_meter_ratio(actor, *target, subskill.ratio)
+                    self.increase_turn_meter_ratio(actor, *target, subskill.ratio)
                 }
             }
             Type::StealTurnMeter => {
                 for target in targets.iter() {
-                    wave.steal_turn_meter_ratio(actor, *target, subskill.ratio)
+                    self.steal_turn_meter_ratio(actor, *target, subskill.ratio)
                 }
             }
             Type::RestoreMaxHealth => {
                 for target in targets.iter() {
-                    wave.restore_single(
+                    self.restore_single(
                         actor,
                         *target,
-                        subskill.ratio * wave.get_max_health(*target),
+                        subskill.ratio * self.get_max_health(*target),
                     );
                 }
             }
             Type::RemoveEffect => {
                 for target in targets.iter() {
-                    wave.remove_effect_single(actor, *target, effect);
+                    self.remove_effect_single(actor, *target, effect);
                 }
             }
             Type::ChangeSilence => {
                 for target in targets.iter() {
-                    if wave.effects[*target].get(Effect::Silence) > 0
+                    if self.effects[*target].get(Effect::Silence) > 0
                         && turns > 0
                         && effect != Effect::None
                     {
-                        wave.remove_effect_single(actor, *target, Effect::Silence);
-                        wave.inflict_single(actor, *target, effect, 1.0, turns);
+                        self.remove_effect_single(actor, *target, Effect::Silence);
+                        self.inflict_single(actor, *target, effect, 1.0, turns);
                     }
                 }
             }
         }
         if chance > 0.0 && turns > 0 && effect != Effect::None {
             for target in targets.iter() {
-                wave.inflict_single(actor, *target, effect, chance, turns);
+                self.inflict_single(actor, *target, effect, chance, turns);
             }
         }
     }

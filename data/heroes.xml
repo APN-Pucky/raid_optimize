@@ -1238,4 +1238,77 @@
 
         
     </hero>
+    <hero>
+        <id>18</id>
+        <name>Ellic</name>
+        <mark>
+            Green
+        </mark>
+        <class>
+            Defense
+        </class>
+        <faction>
+            WizardsEye 
+        </faction>
+        <rarity>
+            Legend
+        </rarity>
+        <health>41639</health>
+        <attack>3758</attack>
+        <defense>4282</defense>
+        <speed>985</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+            <ThunderPalm>
+                <cooldown>0</cooldown>
+                <defense_damage_ratio> 2.2</defense_damage_ratio>
+                <stun_chance> 0.25</stun_chance>
+                <stun_turns> 1</stun_turns>
+                <stun_chance_per_target_buff> 0.03 </stun_chance_per_target_buff>
+            </ThunderPalm>
+
+            <ElectronTransfer>
+                <crit_damage_reduction>0.4 </crit_damage_reduction>
+                <steal_buff_layers> 1</steal_buff_layers>
+                <max_transfers>3</max_transfers>
+            </ElectronTransfer>
+
+            <Generic>
+                <cooldown>4</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    AllAllies
+                </select>
+                <name>Electromagnetic Pulse</name>
+                <subskill target="AllAllies" type="Inflict" effect="DefenseUpII" chance="1.0" turns="2"/>
+                <subskill target="AllAllies" type="Inflict" effect="TenacityUpII" chance="1.0" turns="2"/>
+                <subskill target="AllAllies" type="Inflict" effect="EffectResistanceUpI" chance="1.0" turns="1"/>
+            </Generic>
+
+            <Generic>
+                <cooldown>4</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    AllAllies
+                </select>
+                <name>Electric Guard</name>
+                <subskill target="AllAllies" type="Inflict" effect="ConsolidationII" chance="1.0" turns="2"/>
+                <subskill target="AllAllies" type="Shield" ratio="0.3" scale="TargetMaxHealth" turns="2" />
+            </Generic>
+
+        
+    </hero>
 </heroes>

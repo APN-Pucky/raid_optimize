@@ -24,6 +24,7 @@ impl Wave<'_> {
         indent!({
             self.on_trigger(actor, Trigger::TurnBegin);
             self.on_turn_start_marville(actor);
+            self.on_turn_start_ellic_electron_transfer(actor);
             self.nita_convert_poison_to_heal(actor);
             // apply effects
             // apply poison

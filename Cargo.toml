@@ -1,6 +1,6 @@
 [package]
 name = "raid_optimize"
-version = "0.0.15"
+version = "0.0.16"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -30,6 +30,7 @@ strum_macros = "^0.25"
 enum-map = "^2.6"
 enum-map-derive = "^0.14.0"
 tokio = { version = "^1.32.0", features = ["full"] }
+ordered-float = "^4.1.1"
 
 chrono= "^0.4.31"
 url ="^2.4.1"

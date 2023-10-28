@@ -1,3 +1,5 @@
+use derive_macro::PassiveSkill;
+
 use crate::{
     data::{effect::Effect, skill::Skill},
     debug, roll,
@@ -8,7 +10,7 @@ use crate::{
     },
 };
 
-#[derive(Debug, PartialEq, Deserialize, Serialize, Clone, Copy)]
+#[derive(PassiveSkill, Debug, PartialEq, Deserialize, Serialize, Clone, Copy)]
 pub struct DeepTrap {
     pub pursue_and_attack_limit: u32,
     pub poison_cleansed_attack_chance: f32,
@@ -23,13 +25,6 @@ impl Default for DeepTrap {
     }
 }
 
-impl PassiveSkill for DeepTrap {}
-
-impl Cooldown for DeepTrap {
-    fn get_cooldown(&self) -> u32 {
-        0
-    }
-}
 impl Wave<'_> {
     pub fn nita_convert_poison_to_heal(&mut self, actor: InstanceIndex) {
         if has_skill!(self, actor, Skill::DeepTrap(_)) {

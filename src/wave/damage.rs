@@ -12,7 +12,10 @@ use crate::{
     debug, indent,
     wave::{
         for_ally_skill, for_skill,
-        heroes::{guhanna::lunar_shelter::LunarShelter, marville::fish_guardian::FishGuardian},
+        heroes::{
+            ellic::electron_transfer::ElectronTransfer, guhanna::lunar_shelter::LunarShelter,
+            marville::fish_guardian::FishGuardian,
+        },
         stat::Stat,
     },
 };
@@ -210,6 +213,7 @@ impl Wave<'_> {
                 Skill::LunarShelter(LunarShelter {
                     direct_dmg_reduction
                 }),
+                ijk,
                 {
                     debug!(
                         "{}'s ally has LunarShelter -> damage * {}",
@@ -219,6 +223,24 @@ impl Wave<'_> {
                     damage = damage * (1.0 - direct_dmg_reduction); // TODO no reduction 2 turns after action of Guhannah
                 }
             );
+            if crit {
+                for_skill!(
+                    self,
+                    target,
+                    Skill::ElectronTransfer(ElectronTransfer {
+                        crit_damage_reduction,
+                        ..
+                    }),
+                    {
+                        debug!(
+                            "{} has ElectronTransfer -> damage * {}",
+                            self.name(target),
+                            1.0 - crit_damage_reduction
+                        );
+                        damage = damage * (1.0 - crit_damage_reduction);
+                    }
+                );
+            }
             if self.has_effect(actor, Effect::FeeblenessI) {
                 let xfact = 1.2;
                 damage = damage * xfact;

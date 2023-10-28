@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.0.16] - 2023-10-28
+
+### Added
+
+- Hero Ellic
+
+### Fixed
+
+- subskill turns set to zero without effect (relevant for shield)
+
 ## [0.0.15] - 2023-10-22
 
 ### Added
