@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.17] - 2023-10-28
+
+### Added
+
+- Hero Nordak
+- Hero Paulin
 
 ## [0.0.16] - 2023-10-28
 
@@ -83,7 +89,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hero Space
 - Hero Tifya
 
-[unreleased]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.16...HEAD
+[unreleased]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.17...HEAD
+[0.0.17]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.15...0.0.17
 [0.0.16]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.15...0.0.16
 [0.0.15]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.14...0.0.15
 [0.0.14]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.13...0.0.14
