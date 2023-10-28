@@ -5,10 +5,10 @@ use crate::{
     data::{effect::Effect, faction::Faction, skill::Skill, subskill::Trigger},
     debug, indent, roll,
     wave::{
-        for_ally_skill, has_skill,
+        for_ally_skill, for_skill, has_skill,
         heroes::{
             ben_austin::kings_benevolence::KingsBenevolence,
-            ellic::electron_transfer::ElectronTransfer,
+            ellic::electron_transfer::ElectronTransfer, paulin::prompt_action::PromptAction,
         },
         stat::effect_to_stat,
     },
@@ -42,6 +42,31 @@ impl Wave<'_> {
             self.name(target)
         );
         indent!({
+            if effect.is_control() {
+                for_skill!(
+                    self,
+                    target,
+                    Skill::PromptAction(PromptAction {
+                        increase_self_turn_meter_ratio,
+                        increase_ally_turn_meter_ratio,
+                        increase_tenacity_ratio,
+                        increase_tenacity_ratio_max,
+                        effect_resistance_turns,
+                        start_increase_turn_meter_ratio
+                    }),
+                    {
+                        if self.get_effect_resistance(target) >= 1.0 {
+                            self.increase_turn_meter_ratio(
+                                target,
+                                target,
+                                increase_self_turn_meter_ratio,
+                            );
+                            self.increase_turn_meter_team(target, increase_ally_turn_meter_ratio);
+                            return false;
+                        }
+                    }
+                );
+            }
             if self.has_effect(target, Effect::BlockBuff) && effect.is_buff() {
                 debug!("{} has BlockBuff, {} is blocked", self.name(target), effect);
                 return false;

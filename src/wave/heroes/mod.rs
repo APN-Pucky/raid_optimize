@@ -19,6 +19,8 @@ pub mod marville;
 pub mod maya;
 pub mod natalie;
 pub mod nita;
+pub mod nordak;
+pub mod paulin;
 pub mod phocas;
 pub mod seth;
 pub mod space;

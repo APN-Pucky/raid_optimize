@@ -45,7 +45,7 @@ impl KingsMajesty {
             self.block_buff_chance,
             self.block_buff_turns,
         );
-        wave.remove_effect_filter_ally(actor, Effect::is_control);
+        wave.remove_effect_filter_allies(actor, Effect::is_control);
 
         for high in wave.get_ally_indices(actor) {
             wave.attack_single(

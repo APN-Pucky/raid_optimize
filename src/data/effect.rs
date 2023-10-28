@@ -16,6 +16,9 @@ pub enum Effect {
     AttackDownII,
 
     Bleed,
+    BlockBuff,
+    BlockDebuff,
+    Burn,
 
     ColdI,
     ColdII,
@@ -30,11 +33,13 @@ pub enum Effect {
     CritDamageUpII,
 
     DeepPoison,
-
     DefenseUpI,
     DefenseUpII,
     DefenseDownI,
     DefenseDownII,
+    DivineLight,
+    DivineShield,
+    DivineDust,
 
     EffectHitUpI,
     EffectHitUpII,
@@ -51,10 +56,16 @@ pub enum Effect {
     Freeze,
 
     Heal,
+    HPUpI,
+    HPUpII,
     HPBurning,
 
     InferiorSevereWound,
     Immortal,
+
+    OverflowingLight,
+
+    Poison,
 
     RippleII,
 
@@ -75,13 +86,6 @@ pub enum Effect {
     WetI,
     WetII,
 
-    //Debuff
-    BlockBuff,
-    BlockDebuff,
-    //DotDebuff
-    Poison,
-    Burn,
-    //Buff
     BlockRemoval,
     Stealth,
     Counterattack,
@@ -122,7 +126,30 @@ pub enum EffectCategory {
     Util,
 }
 
+impl Effect {}
+
 impl Effect {
+    pub fn can_be_stacked(&self) -> bool {
+        match *self {
+            Effect::DivineShield => false,
+            _ => true,
+        }
+    }
+
+    pub fn can_be_removed(&self) -> bool {
+        match *self {
+            Effect::DivineShield => false,
+            _ => true,
+        }
+    }
+
+    pub fn can_be_stolen(&self) -> bool {
+        match *self {
+            Effect::DivineShield => false,
+            _ => true,
+        }
+    }
+
     pub fn get_category(&self) -> EffectCategory {
         match *self {
             Effect::FactionHiddenWaveAttack
@@ -167,6 +194,8 @@ impl Effect {
             | Effect::SpeedUpII
             | Effect::TenacityUpI
             | Effect::TenacityUpII
+            | Effect::HPUpI
+            | Effect::HPUpII
             | Effect::AttackUpII => EffectCategory::AttributeBuff,
 
             Effect::Heal
@@ -203,6 +232,10 @@ impl Effect {
             | Effect::RosePoison
             | Effect::ToxicSwamp
             | Effect::ForceOfMercy
+            | Effect::DivineLight
+            | Effect::DivineShield
+            | Effect::DivineDust
+            | Effect::OverflowingLight
             | Effect::DeepPoison => EffectCategory::Unique,
         }
     }
@@ -221,6 +254,12 @@ impl Effect {
             Effect::CountessKiss => 10,
             Effect::None => 0,
             Effect::AttackUpI
+            | Effect::DivineDust
+            | Effect::DivineLight
+            | Effect::DivineShield
+            | Effect::OverflowingLight
+            | Effect::HPUpI
+            | Effect::HPUpII
             | Effect::Silence
             | Effect::BlockDebuff
             | Effect::InferiorSevereWound
@@ -309,6 +348,19 @@ impl Effect {
             EffectCategory::Control => false,
             EffectCategory::AttributeDebuff => false,
             EffectCategory::Unique => true,
+            EffectCategory::Util => false,
+        }
+    }
+
+    pub fn is_attribute_buff(&self) -> bool {
+        match self.get_category() {
+            EffectCategory::Buff => false,
+            EffectCategory::AttributeBuff => true,
+            EffectCategory::Debuff => false,
+            EffectCategory::Dot => false,
+            EffectCategory::Control => false,
+            EffectCategory::AttributeDebuff => false,
+            EffectCategory::Unique => false,
             EffectCategory::Util => false,
         }
     }

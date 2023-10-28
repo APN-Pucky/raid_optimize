@@ -51,7 +51,7 @@ impl Effects {
         }
     }
 
-    pub fn extend_single(&mut self, key: Effect, v: Vec<(u32, u32, InstanceIndex)>) {
+    pub fn extend_single(&mut self, key: Effect, v: &Vec<(u32, u32, InstanceIndex)>) {
         self.em[key].extend(v);
     }
 

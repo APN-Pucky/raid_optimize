@@ -41,6 +41,13 @@ use crate::wave::heroes::natalie::scythe_strike::ScytheStrike;
 use crate::wave::heroes::nita::bondage::Bondage;
 use crate::wave::heroes::nita::curse::Curse;
 use crate::wave::heroes::nita::deep_trap::DeepTrap;
+use crate::wave::heroes::nordak::holy_arbitrament::HolyArbitrament;
+use crate::wave::heroes::nordak::holy_creature::HolyCreature;
+use crate::wave::heroes::nordak::holy_shelter::HolyShelter;
+use crate::wave::heroes::paulin::bonsho_shelter::BonshoShelter;
+use crate::wave::heroes::paulin::decayed_staff_strike::DecayedStaffStrike;
+use crate::wave::heroes::paulin::immense_happiness::ImmenseHappiness;
+use crate::wave::heroes::paulin::prompt_action::PromptAction;
 use crate::wave::heroes::phocas::divine_prayer::DivinePrayer;
 use crate::wave::heroes::seth::crystal_of_life::CrystalOfLife;
 use crate::wave::heroes::seth::deep_sea_power::DeepSeaPower;
@@ -265,6 +272,7 @@ gen_match!(
         BloodthirstyDesire,
         BloodySpiral,
         Bondage,
+        BonshoShelter,
         Curse,
         CleanOcean,
         CrystalOfLife,
@@ -275,6 +283,7 @@ gen_match!(
         DeepSeaPower,
         DeepTrap,
         Detach,
+        DecayedStaffStrike,
         DivinePrayer,
         ElectronTransfer,
         EnergyBurst,
@@ -285,7 +294,11 @@ gen_match!(
         FishGuardian,
         FishWaterball,
         ForceOfMercy,
+        HolyArbitrament,
+        HolyShelter,
+        HolyCreature,
         InspiringAttack,
+        ImmenseHappiness,
         KingsBenevolence,
         KingsMajesty,
         LeavesStorm,
@@ -294,6 +307,7 @@ gen_match!(
         LightOfPurifying,
         Nightmare,
         PsychologicalTorture,
+        PromptAction,
         Resplendence,
         Resurrection,
         RegalMight,

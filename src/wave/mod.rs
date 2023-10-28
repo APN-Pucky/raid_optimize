@@ -60,6 +60,17 @@ macro_rules! for_ally_skill(($wave : ident, $target : ident,$variant: pat, $i : 
 });
 pub(crate) use for_ally_skill;
 
+macro_rules! for_any_skill(($wave : ident, $variant: pat, $i : ident, $body:block) => {
+    for $i in $wave.get_indices_iter() {
+        for p in &$wave.heroes[$i].skills {
+            if let $variant = *p {
+                $body
+            }
+        }
+    }
+});
+pub(crate) use for_any_skill;
+
 // this serves as a ECS system
 pub struct Wave<'a> {
     //pub allies: &'a mut Vec<Instance<'a>>, // should this be position dependent?

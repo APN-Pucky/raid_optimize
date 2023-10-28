@@ -36,6 +36,7 @@ pub enum Type {
     Inflict,
     RemoveEffect,
     RemoveAllBuffs,
+    RemoveAllAttributeDebuffs,
     Shield,
     ReduceTurnMeter,
     IncreaseTurnMeter,

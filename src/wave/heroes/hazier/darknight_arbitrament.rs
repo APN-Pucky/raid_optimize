@@ -57,7 +57,7 @@ impl DarknightArbitrament {
         indent!({
             for effect in Effect::iter().filter(Effect::is_buff) {
                 let cloned_vec: Vec<_> = wave.effects[target].clone_single(effect);
-                wave.effects[actor].extend_single(effect, cloned_vec);
+                wave.effects[actor].extend_single(effect, &cloned_vec);
             }
         });
         wave.attack_single(

@@ -1375,4 +1375,58 @@
             
         
     </hero>
+    <hero>
+        <id>20</id>
+        <name>Nordak</name>
+        <mark>
+            Green
+        </mark>
+        <class>
+            Defense
+        </class>
+        <faction>
+            HolyLightParliament
+        </faction>
+        <rarity>
+            Mythic
+        </rarity>
+        <health>41392</health>
+        <attack>4069</attack>
+        <defense>4069</defense>
+        <speed>1030</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+<HolyArbitrament>
+            <cooldown> 0</cooldown>
+            <defense_damage_ratio> 3.8</defense_damage_ratio>
+            <self_shield_damage_ratio> 0.3</self_shield_damage_ratio>
+            <ally_shield_damage_ratio> 0.3</ally_shield_damage_ratio>
+</HolyArbitrament>
+
+
+            <Generic>
+                <cooldown>3</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    AllAllies
+                </select>
+                <name>Holy Shield</name>
+                <subskill target="AllAllies" type="RemoveAllAttributeDebuffs"/>
+                <subskill target="AllAllies" type="Shield" ratio="0.45" scale="MaxHealth" turns="2" />
+            </Generic>
+
+            
+        
+    </hero>
 </heroes>

@@ -152,6 +152,11 @@ impl Wave<'_> {
                     self.remove_effect_single(actor, *target, effect);
                 }
             }
+            Type::RemoveAllAttributeDebuffs => {
+                for target in targets.iter() {
+                    self.remove_effect_filter_single(actor, *target, Effect::is_attribute_debuff);
+                }
+            }
             Type::ChangeSilence => {
                 for target in targets.iter() {
                     if self.effects[*target].get(Effect::Silence) > 0

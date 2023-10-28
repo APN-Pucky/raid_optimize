@@ -88,7 +88,7 @@ impl Wave<'_> {
     ) -> u32 {
         self.add_stat(actor, Stat::IncreaseSkillCooldown, 1.);
         let s = self.cooldowns[actor][si];
-        self.cooldowns[actor][si] = cmp::max(
+        self.cooldowns[actor][si] = cmp::min(
             self.get_max_cooldown(actor, si),
             self.cooldowns[actor][si] + value,
         );

@@ -1,6 +1,11 @@
+use std::cmp;
+
+use ordered_float::OrderedFloat;
+
 use crate::{
-    data::{effect::Effect, faction::Faction, hero::Hero, mark::Mark},
+    data::{effect::Effect, faction::Faction, hero::Hero, mark::Mark, skill::Skill},
     debug, indent,
+    wave::{for_skill, heroes::paulin::prompt_action::PromptAction},
 };
 
 use super::{InstanceIndex, Wave};
@@ -151,7 +156,29 @@ impl Wave<'_> {
     }
 
     pub fn get_max_health(&self, actor: InstanceIndex) -> f32 {
-        self.get_hero(actor).health
+        let mut fact = 1.0;
+        debug!(
+            "{} base max health of {}",
+            self.name(actor),
+            self.get_hero(actor).health
+        );
+        indent!({
+            if self.effects[actor].has(Effect::HPUpI) {
+                let xfact = 1.25;
+                debug!("{} has HPUpI -> health * {}", self.name(actor), xfact);
+                fact *= xfact;
+            }
+            if self.effects[actor].has(Effect::HPUpII) {
+                let xfact = 1.5;
+                debug!("{} has HPUpII -> health * {}", self.name(actor), xfact);
+                fact *= xfact;
+            }
+        });
+        let res = self.get_hero(actor).health * fact;
+        if fact != 1.0 {
+            debug!("{} speed of {}", self.name(actor), res);
+        }
+        res
     }
 
     pub fn get_speed(&self, actor: InstanceIndex) -> f32 {
@@ -291,6 +318,29 @@ impl Wave<'_> {
                 );
                 fact *= xfact;
             }
+            for_skill!(
+                self,
+                actor,
+                Skill::PromptAction(PromptAction {
+                    increase_self_turn_meter_ratio,
+                    increase_ally_turn_meter_ratio,
+                    increase_tenacity_ratio,
+                    increase_tenacity_ratio_max,
+                    effect_resistance_turns,
+                    start_increase_turn_meter_ratio
+                }),
+                {
+                    let xfact = 1.0
+                        + (increase_tenacity_ratio * self.get_effect_resistance(actor))
+                            .min(increase_tenacity_ratio_max);
+                    debug!(
+                        "{} has PromptAction -> tenacity * {}",
+                        self.name(actor),
+                        xfact
+                    );
+                    fact *= xfact;
+                }
+            );
         });
         let res = self.get_hero(actor).tenacity * fact;
         if fact != 1.0 {
