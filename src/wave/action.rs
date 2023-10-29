@@ -110,7 +110,7 @@ impl Wave<'_> {
                     self.effects[actor].get(Effect::Stun),
                     self.effects[actor].get(Effect::Freeze),
                     self.heroes[actor]
-                )
+                );
             }
             // finish
             self.after_action(actor);
