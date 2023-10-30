@@ -16,7 +16,7 @@ path = "src/ui/bin.rs"
 [dependencies]
 derive_macro = { path = "src/derive_macro" }
 serde_derive = "^1.0"
-serde = ">=1.0.100,<1.0.181" # from quick-xml
+serde = ">=1.0.100, <1.0.191" # from quick-xml
 quick-xml = { version = "^0.30.0", features = ["serialize" ,"serde-types"] }
 rand = "^0.8.5"
 log = "^0.4.20"
