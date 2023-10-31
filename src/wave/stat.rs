@@ -33,6 +33,9 @@ pub enum Stat {
 
     IncreaseSkillCooldown,
 
+    Kill,
+    Killed,
+
     LostToTenacity,
     Leeched,
     LeechedOf,

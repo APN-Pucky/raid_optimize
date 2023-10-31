@@ -43,7 +43,11 @@ impl SacredLight {
         actor: InstanceIndex,
         _target: InstanceIndex,
     ) {
-        wave.loose_health(actor, self.loose_hp_ratio * wave.get_max_health(actor));
+        wave.loose_health(
+            actor,
+            actor,
+            self.loose_hp_ratio * wave.get_max_health(actor),
+        );
         // 1st
         for t in wave.get_ally_indices(actor) {
             if wave.health[t] == wave.get_max_health(t) {

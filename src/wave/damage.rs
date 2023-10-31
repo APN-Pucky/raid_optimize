@@ -157,7 +157,12 @@ impl Wave<'_> {
         self.damage(actor, target, bleed_dmg, &Skill::None, false, false, false);
     }
 
-    pub fn loose_health(&mut self, actor: InstanceIndex, damage: f32) -> f32 {
+    pub fn loose_health(
+        &mut self,
+        actor: InstanceIndex,
+        source: InstanceIndex,
+        damage: f32,
+    ) -> f32 {
         let ret;
         if self.health[actor] < damage {
             self.add_stat(actor, Stat::HealthLost, self.health[actor]);
@@ -170,6 +175,8 @@ impl Wave<'_> {
                 self.health[actor] = 0.0;
                 self.on_trigger(actor, Trigger::Death);
                 self.on_fatal_damage_maya(actor);
+                self.add_stat(source, Stat::Kill, damage);
+                self.add_stat(actor, Stat::Killed, damage);
             }
         } else {
             ret = damage;
@@ -407,7 +414,7 @@ impl Wave<'_> {
             self.add_stat(actor, Stat::DamageTaken, damage);
             self.add_stat(target, Stat::DamageDone, damage);
             let dmg = self.shield_loose(actor, target, damage);
-            let ret = self.loose_health(target, dmg);
+            let ret = self.loose_health(target, actor, dmg);
             self.on_damage_dealt(actor, target, dmg, skill, reflect, leech, crit);
             ret
         })
