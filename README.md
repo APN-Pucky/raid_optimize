@@ -1,5 +1,7 @@
 ![image](./data/logo.jpg)
 
+[![codecov](https://codecov.io/gh/APN-Pucky/raid_optimize/graph/badge.svg?token=AB17KX3W69)](https://codecov.io/gh/APN-Pucky/raid_optimize)
+
 This project is dedicated to the creation of a dynamic simulator tailored for raid-style games, offering an immersive 5 vs 5 hero battle simulation experience. At its core, the project focuses on the development of a robust codebase that generates accurate results. Owing to the multitude of statistics, skills, and effects involved, predicting the outcome of a battle is far from straightforward. However, this simulator addresses this challenge, offering reliable statistical predictions regarding the strength of different team compositions.
 
 An early-access version of the simulator, already in existence as a proof of concept, demonstrates its viability. This prototype has successfully implemented a range of integral components, including:
