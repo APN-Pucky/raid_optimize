@@ -42,7 +42,7 @@ dioxus = "^0.4.0"
 dioxus-router = "^0.4.0"
 dioxus-liveview = { version = "^0.4.0", features = ["axum"] }
 open = "^5.0.0"
-octocrab = "^0.31.1"
+octocrab = "^0.32.0"
 semver = "^0.11.0"
 
 [profile.release]
