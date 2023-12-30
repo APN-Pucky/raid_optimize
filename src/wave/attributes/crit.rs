@@ -93,7 +93,7 @@ impl Wave<'_> {
             if self.effects[actor].has(Effect::CritDamageUpI) {
                 let xfact = 1.25;
                 debug!(
-                    "{} has CritDamageUpI -> crit_damage * {}",
+                    "{} has I -> crit_damage * {}",
                     self.name(actor),
                     xfact
                 );

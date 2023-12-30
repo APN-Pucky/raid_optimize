@@ -14,6 +14,7 @@ pub mod guhanna;
 pub mod hazier;
 pub mod katherine;
 pub mod lydia;
+pub mod donald_rebeli;
 pub mod liz;
 pub mod margarita;
 pub mod marville;
