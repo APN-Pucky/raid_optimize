@@ -61,6 +61,7 @@ pub enum Trigger {
     Inflicting,
     InflictedControl,
     InflictedSilence,
+    LandCrit,
 }
 
 #[derive(

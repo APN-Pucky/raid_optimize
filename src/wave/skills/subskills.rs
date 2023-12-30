@@ -59,6 +59,13 @@ impl Wave<'_> {
             );
             return;
         }
+        if self.has_effect(actor, Effect::Imprison) {
+            debug!(
+                "{} is imprisoned -> can't execute subskill",
+                self.heroes[actor].name
+            );
+            return;
+        }
         match subskill.scale {
             Scale::Attack => {
                 val = self.get_attack_damage(actor) * subskill.ratio;

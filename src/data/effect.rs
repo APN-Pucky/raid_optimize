@@ -62,6 +62,7 @@ pub enum Effect {
 
     InferiorSevereWound,
     Immortal,
+    Imprison,
 
     OverflowingLight,
 
@@ -101,6 +102,7 @@ pub enum Effect {
     Blade,
     FishShoal,
     RosePoison,
+    FlowingRainbow,
 
     // Skill
     ToxicSwamp,
@@ -209,7 +211,10 @@ impl Effect {
             | Effect::ConsolidationII
             | Effect::BlockDebuff => EffectCategory::Buff,
 
-            Effect::Silence | Effect::Freeze | Effect::Stun => EffectCategory::Control,
+            Effect::Silence 
+            | Effect::Freeze 
+            | Effect::Stun 
+            | Effect::Imprison => EffectCategory::Control,
 
             Effect::FeeblenessI
             | Effect::SevereWound
@@ -236,6 +241,7 @@ impl Effect {
             | Effect::DivineShield
             | Effect::DivineDust
             | Effect::OverflowingLight
+            | Effect::FlowingRainbow
             | Effect::DeepPoison => EffectCategory::Unique,
         }
     }
@@ -253,6 +259,7 @@ impl Effect {
             Effect::Poison => 10,
             Effect::CountessKiss => 10,
             Effect::DivineDust => 100,
+            Effect::FlowingRainbow => 10,
             Effect::None => 0,
             Effect::AttackUpI
             | Effect::DivineLight
@@ -309,6 +316,7 @@ impl Effect {
             | Effect::WetI
             | Effect::WetII
             | Effect::Stun
+            | Effect::Imprison
             | Effect::Freeze
             | Effect::Burn
             | Effect::BlockRemoval

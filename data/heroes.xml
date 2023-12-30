@@ -1505,4 +1505,88 @@
             <act_again> true</act_again>
         </ImmenseHappiness>
     </hero>
+
+    <hero>
+        <id>22</id>
+        <name>Lydia</name>
+        <mark>
+            Blue
+        </mark>
+        <class>
+            Attack
+        </class>
+        <faction>
+            WizardsEye
+        </faction>
+        <rarity>
+            Legend
+        </rarity>
+        <health>41392</health>
+        <attack>4069</attack>
+        <defense>4069</defense>
+        <speed>1030</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+            <Generic>
+                <name>Knockback Water-Shooting</name>
+                <cooldown>0</cooldown>
+                <type>
+                    Basic
+                </type>
+                <select>
+                    SingleEnemy
+                </select>
+                <subskill target="SingleEnemy" ratio="0.9" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="SingleEnemy" ratio="0.9" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="SingleEnemy" ratio="0.9" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="SingleEnemy" type="StealTurnMeter" ratio="0.06"/>
+                <subskill trigger="LandCrit" triggerer="I" target="SingleEnemy" type="StealTurnMeter" ratio="0.04"/>
+            </Generic>
+
+            <Generic>
+                <name>Fresh Summer</name>
+                <cooldown>4</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    AllEnemies
+                </select>
+                <subskill target="AllAllies" type="Inflict" effect="AttackUpII" chance="1.0" turns="2"/>
+                <subskill target="AllEnemies" ratio="1.05" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="1.05" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="1.05" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+            </Generic>
+
+            <Generic>
+                <name>Joyful Party</name>
+                <cooldown>4</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    AllEnemies
+                </select>
+                <subskill target="AllAllies" type="Inflict" effect="TenacityUpII" chance="1.0" turns="2"/>
+
+                <subskill target="AllEnemies" ratio="0.5" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="0.5" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="0.5" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="0.5" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+                <subskill target="AllEnemies" ratio="0.5" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+
+                <subskill target="AllEnemies" type="Inflict" effect="FlowingRainbow" chance="1.0" turns="2"/>
+                <subskill target="AllEnemies" type="Inflict" effect="Imprison" chance="0.6" turns="2"/>
+            </Generic>
+
+    </hero>
 </heroes>

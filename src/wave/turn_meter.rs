@@ -1,4 +1,4 @@
-use crate::{debug, indent};
+use crate::{debug, indent, data::effect::Effect};
 
 use super::{InstanceIndex, Wave};
 
@@ -36,6 +36,10 @@ impl Wave<'_> {
         target: InstanceIndex,
         turn_meter: f32,
     ) {
+        if self.has_effect(actor, Effect::Imprison) {
+            debug!("{} is imprisoned -> can't increase turn meter", self.name(actor));
+            return;
+        }
         self.turn_meter[target] = self
             .turn_meter_threshold
             .min(self.turn_meter[target] + turn_meter);

@@ -89,6 +89,7 @@ impl Wave<'_> {
                         );
                     }
                     self.on_critical_strike_tifya(actor, skill);
+                    self.on_trigger(actor, Trigger::LandCrit);
                 }
             });
 

@@ -138,6 +138,17 @@ impl Wave<'_> {
                 );
                 fact *= xfact;
             }
+            if self.effects[actor].has(Effect::FlowingRainbow) {
+                let n = self.effects[actor].get(Effect::FlowingRainbow);
+                let xfact = 1.- 0.04*n as f32;
+                debug!(
+                    "{} has FlowingRainbow {} -> effect_hit * {}",
+                    self.name(actor),
+                    n,
+                    xfact
+                );
+                fact *= xfact;
+            }
         });
         let res = self.get_hero(actor).effect_hit * fact;
         if fact != 1.0 {
@@ -288,6 +299,17 @@ impl Wave<'_> {
                 debug!(
                     "{} has EffectResistanceUpII -> effect_resistance * {}",
                     self.name(actor),
+                    xfact
+                );
+                fact *= xfact;
+            }
+            if self.effects[actor].has(Effect::FlowingRainbow) {
+                let n = self.effects[actor].get(Effect::FlowingRainbow);
+                let xfact = 1.- 0.04*n as f32;
+                debug!(
+                    "{} has FlowingRainbow {} -> effect_resistance * {}",
+                    self.name(actor),
+                    n,
                     xfact
                 );
                 fact *= xfact;

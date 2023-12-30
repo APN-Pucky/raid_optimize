@@ -1,5 +1,7 @@
+use crate::debug;
 use strum_macros::EnumIter;
 
+use crate::data::effect::Effect;
 use crate::wave::heroes::agatha::aristocratic_style::AristocraticStyle;
 use crate::wave::heroes::agatha::bloody_spiral::BloodySpiral;
 use crate::wave::heroes::alahan::commendation::Commendation;
@@ -217,6 +219,14 @@ macro_rules! gen_match {
         impl Wave<'_> {
             pub fn execute_skill(&mut self, skill : &Skill,  actor :InstanceIndex, target :InstanceIndex, ) {
                 self.cooldown_s(actor,skill); // Early cooldown so no reuse
+                if !self.is_alive(actor) {
+                    debug!("{} is dead -> can't execute skill", self.heroes[actor].name);
+                    return;
+                }
+                if self.has_effect(actor, Effect::Imprison) {
+                    debug!("{} is imprisoned -> can't execute skill", self.heroes[actor].name);
+                    return;
+                }
                 match skill {
                     Skill::None => {},
                     Skill::Generic (Generic{  ..}) => {self.execute_generic_skill(skill, actor, target)},

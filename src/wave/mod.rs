@@ -21,6 +21,7 @@ pub mod skills;
 pub mod stat;
 pub mod turn_meter;
 
+use crate::data::effect::Effect;
 use crate::data::hero::Hero;
 
 use crate::data::faction::Faction;
@@ -337,6 +338,8 @@ impl Wave<'_> {
             self.progress_all_turn_meters();
 
             if let Some(ir) = self.find_actor_index() {
+                //remove imprison from ir
+                self.remove_effect_single(ir,ir, Effect::Imprison);
                 self.act(ir);
                 self.acted_turns[ir] += 1;
                 self.turns += 1;

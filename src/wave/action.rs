@@ -60,6 +60,10 @@ impl Wave<'_> {
     pub fn act(&mut self, actor: InstanceIndex) {
         debug!("{} acts", self.fmt(actor));
         indent!({
+            if self.has_effect(actor, Effect::Imprison) {
+                debug!("{} is imprisoned -> can't act", self.fmt(actor));
+                return;
+            }
             //
             if !self.is_alive(actor) {
                 debug!("{} is dead -> can't take turn", self.fmt(actor));

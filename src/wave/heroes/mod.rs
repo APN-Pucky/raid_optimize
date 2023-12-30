@@ -13,6 +13,7 @@ pub mod geeliman;
 pub mod guhanna;
 pub mod hazier;
 pub mod katherine;
+pub mod lydia;
 pub mod liz;
 pub mod margarita;
 pub mod marville;
