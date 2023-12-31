@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.0.18] - 2023-12-30
+
 ### Added
 
 - Hero Lydia (w/o Jolly Water fight)
@@ -95,7 +98,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hero Space
 - Hero Tifya
 
-[unreleased]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.17...HEAD
+[unreleased]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.18...HEAD
+[0.0.18]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.17...0.0.18
 [0.0.17]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.15...0.0.17
 [0.0.16]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.15...0.0.16
 [0.0.15]: https://github.com/APN-Pucky/raid_optimize/compare/0.0.14...0.0.15
