@@ -38,3 +38,16 @@ You can use the debug executable preferably with `threads=1` and `iterations=1` 
 ## Unlock all features via SubscribeStar
 
 https://www.subscribestar.com/apn-pucky
+
+## Commandline
+
+You can use the executable via commandline as well:
+
+```
+$ ./raid_optimize --no-gui -a Natalie -e Natalie -i 10000 -t16
+win%:    36.72 (3672 / 10000)
+stall%:   0.00 (0 / 10000)
+loss%:   63.28 (6328 / 10000)
+```
+
+See `--help` for more information.
