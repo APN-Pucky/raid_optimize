@@ -101,6 +101,9 @@ impl Wave<'_> {
             Target::LowestHealthAlly => {
                 vec![self.get_lowest_health_ally(actor)]
             }
+            Target::LowestHealthPercentageAlly => {
+                vec![self.get_lowest_health_percentage_ally(actor)]
+            }
         };
 
         match subskill.typ {

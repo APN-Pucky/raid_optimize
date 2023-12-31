@@ -260,6 +260,19 @@ impl Wave<'_> {
         lowest
     }
 
+    pub fn get_lowest_health_percentage_ally(&self, actor: InstanceIndex) -> InstanceIndex {
+        let mut lowest = self.get_ally_indices(actor)[0];
+        for i in self.get_ally_indices(actor) {
+            if self.is_alive(i)
+                && self.health[i] / self.get_max_health(i)
+                    < self.health[lowest] / self.get_max_health(lowest)
+            {
+                lowest = i;
+            }
+        }
+        lowest
+    }
+
     pub fn get_highest_health_percentage_ally(&self, actor: InstanceIndex) -> InstanceIndex {
         let mut highest = self.get_ally_indices(actor)[0];
         for i in self.get_ally_indices(actor) {
@@ -339,7 +352,7 @@ impl Wave<'_> {
 
             if let Some(ir) = self.find_actor_index() {
                 //remove imprison from ir
-                self.remove_effect_single(ir,ir, Effect::Imprison);
+                self.remove_effect_single(ir, ir, Effect::Imprison);
                 self.act(ir);
                 self.acted_turns[ir] += 1;
                 self.turns += 1;

@@ -211,10 +211,9 @@ impl Effect {
             | Effect::ConsolidationII
             | Effect::BlockDebuff => EffectCategory::Buff,
 
-            Effect::Silence 
-            | Effect::Freeze 
-            | Effect::Stun 
-            | Effect::Imprison => EffectCategory::Control,
+            Effect::Silence | Effect::Freeze | Effect::Stun | Effect::Imprison => {
+                EffectCategory::Control
+            }
 
             Effect::FeeblenessI
             | Effect::SevereWound

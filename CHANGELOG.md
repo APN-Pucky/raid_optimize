@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Hero Lydia (w/o Jolly Water fight)
 - Hero Donald Rebeli (w/o Aristocratic Duel)
+- Hero Nicholas (w/o Gifts Galore)
 
 ## [0.0.17] - 2023-10-28
 

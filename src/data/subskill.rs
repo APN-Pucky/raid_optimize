@@ -14,6 +14,7 @@ pub enum Target {
     AllAllies,
     SingleSelf,
     LowestHealthAlly,
+    LowestHealthPercentageAlly,
 }
 
 #[derive(

@@ -140,7 +140,7 @@ impl Wave<'_> {
             }
             if self.effects[actor].has(Effect::FlowingRainbow) {
                 let n = self.effects[actor].get(Effect::FlowingRainbow);
-                let xfact = 1.- 0.04*n as f32;
+                let xfact = 1. - 0.04 * n as f32;
                 debug!(
                     "{} has FlowingRainbow {} -> effect_hit * {}",
                     self.name(actor),
@@ -305,7 +305,7 @@ impl Wave<'_> {
             }
             if self.effects[actor].has(Effect::FlowingRainbow) {
                 let n = self.effects[actor].get(Effect::FlowingRainbow);
-                let xfact = 1.- 0.04*n as f32;
+                let xfact = 1. - 0.04 * n as f32;
                 debug!(
                     "{} has FlowingRainbow {} -> effect_resistance * {}",
                     self.name(actor),

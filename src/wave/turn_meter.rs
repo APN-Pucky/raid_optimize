@@ -1,4 +1,4 @@
-use crate::{debug, indent, data::effect::Effect};
+use crate::{data::effect::Effect, debug, indent};
 
 use super::{InstanceIndex, Wave};
 
@@ -37,7 +37,10 @@ impl Wave<'_> {
         turn_meter: f32,
     ) {
         if self.has_effect(actor, Effect::Imprison) {
-            debug!("{} is imprisoned -> can't increase turn meter", self.name(actor));
+            debug!(
+                "{} is imprisoned -> can't increase turn meter",
+                self.name(actor)
+            );
             return;
         }
         self.turn_meter[target] = self
