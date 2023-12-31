@@ -55,6 +55,27 @@ impl CombinedResult {
         cr
     }
 
+    pub fn print(&self) {
+        println!(
+            "win%:\t{:>6.2} ({} / {})",
+            self.wins as f64 / self.iterations as f64 * 100.,
+            self.wins,
+            self.iterations
+        );
+        println!(
+            "stall%:\t{:>6.2} ({} / {})",
+            self.stalls as f64 / self.iterations as f64 * 100.,
+            self.stalls,
+            self.iterations
+        );
+        println!(
+            "loss%:\t{:>6.2} ({} / {})",
+            self.losses as f64 / self.iterations as f64 * 100.,
+            self.losses,
+            self.iterations
+        );
+    }
+
     pub fn add_combined_result(result: &mut CombinedResult, added: &CombinedResult) {
         result.iterations += added.iterations;
         result.wins += added.wins;

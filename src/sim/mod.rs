@@ -90,7 +90,8 @@ impl Sim {
                 for x in 0..iter {
                     cr.add_result(&wave.run());
                     wave.reset();
-                    if (x) % 1000 == 0 || x == iter {
+                    // TODO make the 1000 an arg
+                    if (x) % 1000 == 0 || x == iter - 1 {
                         // plus one because we start at 0 and want the score added after the iteration
                         match tx.send(cr) {
                             Ok(_) => {}

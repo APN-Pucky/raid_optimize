@@ -10,9 +10,9 @@ extern crate serde;
 pub mod data;
 pub mod input;
 pub mod player;
+pub mod run;
 pub mod sim;
 pub mod wave;
-//pub mod run;
 //pub mod ui;
 //pub mod scheduler;
 

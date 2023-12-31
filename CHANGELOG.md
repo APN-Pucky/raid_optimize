@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed 
+
+- Synchronisation of results
+
+### Added
+
+- Commandline interface
+
 
 ## [0.0.18] - 2023-12-30
 
