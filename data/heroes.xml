@@ -1665,4 +1665,80 @@
             </Generic>
 
     </hero>
+    <hero>
+        <id>24</id>
+        <name>Heng'e 3</name>
+        <mark>
+            Green
+        </mark>
+        <class>
+            Defense
+        </class>
+        <faction>
+            NamelessBrotherhood
+        </faction>
+        <rarity>
+            Legend
+        </rarity>
+        <health>41392</health>
+        <attack>4069</attack>
+        <defense>4069</defense>
+        <speed>1030</speed>
+        <crit_rate>0.1</crit_rate>
+        <crit_damage>1.5</crit_damage>
+        <effect_hit>0.02</effect_hit>
+        <effect_resistance>0</effect_resistance>
+        <mastery>0</mastery>
+        <healing_effect>0.429</healing_effect>
+        <leech>0</leech>
+        <piercing>0</piercing>
+        <tenacity>0</tenacity>
+        <damage_reflection>0</damage_reflection>
+
+            <Generic>
+                <name>Fluid Double Strike</name>
+                <cooldown>0</cooldown>
+                <type>
+                    Basic
+                </type>
+                <select>
+                    SingleEnemy
+                </select>
+                <subskill target="SingleEnemy" ratio="1.2" type="Damage" scale="Attack" effect="Stun" chance="0.3" turns="1"/>
+                <subskill target="AllEnemies" type="Inflict" effect="CritDamageUpI" chance="1.0" turns="2"/>
+                <subskill target="SingleEnemy" ratio="1.8" type="Damage" scale="Attack" effect="None" chance="0" turns="0"/>
+            </Generic>
+
+            <Generic>
+                <name>Perfect Strice</name>
+                <cooldown>4</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    AllEnemies
+                </select>
+                <subskill target="AllEnemies" ratio="1.6" type="Damage" scale="Attack" />
+                <subskill target="AllEnemies" ratio="0.05" type="Damage" scale="TargetMaxHealth" />
+            </Generic>
+
+            <Generic>
+                <name>Graceful Multi-Strike</name>
+                <cooldown>5</cooldown>
+                <type>
+                    Active
+                </type>
+                <select>
+                    SingleEnemy
+                </select>
+                <subskill target="SingleEnemy" type="Inflict" effect="CritDamageUpI" chance="1.0" turns="2"/>
+                <subskill target="SingleEnemy" ratio="2.15" type="Damage" scale="Attack" />
+                <subskill target="SingleEnemy" type="Inflict" effect="CritDamageUpII" chance="1.0" turns="2"/>
+                <subskill target="SingleEnemy" ratio="2.15" type="Damage" scale="Attack" />
+                <subskill target="SingleEnemy" ratio="2.15" type="Damage" scale="Attack" />
+                <subskill target="SingleEnemy" ratio="2.15" type="Damage" scale="Attack" />
+                <subskill target="SingleEnemy" ratio="2.15" type="Damage" scale="Attack" />
+            </Generic>
+
+    </hero>
 </heroes>
