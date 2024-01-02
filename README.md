@@ -35,9 +35,9 @@ After downloading the executable from ![the release page](./release) extracting 
 
 You can use the debug executable preferably with `threads=1` and `iterations=1` to see what's happening in the simulation in the terminal.
 
-## Unlock all features via SubscribeStar
+## Development
 
-https://www.subscribestar.com/apn-pucky
+Adjust `src/ui/bin.rs` to `src/bin.rs` in the Cargo.toml and run `cargo run [--release]` to run the executable.
 
 ## Commandline
 
@@ -51,3 +51,7 @@ loss%:   63.28 (6328 / 10000)
 ```
 
 See `--help` for more information.
+
+## Unlock all features via SubscribeStar
+
+https://www.subscribestar.com/apn-pucky

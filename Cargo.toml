@@ -12,6 +12,7 @@ path = "src/lib.rs"
 [[bin]]
 name = "raid_optimize"
 path = "src/ui/bin.rs"
+#path = "src/bin.rs"
 
 [dependencies]
 derive_macro = { path = "src/derive_macro" }
